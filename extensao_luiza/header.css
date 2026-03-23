@@ -1,0 +1,13 @@
+header {
+  background: linear-gradient(135deg, var(--verde-escuro), var(--verde-claro));
+  color: var(--branco);
+  padding: 30px 20px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+header h1 {
+  font-family: 'Playfair Display', serif;
+  color: var(--dourado);
+  font-size: 2.8rem;
+}

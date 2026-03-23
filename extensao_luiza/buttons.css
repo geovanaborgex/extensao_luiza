@@ -1,0 +1,6 @@
+.btn {
+  padding: 12px 25px;
+  background: var(--dourado);
+  border-radius: 30px;
+  text-decoration: none;
+}
