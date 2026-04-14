@@ -168,6 +168,35 @@ body {
   color: black;
   text-decoration: none;
 }
+
+
+
+/* HISTÓRIA */
+
+.historia-container{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:60px;
+flex-wrap:wrap;
+max-width:1100px;
+margin:auto;
+}
+
+.historia-texto{
+flex:1;
+min-width:300px;
+}
+
+.historia-texto h2{
+margin-bottom:20px;
+}
+
+.historia-texto p{
+margin-bottom:15px;
+line-height:1.6;
+}
+
 #historia {
   background: #ffffff;
   max-width: 900px;
@@ -199,4 +228,18 @@ body {
 }
 
 
+/* FOTO */
 
+.historia-foto{
+flex:1;
+display:flex;
+justify-content:center;
+}
+
+.historia-foto img{
+width:300px;
+height:300px;
+object-fit:cover;
+border-radius:50%;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
