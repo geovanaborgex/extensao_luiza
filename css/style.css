@@ -1,3 +1,6 @@
+/* ===================== */
+/* VARIÁVEIS */
+/* ===================== */
 :root {
   --verde-escuro: #6B6E55;
   --verde-claro: #3a7d5d;
@@ -14,47 +17,57 @@
   );
 }
 
+/* ===================== */
+/* RESET */
+/* ===================== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-.services {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 25px;
+
+/* ===================== */
+/* BASE */
+/* ===================== */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: url('img/logo-verde.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #333;
 }
 
-.dourado-texto {
-  background: var(--dourado-gradiente-gradiente);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.card {
-  background: white;
-  padding: 25px;
-  border-radius: 20px;
-  transition: 0.3s;
-}
-
-.card:hover {
-  transform: translateY(-10px);
-}
 .section {
   padding: 60px 20px;
   text-align: center;
 }
-.linha{
-  border-top: 1px solid #fff;
-  width: 50%;
-  margin: 0 auto;
 
-}
 .section h2 {
   color: var(--verde-escuro);
   margin-bottom: 30px;
 }
+
+.linha {
+  border-top: 1px solid #fff;
+  width: 50%;
+  margin: 0 auto;
+}
+
+.hidden {
+  display: none;
+}
+
+/* ===================== */
+/* TEXTO */
+/* ===================== */
+.dourado-texto {
+  background: var(--dourado-gradiente);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ===================== */
+/* NAVBAR */
+/* ===================== */
 nav {
   background: var(--verde-escuro);
   display: flex;
@@ -85,118 +98,99 @@ nav a:hover::after {
   width: 100%;
 }
 
-
+/* ===================== */
+/* HEADER */
+/* ===================== */
 header {
   background: var(--verde-escuro);
   color: var(--branco);
   text-align: center;
 }
 
-
 .logo {
   width: 500px;
   height: 250px;
-  object-fit: contain; /* mantém sem deformar */
+  object-fit: contain;
+  transition: 0.3s;
 }
-
 
 .logo:hover {
   transform: scale(1.05);
 }
 
-footer {
-  background: var(--verde-escuro);
-  color: white;
-  text-align: center;
-  padding: 25px;
-}
-.btn {
-  padding: 12px 25px;
-  background: var(--dourado-gradiente);
-  border-radius: 30px;
-  text-decoration: none;
-}
-body {
-  font-family: 'Poppins', sans-serif;
-  background: url('img/logo-verde.jpg') no-repeat center center fixed;
-  background-size: cover;
-  color: #333;
-}
-
+/* ===================== */
+/* HERO */
+/* ===================== */
 .hero {
   background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-  url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9');
+    url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9');
   background-size: cover;
   background-position: center;
   color: white;
   padding: 120px 20px;
   text-align: center;
 }
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.btn-agendar {
-  padding: 6px 14px;
-  font-size: 0.85rem;
-  border-radius: 15px;
-  background: var(--dourado-gradiente);
+
+/* ===================== */
+/* SERVIÇOS */
+/* ===================== */
+.services {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
 }
 
-.btn-agendar:hover {
-  background: #ffffff;
-}
-.btn-agendar {
-  padding: 6px 14px;
-  font-size: 0.85rem;
-  border-radius: 15px;
-  background: var(--dourado-gradiente);
+.card {
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  transition: 0.3s;
 }
 
-.btn-agendar:hover {
-  background: #ffffff;
-  
+.card:hover {
+  transform: translateY(-10px);
 }
-.btn,
-.btn:visited {
-  color: black;
+
+/* ===================== */
+/* BOTOES */
+/* ===================== */
+.btn {
+  display: inline-block;
+  padding: 12px 25px;
+  background: var(--dourado-gradiente);
+  border-radius: 30px;
   text-decoration: none;
+  color: white;
+  transition: all 0.3s ease;
 }
 
+.btn:visited {
+  color: white;
+}
 
+.btn:hover {
+  transform: scale(1.08);
+}
 
+/* BOTÃO AGENDAR */
+.btn-agendar {
+  padding: 12px 25px;
+  font-size: 0.85rem;
+  border-radius: 30px;
+  text-decoration: none;
+  background: var(--dourado-gradiente);
+  transition: 0.3s;
+}
+
+.btn-agendar:hover {
+  background: #ffffff;
+  color: #3a7d5d;
+  transform: scale(1.08);
+}
+
+/* ===================== */
 /* HISTÓRIA */
-
-.historia-container{
-display:flex;
-align-items:center;
-justify-content:center;
-gap:60px;
-flex-wrap:wrap;
-max-width:1100px;
-margin:auto;
-}
-
-.historia-texto{
-flex:1;
-min-width:300px;
-}
-
-.historia-texto h2{
-margin-bottom:20px;
-}
-
-.historia-texto p{
-margin-bottom:15px;
-line-height:1.6;
-}
-
+/* ===================== */
 #historia {
   background: #ffffff;
   max-width: 900px;
@@ -227,19 +221,111 @@ line-height:1.6;
   color: #444;
 }
 
-
-/* FOTO */
-
-.historia-foto{
-flex:1;
-display:flex;
-justify-content:center;
+.historia-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+  flex-wrap: wrap;
+  max-width: 1100px;
+  margin: auto;
 }
 
-.historia-foto img{
-width:300px;
-height:300px;
-object-fit:cover;
-border-radius:50%;
-box-shadow:0 10px 30px rgba(0,0,0,0.2);
+.historia-texto {
+  flex: 1;
+  min-width: 300px;
+}
+
+.historia-texto p {
+  margin-bottom: 15px;
+}
+
+.historia-foto {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.historia-foto img {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* ===================== */
+/* FOOTER */
+/* ===================== */
+footer {
+  background: var(--verde-escuro);
+  color: white;
+  text-align: center;
+  padding: 25px;
+}
+
+/* ===================== */
+/* ANIMAÇÃO */
+/* ===================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* CARD COM IMAGEM */
+.card {
+  position: relative;
+  color: white;
+  border-radius: 20px;
+  overflow: hidden;
+  height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  background-size: cover;
+  background-position: center;
+  transition: 0.3s;
+}
+
+/* sombra escura */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+}
+
+/* texto acima da sombra */
+.card h3,
+.card p {
+  position: relative;
+}
+
+/* hover */
+.card:hover {
+  transform: scale(1.03);
+}
+
+/* IMAGENS LOCAIS */
+.cabelo {
+  background-image: url('../images/CABELO.jpeg');
+}
+
+.pele {
+  background-image: url('../images/MAKE2.jpeg');
+}
+
+.sobrancelha {
+  background-image: url('../images/SOMBRANCELHA.jpeg');
+}
+
+.cuidados {
+  background-image: url('../images/LIMPEZAPELE.jpeg');
 }
