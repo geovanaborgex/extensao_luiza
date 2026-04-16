@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Luiza Rodrigues Beleza e Estética</title>
+ <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+
+</style>
+
+</head>
+
+<body>
+
+
+<header>
+    <img src="images/LOGO_NOME_FUNDO_VERDE-removebg-preview.png"class="logo">
+    <div class="linha"></div>
+  </header>
+  <nav>
+  <a href="index.html">Início</a>
+  <a href="servicos.html">Serviços</a>
+  <a href="#historia">História</a>
+  <a href="#contato">Contato</a>
+</nav>
+
+
+<section class="servicos-page">
+
+<h2>Nossos Serviços - Confira quem ja passou por aqui!</h2>
+
+<!-- MAKE -->
+<div class="servico-item">
+  <img src="images/maquiagens/make1.jpg" alt="Maquiagem">
+
+  <div class="texto">
+    <h3>Maquiagem</h3>
+    <p>
+      Eleve sua autoestima e realce sua beleza com maquiagem profissional.
+      Confira quem já passou por aqui.
+    </p>
+
+    <a href="#" class="btn" onclick="abrirCatalogo('maquiagem'); return false;">
+      Ver catálogo
+    </a>
+  </div>
+</div>
+
+<!-- CABELO -->
+<div class="servico-item">
+  <img src="images/cabelos/cabelo1.jpg" alt="Cabelo">
+
+  <div class="texto">
+    <h3>Cabelos</h3>
+    <p>
+      Transforme seu visual com técnicas modernas e produtos profissionais.
+    </p>
+
+    <a href="#" class="btn" onclick="abrirCatalogo('cabelo'); return false;">
+      Ver catálogo
+    </a>
+  </div>
+</div>
+
+<!-- SOBRANCELHA -->
+<div class="servico-item">
+  <img src="images/sombrancelhas/sombrancelhas1.jpg" alt="Sobrancelha">
+
+  <div class="texto">
+    <h3>Sobrancelhas</h3>
+    <p>
+      Realce seu olhar com design e técnicas especializadas.
+    </p>
+
+    <a href="#" class="btn" onclick="abrirCatalogo('sobrancelha'); return false;">
+      Ver catálogo
+    </a>
+  </div>
+</div>
+
+<!-- CUIDADOS -->
+<div class="servico-item">
+  <img src="images/cuidados/cuidados1.jpg" alt="Cuidados">
+
+  <div class="texto">
+    <h3>Cuidados</h3>
+    <p>
+      Cuide de si mesma em prol da sua saúde e altoestima.
+    </p>
+
+    <a href="#" class="btn" onclick="abrirCatalogo('cuidados'); return false;">
+      Ver catálogo
+    </a>
+  </div>
+</div>
+</section>
+ <section class="section" id="contato">
+    <h2>Contato</h2>
+    <p>📍 Rua São Miguel Arcanjo, 236, Córrego Fundo</p>
+    <p>📞 (37) 99904-9543</p>
+    <br>
+    <a href="#" class="btn">Fale Conosco</a>
+</section>
+
+  <footer>
+  <p>© 2026 Luiza Rodrigues Beleza e Estética - Todos os direitos reservados</p>
+</footer>
+<!-- ===== MODAL ===== -->
+<div id="modalCatalogo" class="modal hidden">
+
+  <div class="modal-content">
+
+    <span class="fechar" onclick="fecharCatalogo()">&times;</span>
+
+    <h2 id="titulo-catalogo"></h2>
+
+    <div class="grid-catalogo" id="gridCatalogo"></div>
+
+  </div>
+
+</div>
+
+<!-- ===== JS ===== -->
+<script>
+
+const catalogos = {
+
+maquiagem: [
+"images/maquiagens/make1.jpg",
+"images/maquiagens/make2.jpg",
+"images/maquiagens/make3.jpg",
+"images/maquiagens/make4.jpg",
+"images/maquiagens/make5.jpg",
+"images/maquiagens/make6.jpg"
+],
+
+cabelo: [
+"images/cabelos/cabelo1.jpg",
+"images/cabelos/cabelo2.jpg",
+"images/cabelos/cabelo3.jpg",
+"images/cabelos/cabelo4.jpg",
+"images/cabelos/cabelo5.jpg",
+"images/cabelos/cabelo6.jpg"
+],
+
+sobrancelha: [
+"images/sombrancelha/sobrancelha1.jpg",
+"images/sombrancelha/sobrancelha2.jpg",
+"images/sombrancelha/sobrancelha3.jpg"
+],
+cuidados: [
+"images/cuidados/cuidados1.jpg",
+"images/cuidados/cuidados2.jpg",
+"images/cuidados/cuidados3.jpg"
+]
+
+};
+
+function abrirCatalogo(tipo){
+
+const modal = document.getElementById("modalCatalogo");
+const grid = document.getElementById("gridCatalogo");
+const titulo = document.getElementById("titulo-catalogo");
+
+if(!catalogos[tipo]) return;
+
+modal.classList.remove("hidden");
+grid.innerHTML = "";
+
+titulo.innerText = tipo.toUpperCase();
+
+catalogos[tipo].forEach(img => {
+grid.innerHTML += `<img src="${img}">`;
+});
+
+}
+
+function fecharCatalogo(){
+document.getElementById("modalCatalogo").classList.add("hidden");
+}
+
+</script>
+
+</body>
+</html>

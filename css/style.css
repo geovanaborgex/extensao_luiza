@@ -192,7 +192,7 @@ header {
 /* HISTÓRIA */
 /* ===================== */
 #historia {
-  background: #ffffff;
+  background: #6B6E55;
   max-width: 900px;
   margin: 40px auto;
   padding: 40px 25px;
@@ -201,7 +201,7 @@ header {
 }
 
 #historia h2 {
-  color: var(--verde-escuro);
+  color: white;
   margin-bottom: 20px;
 }
 
@@ -218,7 +218,7 @@ header {
   line-height: 1.7;
   margin-bottom: 15px;
   text-align: justify;
-  color: #444;
+  color: white
 }
 
 .historia-container {
@@ -329,3 +329,126 @@ footer {
 .cuidados {
   background-image: url('../images/LIMPEZAPELE.jpeg');
 }
+
+/* PÁGINA SERVIÇOS */
+
+.servicos-page{
+padding:60px 20px;
+max-width:1100px;
+margin:auto;
+}
+
+.servicos-page h2{
+text-align:center;
+margin-bottom:50px;
+color:#6B6E55;
+}
+
+/* ITEM */
+
+.servico-item{
+display:flex;
+align-items:center;
+gap:40px;
+margin-bottom:50px;
+}
+
+/* IMAGEM */
+
+.servico-item img{
+width:350px;
+height:250px;
+object-fit:cover;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* TEXTO */
+
+.texto{
+flex:1;
+}
+
+.texto h3{
+margin-bottom:10px;
+color:#6B6E55;
+}
+
+.texto p{
+margin-bottom:15px;
+color:#555;
+line-height:1.5;
+}
+
+/* RESPONSIVO (CELULAR) */
+
+@media(max-width:768px){
+.servico-item{
+flex-direction:column;
+text-align:center;
+}
+}
+/* ===== MODAL ===== */
+.modal{
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0,0,0,0.7);
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 9999;
+}
+
+.hidden{
+display: none;
+}
+
+.modal-content{
+background: white;
+padding: 30px;
+border-radius: 20px;
+width: 90%;
+max-width: 900px;
+max-height: 90vh;
+overflow-y: auto;
+position: relative;
+text-align: center;
+}
+
+/* BOTÃO FECHAR */
+.fechar{
+position: absolute;
+top: 10px;
+right: 20px;
+font-size: 30px;
+cursor: pointer;
+}
+
+/* GRID CATÁLOGO */
+.grid-catalogo{
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 20px;
+margin-top: 20px;
+}
+
+.grid-catalogo img{
+width: 100%;
+height: 200px;
+object-fit: cover;
+border-radius: 10px;
+transition: 0.3s;
+}
+
+.grid-catalogo img:hover{
+transform: scale(1.05);
+}
+
+/* RESPONSIVO */
+@media(max-width:768px){
+.grid-catalogo{
+grid-template-columns: repeat(2, 1fr);
+}}
