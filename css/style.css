@@ -452,3 +452,80 @@ transform: scale(1.05);
 .grid-catalogo{
 grid-template-columns: repeat(2, 1fr);
 }}
+
+/* CTA FINAL */
+
+.cta-agendar{
+
+background-size: cover;
+background-position: center;
+
+color: #6B6E55;
+text-align: center;
+padding: 80px 20px;
+margin-top: 20px;
+}
+
+.cta-agendar h2{
+font-size: 2rem;
+margin-bottom: 10px;
+}
+
+.cta-agendar p{
+margin-bottom: 10px;
+font-size: 1.1rem;
+}
+
+/* BOTÃO DESTACADO */
+
+.btn-cta{
+background: linear-gradient(90deg,#C5A46D,#E6C98F,#A67C3B);
+padding: 15px 35px;
+font-size: 1rem;
+border-radius: 30px;
+border: 0px;
+text-decoration: none;
+color: white;
+transition: 0.3s;
+}
+
+.btn-cta:hover{
+transform: scale(1.08);
+background: white;
+color: #6B6E55;
+}
+
+/* FORMULÁRIO */
+.form-agendamento{
+max-width:500px;
+margin:50px auto;
+background:#fff;
+padding:30px;
+border-radius:20px;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+.form-agendamento h2{
+text-align:center;
+margin-bottom:20px;
+color:#6B6E55;
+}
+
+.form-group{
+margin-bottom:15px;
+text-align:left;
+}
+
+.form-group label{
+display:block;
+margin-bottom:5px;
+font-weight:500;
+}
+
+.form-group input,
+.form-group select{
+width:100%;
+padding:10px;
+border-radius:10px;
+border:1px solid #ccc;
+}

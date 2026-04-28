@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Agendar Horário</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+  <img src="images/LOGO_NOME_FUNDO_VERDE-removebg-preview.png" class="logo">
+  <div class="linha"></div>
+</header>
+
+<nav>
+  <a href="index.html">Início</a>
+  <a href="servicos.html">Catálogo</a>
+  <a href="agendar.html">Agendamento</a>
+  <a href="index.html#historia">História</a>
+  <a href="index.html#contato">Contato</a>
+</nav>
+
+<!-- FORM -->
+<div class="form-agendamento">
+
+<h2>Agendar Horário</h2>
+
+<form action="salvar_agendamento.php" method="POST">
+
+<div class="form-group">
+<label>Nome</label>
+<input type="text" name="nome" required>
+</div>
+
+<div class="form-group">
+<label>Telefone</label>
+<input type="text" name="telefone" required>
+</div>
+
+<div class="form-group">
+<label>Serviço</label>
+<select name="servico" required>
+<option value="">Selecione</option>
+<option>Maquiagem</option>
+<option>Cabelos</option>
+<option>Sobrancelhas</option>
+<option>Cuidados</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Data</label>
+<input type="date" name="data" required>
+</div>
+
+<div class="form-group">
+<label>Horário</label>
+<select name="horario" required>
+<option value="">Selecione</option>
+<option>08:00</option>
+<option>09:00</option>
+<option>10:00</option>
+<option>11:00</option>
+<option>13:00</option>
+<option>14:00</option>
+<option>15:00</option>
+<option>16:00</option>
+<option>17:00</option>
+</select>
+</div>
+
+<center><button type="submit" class="btn-cta">Agendar</button></center>
+
+</form>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+<p>© 2026 Luiza Rodrigues Beleza e Estética</p>
+</footer>
+
+</body>
+</html>
