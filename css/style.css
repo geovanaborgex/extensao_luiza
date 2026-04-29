@@ -123,14 +123,43 @@ header {
 /* ===================== */
 .hero {
   background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-    url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9');
+    url('../images/luiza_paisagem.png');
   background-size: cover;
   background-position: center;
   color: white;
   padding: 120px 20px;
+  position: relative;
+  overflow: hidden;
   text-align: center;
 }
 
+/* camada da imagem */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: 
+    linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+    url('../images/luiza_paisagem.png') center/cover no-repeat;
+
+  transform: scale(1);
+  transition: transform 0.8s ease, filter 0.4s ease;
+  filter: brightness(0.9);
+  z-index: 0;
+}
+
+/* hover suave */
+.hero:hover::before {
+  transform: scale(1.02); /* zoom bem leve */
+  filter: brightness(1);  /* clareia */
+}
+
+/* garante que o conteúdo fique acima */
+.hero * {
+  position: relative;
+  z-index: 1;
+}
 /* ===================== */
 /* SERVIÇOS */
 /* ===================== */
