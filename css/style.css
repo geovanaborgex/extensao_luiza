@@ -333,14 +333,16 @@ header {
 footer {
   background: var(--verde-escuro);
   color: white;
+  padding: 40px 20px; 
 }
 
 .footer-container {
   display: flex;
   justify-content: center;
-  gap: 80px;
+  align-items: left;
+  align-items: flex-start;
+  gap: 60px;
   flex-wrap: wrap;
-  text-align: center;
 }
 
 .footer-col h3 {
@@ -351,7 +353,6 @@ footer {
 /* redes */
 .redes {
   display: flex;
-  justify-content: center;
   gap: 15px;
 }
 
@@ -371,6 +372,7 @@ footer {
   margin-top: 30px;
   font-size: 0.85rem;
   opacity: 0.8;
+  text-align: center;
 }
 
 .footer-links {
@@ -389,33 +391,22 @@ footer {
 }
 
 .footer-links a:hover {
-  color: #E6C98F; /* dourado do seu tema */
+  color: var(--dourado-gradiente); /* dourado do seu tema */
 }
 
-.footer-container {
-  display: flex;
-  justify-content: flex-start; /* gruda à esquerda */
-  align-items: flex-start;
-  gap: 40px; /* controla distância entre colunas */
-  flex-wrap: wrap;
-}
-
-/* logo */
-.logo-col {
-  display: flex;
-  align-items: center;
-}
 
 .footer-logo {
   width: 140px; /* diminui aqui */
   max-width: 100%;
   opacity: 0.9;
+  margin-left: 50px;
 }
 
 /* mantém colunas alinhadas */
 .footer-col {
   flex: 1;
   min-width: 180px;
+  margin-left: -50px;
 }
 
 .footer-col p {
@@ -424,7 +415,7 @@ footer {
 }
 
 .footer-col a {
-  color: #E6C98F; /* dourado do seu tema */
+  color: var(--dourado-gradiente); /* dourado do seu tema */
   text-decoration: none;
   transition: 0.3s;
 }
