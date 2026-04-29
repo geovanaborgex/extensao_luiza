@@ -284,15 +284,154 @@ header {
 }
 
 /* ===================== */
+/* CARROSSEL  */  
+/* ===================== */
+.carousel {
+  position: relative;
+  max-width: 600px;
+  margin: auto;
+  overflow: hidden;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.carousel-track img {
+  width: 100%;
+  border-radius: 15px;
+  object-fit: cover;
+}
+
+/* botões */
+.carousel button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  font-size: 25px;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.prev {
+  left: 10px;
+}
+
+.next {
+  right: 10px;
+}
+
+
+/* ===================== */
 /* FOOTER */
 /* ===================== */
 footer {
   background: var(--verde-escuro);
   color: white;
-  text-align: center;
-  padding: 25px;
 }
 
+.footer-container {
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.footer-col h3 {
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+/* redes */
+.redes {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.redes img {
+  width: 30px;
+  filter: brightness(0) invert(1);
+  transition: 0.3s;
+}
+
+.redes img:hover {
+  transform: scale(1.15);
+  opacity: 0.8;
+}
+
+/* copyright */
+.copy {
+  margin-top: 30px;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links li {
+  margin-bottom: 8px;
+}
+
+.footer-links a {
+  color: white;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.footer-links a:hover {
+  color: #E6C98F; /* dourado do seu tema */
+}
+
+.footer-container {
+  display: flex;
+  justify-content: flex-start; /* gruda à esquerda */
+  align-items: flex-start;
+  gap: 40px; /* controla distância entre colunas */
+  flex-wrap: wrap;
+}
+
+/* logo */
+.logo-col {
+  display: flex;
+  align-items: center;
+}
+
+.footer-logo {
+  width: 140px; /* diminui aqui */
+  max-width: 100%;
+  opacity: 0.9;
+}
+
+/* mantém colunas alinhadas */
+.footer-col {
+  flex: 1;
+  min-width: 180px;
+}
+
+.footer-col p {
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.footer-col a {
+  color: #E6C98F; /* dourado do seu tema */
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.footer-col a:hover {
+  text-decoration: underline;
+}
 /* ===================== */
 /* ANIMAÇÃO */
 /* ===================== */
@@ -558,3 +697,24 @@ padding:10px;
 border-radius:10px;
 border:1px solid #ccc;
 }
+
+.whatsapp-float {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  z-index: 999;
+}
+
+.whatsapp-float img {
+  width: 100%;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: 0.3s;
+}
+
+.whatsapp-float img:hover {
+  transform: scale(1.1);
+}
+
