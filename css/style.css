@@ -661,7 +661,7 @@ margin:50px auto;
 background:#fff;
 padding:30px;
 border-radius:20px;
-box-shadow:0 5px 20px rgba(0,0,0,0.1);
+box-shadow:0 10px 20px #6B6E55;
 }
 
 .form-agendamento h2{
