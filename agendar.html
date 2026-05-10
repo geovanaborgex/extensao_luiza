@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luiza Rodrigues Beleza e Estética</title>
 
-<title>Agendar Horário</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
@@ -24,67 +27,116 @@
   <a href="index.html">Início</a>
   <a href="servicos.html">Catálogo</a>
   <a href="agendar.html">Agendamento</a>
-  <a href="index.html#historia">História</a>
+  <a href="#historia">História</a>
 </nav>
 
 <!-- FORM -->
 <div class="form-agendamento">
 
-<h2>Agendar Horário</h2>
+  <h2>Agendar Horário</h2>
 
-<form action="salvar_agendamento.php" method="POST">
+  <form action="salvar_agendamento.php" method="POST">
 
-<div class="form-group">
-<label>Nome</label>
-<input type="text" name="nome" required>
+    <!-- NOME -->
+    <div class="form-group">
+      <label>Nome</label>
+      <input type="text" name="nome" required>
+    </div>
+
+    <!-- TELEFONE -->
+    <div class="form-group">
+      <label>Telefone</label>
+      <input type="text" name="telefone" required>
+    </div>
+
+    <!-- SERVIÇO -->
+    <div class="form-group">
+      <label>Serviço</label>
+
+      <select name="servico" id="servico" required onchange="mostrarProcedimentos()">
+        <option value="">Selecione</option>
+
+        <option value="maquiagem">Maquiagem</option>
+        <option value="cabelos">Cabelos</option>
+        <option value="sobrancelhas">Sobrancelhas</option>
+        <option value="cuidados">Cuidados</option>
+      </select>
+    </div>
+
+    <!-- PROCEDIMENTO -->
+    <div class="form-group hidden" id="procedimentos-group">
+
+      <label>Procedimento</label>
+
+      <select name="procedimento" id="procedimento" onchange="mostrarInfoProcedimento()">
+      </select>
+
+    </div>
+
+    <!-- INFO PROCEDIMENTO -->
+    <div class="info-procedimento hidden" id="infoProcedimento">
+
+      <h3 id="nomeProcedimento"></h3>
+
+      <p>
+        <i class="fa-regular fa-clock"></i>
+        Duração: <span id="duracaoProcedimento"></span>
+      </p>
+
+      <p>
+        <i class="fa-solid fa-tag"></i>
+        Valor: <span id="valorProcedimento"></span>
+      </p>
+
+    </div>
+
+    <!-- DATA -->
+    <div class="form-group">
+      <label>Data</label>
+      <input type="date" name="data" required>
+    </div>
+
+    <!-- HORÁRIO -->
+    <div class="form-group">
+      <label>Horário</label>
+
+      <select name="horario" required>
+        <option value="">Selecione</option>
+
+        <option>08:00</option>
+        <option>09:00</option>
+        <option>10:00</option>
+        <option>11:00</option>
+        <option>13:00</option>
+        <option>14:00</option>
+        <option>15:00</option>
+        <option>16:00</option>
+        <option>17:00</option>
+      </select>
+    </div>
+
+    <center>
+      <button type="submit" class="btn-cta">
+        Agendar
+      </button>
+    </center>
+
+  </form>
+
 </div>
 
-<div class="form-group">
-<label>Telefone</label>
-<input type="text" name="telefone" required>
-</div>
+<!-- WHATS -->
+<a href="https://wa.me/5537999049543?text=Olá,%20gostaria%20de%20agendar%20um%20horário"
+   class="whatsapp-float"
+   target="_blank">
 
-<div class="form-group">
-<label>Serviço</label>
-<select name="servico" required>
-<option value="">Selecione</option>
-<option>Maquiagem</option>
-<option>Cabelos</option>
-<option>Sobrancelhas</option>
-<option>Cuidados</option>
-</select>
-</div>
+  <img src="images/whatsapp.png">
 
-<div class="form-group">
-<label>Data</label>
-<input type="date" name="data" required>
-</div>
-
-<div class="form-group">
-<label>Horário</label>
-<select name="horario" required>
-<option value="">Selecione</option>
-<option>08:00</option>
-<option>09:00</option>
-<option>10:00</option>
-<option>11:00</option>
-<option>13:00</option>
-<option>14:00</option>
-<option>15:00</option>
-<option>16:00</option>
-<option>17:00</option>
-</select>
-</div>
-
-<center><button type="submit" class="btn-cta">Agendar</button></center>
-
-</form>
-
-</div>
+</a>
 
 <!-- FOOTER -->
-
 <footer>
+
   <div class="footer-container">
 
     <!-- LOGO -->
@@ -92,9 +144,11 @@
       <img src="images/LOGOFUNDOVERDE.jpeg" alt="Logo" class="footer-logo">
     </div>
 
-        <!-- MAPA -->
+    <!-- MAPA -->
     <div class="footer-col">
+
       <h3>Mapa do Site</h3>
+
       <ul class="footer-links">
         <li><a href="#">Início</a></li>
         <li><a href="servicos.html">Catálogo</a></li>
@@ -102,30 +156,218 @@
         <li><a href="#historia">História</a></li>
         <li><a href="#contato">Contato</a></li>
       </ul>
+
     </div>
 
+    <!-- CONTATO -->
     <div class="footer-col">
-  <h3>Contato</h3>
 
-  <p><i class="fa-regular fa-map" style="color: rgb(255, 255, 255);"></i> Rua São Miguel Arcanjo, 236</p>
-  <p><i class="fa-solid fa-phone" style="color: rgb(255, 255, 255);"></i> (37) 99904-9543</p>
-  </div>
+      <h3>Contato</h3>
+
+      <p>
+        <i class="fa-regular fa-map"></i>
+        Rua São Miguel Arcanjo, 236
+      </p>
+
+      <p>
+        <i class="fa-solid fa-phone"></i>
+        (37) 99904-9543
+      </p>
+
+    </div>
 
     <!-- REDES -->
     <div class="footer-col">
+
       <h3>Redes Sociais</h3>
+
       <div class="redes">
-         <a href="https://instagram.com/luizagues_belezaeestetica" target="_blank">
-      <i class="fa-brands fa-instagram"> </i> @luizagues_belezaeestetica
+
+        <a href="https://instagram.com/luizagues_belezaeestetica" target="_blank">
+
+          <i class="fa-brands fa-instagram"></i>
+          @luizagues_belezaeestetica
+
         </a>
+
       </div>
+
     </div>
 
-</div>
-  
+  </div>
+
 </footer>
 
+<!-- JS -->
+<script>
 
+const procedimentosInfo = {
+
+  // MAQUIAGEM
+  "Maquiagem Profissional": {
+    valor: "R$ 120,00",
+    duracao: "1 hora"
+  },
+
+  // CABELOS
+  "Escova": {
+    valor: "R$ 45,00",
+    duracao: "30 minutos"
+  },
+
+  "Chapa": {
+    valor: "R$ 40,00",
+    duracao: "1 hora"
+  },
+
+  "Cachos/ondas": {
+    valor: "R$ 55,00",
+    duracao: "30 minutos"
+  },
+
+  "Penteado": {
+    valor: "R$ 80,00",
+    duracao: "30 minutos"
+  },
+
+  "Tintura com tinta profissional": {
+    valor: "R$ 150,00",
+    duracao: "30 minutos"
+  },
+
+  // SOBRANCELHAS
+  "Nanopigmentação": {
+    valor: "R$ 250,00",
+    duracao: "2 horas"
+  },
+
+  "Design com henna": {
+    valor: "R$ 35,00",
+    duracao: "30 minutos"
+  },
+
+  "Design simples": {
+    valor: "R$ 25,00",
+    duracao: "30 minutos"
+  },
+
+  "Brow Lamination": {
+    valor: "R$ 90,00",
+    duracao: "1 hora"
+  },
+
+  "Cílios - Lash Lifting": {
+    valor: "R$ 120,00",
+    duracao: "1h30"
+  },
+
+  // CUIDADOS
+  "Limpeza de pele": {
+    valor: "R$ 100,00",
+    duracao: "1h15"
+  },
+
+  "Spa dos pés": {
+    valor: "R$ 70,00",
+    duracao: "1 hora"
+  }
+
+};
+
+function mostrarProcedimentos(){
+
+  const servico = document.getElementById("servico").value;
+
+  const grupo = document.getElementById("procedimentos-group");
+
+  const procedimento = document.getElementById("procedimento");
+
+  procedimento.innerHTML = "";
+
+  document.getElementById("infoProcedimento").classList.add("hidden");
+
+  // ESCONDE
+  if(servico === ""){
+    grupo.classList.add("hidden");
+    return;
+  }
+
+  // MOSTRA
+  grupo.classList.remove("hidden");
+
+  // SOBRANCELHAS
+  if(servico === "sobrancelhas"){
+
+    procedimento.innerHTML = `
+      <option value="">Selecione</option>
+      <option>Nanopigmentação</option>
+      <option>Design com henna</option>
+      <option>Design simples</option>
+      <option>Brow Lamination</option>
+      <option>Cílios - Lash Lifting</option>
+    `;
+
+  }
+
+  // CABELOS
+  if(servico === "cabelos"){
+
+    procedimento.innerHTML = `
+      <option value="">Selecione</option>
+      <option>Escova</option>
+      <option>Chapa</option>
+      <option>Cachos/ondas</option>
+      <option>Penteado</option>
+      <option>Tintura com tinta profissional</option>
+    `;
+
+  }
+
+  // CUIDADOS
+  if(servico === "cuidados"){
+
+    procedimento.innerHTML = `
+      <option value="">Selecione</option>
+      <option>Limpeza de pele</option>
+      <option>Spa dos pés</option>
+    `;
+
+  }
+
+  // MAKE
+  if(servico === "maquiagem"){
+
+    procedimento.innerHTML = `
+      <option value="">Selecione</option>
+      <option>Maquiagem Profissional</option>
+    `;
+
+  }
+
+}
+
+function mostrarInfoProcedimento(){
+
+  const procedimento = document.getElementById("procedimento").value;
+
+  const infoBox = document.getElementById("infoProcedimento");
+
+  if(procedimento === ""){
+    infoBox.classList.add("hidden");
+    return;
+  }
+
+  const dados = procedimentosInfo[procedimento];
+
+  document.getElementById("duracaoProcedimento").innerText = dados.duracao;
+
+  document.getElementById("valorProcedimento").innerText = dados.valor;
+
+  infoBox.classList.remove("hidden");
+
+}
+
+</script>
 
 </body>
 </html>
