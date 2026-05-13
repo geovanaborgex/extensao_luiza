@@ -109,10 +109,24 @@ Procedimento: $procedimento",
 
 $service->events->insert($calendarId, $evento);
 
-echo "
-<h2 style='font-family:Poppins;color:#6B6E55;text-align:center'>
-Agendamento realizado com sucesso 💚
-</h2>
+echo "<html>
+<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+
+<script>
+Swal.fire({
+    icon: 'success',
+    title: 'Agendamento realizado com sucesso!',
+    html: `
+        <p style='font-size:14px; color:#555;'>
+            Você irá receber uma mensagem de confirmação no número informado
+            um dia antes do procedimento.<br><br>
+
+            Em caso de desistência, nos chamar no WhatsApp.
+        </p>
+    `,
+    confirmButtonText: 'OK'
+});
+</script></html>
 ";
 
 }
