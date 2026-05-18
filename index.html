@@ -41,9 +41,9 @@
 
   <div class="card cabelo">
     <h3>Cabelos</h3>
-    <p>Tintura com tinta profissional</p>
+    <p>Tintura</p>
     <p>Chapa</p>
-    <p>Cachos / Ondas</p>
+    <p>Ondas</p>
     <p>Escova</p>
     <p>Penteado</p>
   </div>
@@ -51,21 +51,21 @@
   <div class="card pele">
     <h3>Pele</h3>
     <p>Maquiagem</p>
+    <p>Limpeza de Pele</p>
   </div>
 
   <div class="card sobrancelha">
     <h3>Sobrancelhas e Cílios</h3>
-    <p>Nano pigmentação</p>
-    <p>Design de sobrancelhas</p>
-    <p>Design com henna</p>
-    <p>Brow lamination</p>
-    <p>Lash lifting</p>
+    <p>Nanopigmentação</p>
+    <p>Design</p>
+    <p>Design com Henna</p>
+    <p>Brow Lamination</p>
+    <p>Lash Lifting</p>
   </div>
 
   <div class="card cuidados">
     <h3>Cuidados</h3>
     <p>Spa dos pés</p>
-    <p>Limpeza de pele</p>
   </div>
 
 </div>
@@ -106,18 +106,21 @@
 </a>
 
 <section class="section" id="clientes">
-  <h2>Nossas Clientes</h2>
+  <h2>O QUE NOSSAS CLIENTES DIZEM</h2>
 
   <div class="carousel">
-    <button class="prev">&#10094;</button>
-
     <div class="carousel-track">
-      <img src="images/cliente1.jpeg" alt="Cliente">
-      <img src="images/cliente2.jpeg" alt="Cliente">
-      <img src="images/cliente3.jpeg" alt="Cliente">
-    </div>
+      <img src="images/avaliacao1.png" alt="Cliente">
+      <img src="images/avaliacao2.png" alt="Cliente">
+      <img src="images/avaliacao3.png" alt="Cliente">
+      <img src="images/avaliacao4.png" alt="Cliente"> 
+      <img src="images/avaliacao5.png" alt="Cliente">
+      <img src="images/avaliacao6.png" alt="Cliente">
 
-    <button class="next">&#10095;</button>
+            <!-- cópia das duas primeiras para o loop -->
+      <img src="images/avaliacao1.png" alt="Cliente">
+      <img src="images/avaliacao2.png" alt="Cliente">
+    </div>
   </div>
 </section>
 
@@ -165,7 +168,35 @@
 
 
 <!-- JAVA SCRIPT -->
+<script>
+const track = document.querySelector(".carousel-track");
+const slides = document.querySelectorAll(".carousel-track img");
 
+let index = 0;
+const gap = 24;
+const visibleSlides = 2;
+
+function getSlideWidth() {
+  return slides[0].offsetWidth + gap;
+}
+
+function autoSlide() {
+  index++;
+
+  track.style.transition = "transform 0.6s ease";
+  track.style.transform = `translateX(-${index * getSlideWidth()}px)`;
+
+  if (index === slides.length - visibleSlides) {
+    setTimeout(() => {
+      track.style.transition = "none";
+      index = 0;
+      track.style.transform = "translateX(0)";
+    }, 600);
+  }
+}
+
+setInterval(autoSlide, 3000);
+</script>
 
 </body>
 </html>
