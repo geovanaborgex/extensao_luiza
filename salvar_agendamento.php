@@ -1,5 +1,6 @@
 <?php
 
+header('Content-Type: application/json; charset=utf-8');
 require 'google_calendar.php';
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -73,11 +74,11 @@ $eventos = $service->events->listEvents($calendarId, $optParams);
 
 if(count($eventos->getItems()) > 0){
 
-echo "
-<h2 style='font-family:Poppins;color:red;text-align:center'>
-Esse horário já está ocupado 😢
-</h2>
-";
+echo json_encode([
+    "status" => "erro",
+    "mensagem" => "Esse horário já está ocupado. Por favor, escolha outro horário."
+]);
+exit;
 
 exit;
 
@@ -107,27 +108,22 @@ Procedimento: $procedimento",
 
 ]);
 
-$service->events->insert($calendarId, $evento);
+try {
+    $service->events->insert($calendarId, $evento);
 
-echo "<html>
-<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+    echo json_encode([
+        "status" => "sucesso",
+        "mensagem" => "Você irá receber uma mensagem de confirmação no número informado um dia antes do procedimento. Em caso de desistência, nos chame no WhatsApp."
+    ]);
+    exit;
 
-<script>
-Swal.fire({
-    icon: 'success',
-    title: 'Agendamento realizado com sucesso!',
-    html: `
-        <p style='font-size:14px; color:#555;'>
-            Você irá receber uma mensagem de confirmação no número informado
-            um dia antes do procedimento.<br><br>
-
-            Em caso de desistência, nos chamar no WhatsApp.
-        </p>
-    `,
-    confirmButtonText: 'OK'
-});
-</script></html>
-";
+} catch (Exception $e) {
+    echo json_encode([
+        "status" => "erro",
+        "mensagem" => "Não foi possível realizar o agendamento. Erro: " . $e->getMessage()
+    ]);
+    exit;
+}
 
 }
 ?>

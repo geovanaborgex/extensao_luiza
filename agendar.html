@@ -35,7 +35,7 @@
 
   <h2>Agendar Horário</h2>
 
-  <form action="salvar_agendamento.php" method="POST">
+  <form id="formAgendamento" action="salvar_agendamento.php" method="POST">
 
     <!-- NOME -->
     <div class="form-group">
@@ -90,35 +90,10 @@
 
     </div>
 
-    <!-- DATA -->
-    <div class="form-group">
-      <label>Data</label>
-      <input type="date" name="data" required>
-    </div>
-
-    <!-- HORÁRIO -->
-    <div class="form-group">
-      <label>Horário</label>
-
-      <select name="horario" required>
-        <option value="">Selecione</option>
-
-        <option>08:00</option>
-        <option>09:00</option>
-        <option>10:00</option>
-        <option>11:00</option>
-        <option>13:00</option>
-        <option>14:00</option>
-        <option>15:00</option>
-        <option>16:00</option>
-        <option>17:00</option>
-      </select>
-    </div>
-
     <center>
-      <button type="submit" class="btn-cta">
-        Agendar
-      </button>
+  <button type="button" class="btn-cta" onclick="abrirModalHorario()">
+    RESERVAR HORÁRIO
+  </button>
     </center>
 
   </form>
@@ -301,8 +276,8 @@ function mostrarProcedimentos(){
     procedimento.innerHTML = `
       <option value="">Selecione</option>
       <option>Nanopigmentação</option>
-      <option>Design com henna</option>
-      <option>Design simples</option>
+      <option>Design com Henna</option>
+      <option>Design Simples</option>
       <option>Brow Lamination</option>
       <option>Cílios - Lash Lifting</option>
     `;
@@ -316,9 +291,9 @@ function mostrarProcedimentos(){
       <option value="">Selecione</option>
       <option>Escova</option>
       <option>Chapa</option>
-      <option>Cachos/ondas</option>
+      <option>Cachos/Ondas</option>
       <option>Penteado</option>
-      <option>Tintura com tinta profissional</option>
+      <option>Tintura com Tinta Profissional</option>
     `;
 
   }
@@ -328,8 +303,8 @@ function mostrarProcedimentos(){
 
     procedimento.innerHTML = `
       <option value="">Selecione</option>
-      <option>Limpeza de pele</option>
-      <option>Spa dos pés</option>
+      <option>Limpeza de Pele</option>
+      <option>Spa dos Pés</option>
     `;
 
   }
@@ -367,6 +342,140 @@ function mostrarInfoProcedimento(){
 
 }
 
+</script>
+
+<div id="modalHorario" class="modal-horario">
+  <div class="modal-conteudo">
+
+    <button class="fechar-modal" onclick="fecharModalHorario()">×</button>
+
+    <h2>Escolha seu horário</h2>
+
+  <div class="calendario-topo">
+    <button type="button" onclick="voltarDias()">‹</button>
+    <h3 id="mesAtual"></h3>
+    <button type="button" onclick="avancarDias()">›</button>
+  </div>
+
+  <div class="dias-modal" id="diasModal"></div>
+
+    <hr>
+
+    <h3>Horários disponíveis</h3>
+
+    <div class="horarios-modal">
+      <button>08:00</button>
+      <button>09:00</button>
+      <button>10:00</button>
+      <button>11:00</button>
+      <button>13:00</button>
+      <button>14:00</button>
+      <button>15:00</button>
+      <button>16:00</button>
+    </div>
+
+    <div class="resumo-modal">
+      <p><strong>Procedimento:</strong> <span id="resumoProcedimento">-</span></p>
+      <p><strong>Duração:</strong> <span id="resumoDuracao">-</span></p>
+      <p><strong>Valor:</strong> <span id="resumoValor">-</span></p>
+    </div>
+
+    <button class="btn-confirmar-horario">
+      CONFIRMAR AGENDAMENTO
+    </button>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function abrirModalHorario() {
+  document.getElementById("modalHorario").style.display = "flex";
+}
+
+function fecharModalHorario() {
+  document.getElementById("modalHorario").style.display = "none";
+}
+</script>
+
+<script> /* criar o agendamento */
+function abrirModalHorario() {
+
+  document.getElementById("modalHorario").style.display = "flex";
+
+  gerarDias();
+}
+
+function fecharModalHorario() {
+  document.getElementById("modalHorario").style.display = "none";
+}
+
+let inicioCalendario = 0;
+
+function gerarDias() {
+  const container = document.getElementById("diasModal");
+  const mesAtual = document.getElementById("mesAtual");
+
+  container.innerHTML = "";
+
+  const diasSemana = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+  const meses = [
+    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+  ];
+
+  const hoje = new Date();
+  const diasVisiveis = [];
+
+  let contador = 0;
+  let i = inicioCalendario;
+
+  while (diasVisiveis.length < 6) {
+    const data = new Date();
+    data.setDate(hoje.getDate() + i);
+
+    if (data.getDay() !== 0) {
+      diasVisiveis.push(data);
+    }
+
+    i++;
+    contador++;
+  }
+
+  mesAtual.innerText =
+    `${meses[diasVisiveis[0].getMonth()]} ${diasVisiveis[0].getFullYear()}`;
+
+  diasVisiveis.forEach(data => {
+    const botao = document.createElement("button");
+
+    botao.innerHTML = `
+      ${diasSemana[data.getDay()]}<br>
+      <strong>${data.getDate()}</strong>
+    `;
+
+    botao.onclick = () => {
+      document.querySelectorAll(".dias-modal button")
+        .forEach(btn => btn.classList.remove("ativo"));
+
+      botao.classList.add("ativo");
+    };
+
+    container.appendChild(botao);
+  });
+}
+
+function avancarDias() {
+  inicioCalendario += 6;
+  gerarDias();
+}
+
+function voltarDias() {
+  if (inicioCalendario >= 6) {
+    inicioCalendario -= 6;
+    gerarDias();
+  }
+}
 </script>
 
 </body>

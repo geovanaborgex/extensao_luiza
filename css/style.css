@@ -714,3 +714,225 @@ border:1px solid #ccc;
   transform: scale(1.1);
 }
 
+/* MODAL AGENDAMENTO */
+.modal-conteudo {
+  background: #F8F8F5;
+  width: 90%;
+  max-width: 900px;
+  min-height: 500px;
+  border-radius: 28px;
+  padding: 45px;
+  position: relative;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.20);
+  font-family: 'Poppins', sans-serif;
+}
+
+.modal-conteudo h2 {
+  font-size: 2rem;
+  color: #6B6E55;
+  margin-bottom: 30px;
+}
+
+.fechar-modal {
+  position: absolute;
+  top: 25px;
+  right: 30px;
+  border: none;
+  background: none;
+  font-size: 35px;
+  cursor: pointer;
+  color: #7A7A6A;
+  transition: .3s;
+}
+
+.fechar-modal:hover {
+  transform: rotate(90deg);
+}
+
+/* DIAS */
+
+.dias-modal {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 35px;
+  flex-wrap: wrap;
+}
+
+.dias-modal button {
+  width: 75px;
+  height: 80px;
+  border-radius: 18px;
+  border: 1px solid #D5D1C8;
+  background: white;
+  color: #6B6E55;
+  font-family: 'Poppins';
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: .3s;
+  font-weight: 500;
+}
+
+.dias-modal button strong {
+  display: block;
+  font-size: 1.4rem;
+}
+
+.dias-modal button:hover {
+  background: #6B6E55;
+  color: white;
+  transform: translateY(-3px);
+}
+
+.dias-modal button.ativo {
+  background: #6B6E55;
+  color: white;
+  transform: translateY(-3px);
+}
+
+/* HORÁRIOS */
+
+.horarios-modal {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 25px 0 40px;
+}
+
+.horarios-modal button {
+  border: 1px solid #D2C2A1;
+  background: white;
+  color: #6B6E55;
+  border-radius: 14px;
+  padding: 14px 24px;
+  cursor: pointer;
+  transition: .3s;
+  font-family: 'Poppins';
+  font-weight: 500;
+}
+
+.horarios-modal button:hover {
+  background: linear-gradient(
+    90deg,
+    #C8AA72,
+    #DCC08D,
+    #B89055
+  );
+  color: white;
+  border-color: transparent;
+}
+
+/* TÍTULO HORÁRIOS */
+
+.modal-conteudo h3 {
+  color: #6B6E55;
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+
+/* RESUMO */
+
+.resumo-modal {
+  background: white;
+  border-radius: 22px;
+  padding: 25px;
+  border: 1px solid #ECE8DE;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+  margin-top: 20px;
+}
+
+.resumo-modal p {
+  margin: 10px 0;
+  color: #555;
+}
+
+.resumo-modal strong {
+  color: #6B6E55;
+}
+
+/* BOTÃO */
+
+.btn-confirmar-horario {
+  margin-top: 30px;
+  width: 100%;
+  padding: 18px;
+  border-radius: 18px;
+  border: none;
+  background: linear-gradient(
+    90deg,
+    #C8AA72,
+    #DCC08D,
+    #B89055
+  );
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.btn-confirmar-horario:hover {
+  transform: scale(1.02);
+}
+
+.modal-horario {
+  display: none;
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+
+  background: rgba(0,0,0,0.55) !important;
+
+  justify-content: center !important;
+  align-items: center !important;
+
+  z-index: 999999 !important;
+}
+
+/* CAIXA BRANCA */
+
+.modal-conteudo {
+  background: #F8F8F5 !important;
+  width: 90%;
+  max-width: 900px;
+  min-height: 500px;
+  border-radius: 28px;
+  padding: 45px;
+  position: relative;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.20);
+  font-family: 'Poppins', sans-serif;
+}
+
+/* calendario */
+.calendario-topo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+  margin-bottom: 20px;
+}
+
+.calendario-topo h3 {
+  color: #6B6E55;
+  font-size: 1.5rem;
+}
+
+.calendario-topo button {
+  border: none;
+  background: white;
+  color: #6B6E55;
+  font-size: 2rem;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.dias-modal {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: nowrap;
+  margin-bottom: 35px;
+}
