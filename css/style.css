@@ -119,50 +119,118 @@ header {
 }
 
 /* ===================== */
-/* HERO */
+/* HERO - banner principal  */
 /* ===================== */
 .hero {
-  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-    url('../images/luiza_paisagem.png');
-  background-size: cover;
-  background-position: center;
-  color: white;
-  padding: 120px 20px;
   position: relative;
+  height: 400px;
   overflow: hidden;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  border-radius: 0 0 30px 30px;
 }
 
-/* camada da imagem */
 .hero::before {
   content: "";
   position: absolute;
   inset: 0;
 
-  background: 
-    linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-    url('../images/luiza_paisagem.png') center/cover no-repeat;
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,0.72) 0%,
+      rgba(0,0,0,0.55) 35%,
+      rgba(0,0,0,0.18) 75%
+    ),
+    url('../images/luiza_paisagem.png');
+
+  background-size: cover;
+  background-position: center;
 
   transform: scale(1);
-  transition: transform 0.8s ease, filter 0.4s ease;
-  filter: brightness(0.9);
+  transition:
+    transform 2.2s ease,
+    filter 1.2s ease;
+
   z-index: 0;
 }
 
-/* hover suave */
 .hero:hover::before {
-  transform: scale(1.02); /* zoom bem leve */
-  filter: brightness(1);  /* clareia */
+  transform: scale(1.05);
+  filter: brightness(0.82);
 }
 
-/* garante que o conteúdo fique acima */
-.hero * {
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(20, 18, 12, 0.88) 0%,
+    rgba(20, 18, 12, 0.58) 38%,
+    rgba(20, 18, 12, 0.18) 75%
+  );
+}
+
+.hero-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
+  max-width: 650px;
+  margin-left: 11%;
+  color: white;
+}
+
+.hero-content h1 {
+  font-family: "Playfair Display", serif;
+  font-size: 3.4rem;
+  line-height: 1.08;
+  font-weight: 500;
+  margin-bottom: 16px;
+  letter-spacing: -1px;
+}
+
+.hero-content h1 span {
+  display: block;
+  color: #C9A86A;
+  font-style: italic;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.hero-content p {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  max-width: 520px;
+  margin-bottom: 28px;
+}
+
+.btn-hero {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 34px;
+  border: 1.8px solid #C9A86A;
+  border-radius: 35px;
+  color: #D6B777;
+  text-decoration: none;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: 1.8s ease;
+}
+
+.btn-hero i {
+  font-size: 1.25rem;
+}
+
+.btn-hero:hover {
+  background: linear-gradient(90deg, #C8AA72, #DCC08D, #B89055);
+  color: white;
+  transform: translateY(-2px);
 }
 /* ===================== */
 /* SERVIÇOS */
-/* ===================== */
+/* ===================== 
 .services {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -179,7 +247,7 @@ header {
 .card:hover {
   transform: translateY(-10px);
 }
-
+*/
 /* ===================== */
 /* BOTOES */
 /* ===================== */
@@ -226,6 +294,137 @@ header {
     );
     color: white !important;
     box-shadow: 0 6px 18px rgba(184, 144, 85, 0.18);
+}
+
+
+/* NOVO SERVICOS inicio*/
+.servicos-home {
+  padding: 70px 8% 60px;
+  text-align: center;
+  background: #fbfaf7;
+}
+
+.servicos-header span {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: #C9A86A;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.servicos-header span::before,
+.servicos-header span::after {
+  content: "";
+  width: 42px;
+  height: 1px;
+  background: #C9A86A;
+}
+
+.servicos-header h2 {
+  font-family: "Playfair Display", serif;
+  font-size: 3rem;
+  color: #6B6E55;
+  font-weight: 500;
+  margin: 12px 0;
+}
+
+.servicos-header p {
+  max-width: 620px;
+  margin: 0 auto 40px;
+  color: #555;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.servicos-cards-home {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 22px;
+  max-width: 1200px;
+  margin: 0 auto 34px;
+}
+
+.servico-card-home {
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px 22px 24px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+  transition: 0.35s ease;
+}
+
+.servico-card-home:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 35px rgba(0,0,0,0.12);
+}
+
+.servico-card-home img {
+  width: 125px;
+  height: 125px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #D6B777;
+  margin-bottom: 18px;
+}
+
+.servico-card-home h3 {
+  font-family: "Playfair Display", serif;
+  color: #3f4033;
+  font-size: 1.35rem;
+  font-weight: 500;
+}
+
+.servico-card-home h3::after {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 2px;
+  background: #C9A86A;
+  margin: 12px auto 0;
+}
+
+.btn-catalogo-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 34px;
+  border: 1.8px solid #C9A86A;
+  border-radius: 35px;
+  color: #D6B777;
+  text-decoration: none;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: 1.2s ease;
+}
+
+.btn-catalogo-home:hover {
+  background: linear-gradient(90deg,#6B6E55,#777a5d);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.cabelo {
+  background-image: url('../images/CABELO.jpeg');
+}
+
+.pele {
+  background-image: url('../images/MAKE2.jpeg');
+}
+
+.sobrancelha {
+  background-image: url('../images/SOMBRANCELHA.jpeg');
+}
+
+.cuidados {
+  background-image: url('../images/LIMPEZAPELE.jpeg');
+}
+
+.cilios {
+  background-image: url('../images/CILIOS.jpeg');
 }
 
 /* ===================== */
@@ -433,7 +632,7 @@ footer {
   }
 }
 
-/* CARD COM IMAGEM */
+/* CARD COM IMAGEM 
 .card {
   position: relative;
   color: white;
@@ -449,7 +648,7 @@ footer {
   transition: 0.3s;
 }
 
-/* sombra escura */
+
 .card::before {
   content: "";
   position: absolute;
@@ -457,33 +656,18 @@ footer {
   background: rgba(0,0,0,0.55);
 }
 
-/* texto acima da sombra */
+
 .card h3,
 .card p {
   position: relative;
 }
 
-/* hover */
+
 .card:hover {
   transform: scale(1.03);
 }
+*/
 
-/* IMAGENS LOCAIS */
-.cabelo {
-  background-image: url('../images/CABELO.jpeg');
-}
-
-.pele {
-  background-image: url('../images/MAKE2.jpeg');
-}
-
-.sobrancelha {
-  background-image: url('../images/SOMBRANCELHA.jpeg');
-}
-
-.cuidados {
-  background-image: url('../images/LIMPEZAPELE.jpeg');
-}
 
 /* PÁGINA SERVIÇOS */
 
