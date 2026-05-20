@@ -228,6 +228,204 @@ header {
   color: white;
   transform: translateY(-2px);
 }
+
+
+/* NOVO ESTILO PAGINA SERVIÇOS/CATALOGO */
+.catalogo-header {
+  text-align: center;
+  padding: 80px 20px 45px;
+}
+
+.subtitulo-catalogo {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+
+  color: #C9A86A;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.subtitulo-catalogo::before,
+.subtitulo-catalogo::after {
+  content: "";
+  width: 42px;
+  height: 1px;
+  background: #D6B777;
+}
+
+.catalogo-header h1 {
+  font-family: "Playfair Display", serif;
+  font-size: 4rem;
+  font-weight: 500;
+  color: #6B6E55;
+  margin: 16px 0 10px;
+  line-height: 1.1;
+}
+
+.catalogo-header p {
+  font-family: "Poppins", sans-serif;
+  color: #666;
+  font-size: 1rem;
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.catalogo-filtros {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 10px auto 45px;
+}
+
+.catalogo-filtros button {
+  background: transparent;
+  border: 1px solid #b9b59f;
+  color: #6B6E55;
+  padding: 12px 30px;
+  border-radius: 30px;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.catalogo-filtros button.ativo,
+.catalogo-filtros button:hover {
+  background: #6B6E55;
+  color: #fff;
+  border-color: #6B6E55;
+}
+
+.catalogo-grid {
+  width: 92%;
+  max-width: 1180px;
+  margin: 0 auto 60px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+}
+
+.procedimento-card {
+  background: #fff;
+  border-radius: 22px;
+  padding: 18px 18px 22px;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.08);
+  transition: 0.35s ease;
+  overflow: hidden;
+}
+
+.procedimento-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 36px rgba(0,0,0,0.12);
+}
+
+.procedimento-card img {
+  width: 100%;
+  height: 155px;
+  object-fit: cover;
+  border-radius: 16px;
+  margin-bottom: 18px;
+}
+
+.procedimento-card span {
+  display: block;
+  color: #B89055;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+
+.procedimento-card h3 {
+  font-family: "Playfair Display", serif;
+  color: #2f3028;
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  line-height: 1.25;
+}
+
+.procedimento-card > p {
+  color: #5f5f5f;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  min-height: 72px;
+  margin-bottom: 18px;
+}
+
+.procedimento-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid #eee8dc;
+  padding-top: 14px;
+  margin-bottom: 18px;
+}
+
+.procedimento-info p {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  color: #3f4033;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.procedimento-info i {
+  color: #B89055;
+  margin-right: 6px;
+}
+
+.btn-procedimento {
+  display: block;
+  text-align: center;
+  border: 1.5px solid #C9A86A;
+  color: #B89055;
+  padding: 12px 22px;
+  border-radius: 30px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
+
+.btn-procedimento:hover {
+  background: linear-gradient(90deg,#C8AA72,#DCC08D,#B89055);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 1050px) {
+  .catalogo-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 780px) {
+  .catalogo-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .catalogo-header h1 {
+    font-size: 2.8rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .catalogo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ===================== */
 /* SERVIÇOS */
 /* ===================== 

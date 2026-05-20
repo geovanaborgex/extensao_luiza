@@ -59,6 +59,7 @@
         <option value="maquiagem">Maquiagem</option>
         <option value="cabelos">Cabelos</option>
         <option value="sobrancelhas">Sobrancelhas</option>
+        <option value="cilios">Cílios</option>
         <option value="cuidados">Cuidados</option>
       </select>
     </div>
@@ -231,7 +232,8 @@ const procedimentosInfo = {
     duracao: "1 hora"
   },
 
-  "Cílios - Lash Lifting": {
+  //CILIOS
+  "Lash Lifting": {
     valor: "R$ 120,00",
     duracao: "1h30"
   },
@@ -280,6 +282,16 @@ function mostrarProcedimentos(){
       <option>Design Simples</option>
       <option>Brow Lamination</option>
       <option>Cílios - Lash Lifting</option>
+    `;
+
+  }
+
+  //CILIOS
+    if(servico === "cilios"){
+
+    procedimento.innerHTML = `
+      <option value="">Selecione</option>
+      <option>Lash Lifting</option>
     `;
 
   }
@@ -711,6 +723,29 @@ Valor: ${valor}`;
     });
   });
 }
+</script>
+
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+
+  const servico = params.get("servico");
+  const procedimento = params.get("procedimento");
+
+  if (servico && procedimento) {
+    const selectServico = document.getElementById("servico");
+    const selectProcedimento = document.getElementById("procedimento");
+
+    selectServico.value = servico;
+
+    mostrarProcedimentos();
+
+    setTimeout(() => {
+      selectProcedimento.value = procedimento;
+      mostrarInfoProcedimento();
+    }, 100);
+  }
+});
 </script>
 
 </body>

@@ -28,32 +28,17 @@
 </nav>
 
 
-<section class="servicos-page">
+<section class="catalogo-header">
 
-<h2>Confira quem ja passou por aqui!</h2>
-  <div class="services">
+  <span class="subtitulo-catalogo">
+    CATÁLOGO DE SERVIÇOS
+  </span>
 
-  <div class="card cabelo" href="#" class="btn" onclick="abrirCatalogo('cabelo'); return false;">
-  </div>
+  <h1>Nossos procedimentos</h1>
 
-  <div class="card pele" href="#" class="btn" onclick="abrirCatalogo('maquiagem'); return false;">  
-</div>
-
-  <div class="card sobrancelha" href="#" class="btn" onclick="abrirCatalogo('sobrancelha'); return false;">
-  </div>
-
-  <div class="card cuidados" href="#" class="btn" onclick="abrirCatalogo('cuidados'); return false;">
-  </div>
-
-</div>
-</section>
-
-<section class="cta-agendar">
-
-  <h2>Gostou dos nossos serviços?</h2>
-  <p>Venha realçar ainda mais a sua beleza com a gente!</p>
-
-  <a href="agendar.html" class="btn btn-cta"><b>AGENDAR AGORA</b></a>
+  <p>
+    Escolha uma categoria e encontre o cuidado ideal para você.
+  </p>
 
 </section>
 
@@ -63,6 +48,174 @@
   <img src="images/whatsapp.png">
 </a>
 
+<div class="catalogo-grid">
+
+  <div class="procedimento-card" data-categoria="maquiagem">
+    <img src="images/catalogo/maquiagem2.jpeg" alt="Maquiagem Profissional">
+    <span>Maquiagem</span>
+    <h3>Maquiagem Profissional</h3>
+    <p>Produção completa para ocasiões especiais, com acabamento delicado e elegante.</p>
+    <div class="procedimento-info">
+      <p><i class="fa-regular fa-clock"></i> 1h</p>
+      <p>R$ 120,00</p>
+    </div>
+    <a href="agendar.html?servico=maquiagem&procedimento=Maquiagem%20Profissional" class="btn-procedimento">Agendar</a>
+  </div>
+
+  <div class="procedimento-card" data-categoria="cabelos">
+    <img src="images/catalogo/ESCOVA.png" alt="Escova">
+    <span>Cabelos</span>
+    <h3>Escova</h3>
+    <p>Finalização para cabelos alinhados, leves e com movimento.</p>
+    <div class="procedimento-info">
+      <p><i class="fa-regular fa-clock"></i> 30min</p>
+      <p>R$ 45,00</p>
+    </div>
+    <a href="agendar.html?servico=cabelos&procedimento=Escova" class="btn-procedimento">Agendar</a>
+  </div>
+
+  <div class="procedimento-card" data-categoria="cabelos">
+    <img src="images/catalogo/CHAPA.png" alt="Chapa">
+    <span>Cabelos</span>
+    <h3>Chapa</h3>
+    <p>Acabamento liso e polido para um visual elegante e duradouro.</p>
+    <div class="procedimento-info">
+      <p><i class="fa-regular fa-clock"></i> 1h</p>
+      <p>R$ 40,00</p>
+    </div>
+    <a href="agendar.html?servico=cabelos&procedimento=Chapa" class="btn-procedimento">Agendar</a>
+  </div>
+
+  <div class="procedimento-card" data-categoria="cabelos">
+    <img src="images/catalogo/ondas1.jpeg" alt="Cachos/Ondas">
+    <span>Cabelos</span>
+    <h3>Cachos/Ondas</h3>
+    <p>Modelagem para criar ondas leves ou cachos definidos com acabamento natural.</p>
+    <div class="procedimento-info">
+      <p><i class="fa-regular fa-clock"></i> 30min</p>
+      <p>R$ 55,00</p>
+    </div>
+    <a href="agendar.html?servico=cabelos&procedimento=Cachos/Ondas" class="btn-procedimento">Agendar</a>
+  </div>
+
+  <div class="procedimento-card" data-categoria="cabelos">
+    <img src="images/catalogo/penteado1.jpeg" alt="Penteado">
+    <span>Cabelos</span>
+    <h3>Penteado</h3>
+    <p>Penteados elegantes para eventos, fotos e ocasiões especiais.</p>
+    <div class="procedimento-info">
+      <p><i class="fa-regular fa-clock"></i> 30min</p>
+      <p>R$ 80,00</p>
+    </div>
+    <a href="agendar.html?servico=cabelos&procedimento=Penteado" class="btn-procedimento">Agendar</a>
+  </div>
+
+  <div class="procedimento-card" data-categoria="cabelos">
+    <img src="images/catalogo/TINTA.png" alt="Tintura com Tinta Profissional">
+    <span>Cabelos</span>
+    <h3>Tintura com Tinta Profissional</h3>
+    <p>Coloração com produtos profissionais para realçar o tom dos fios.</p>
+    <div class="procedimento-info">
+      <p><i class="fa-regular fa-clock"></i> 30min</p>
+      <p>R$ 150,00</p>
+    </div>
+    <a href="agendar.html?servico=cabelos&procedimento=Tintura%20com%20Tinta%20Profissional" class="btn-procedimento">Agendar</a>
+  </div>
+
+  <div class="procedimento-card" data-categoria="sobrancelhas">
+    <img src="images/catalogo/NANOPIGMENTACAO.png" alt="Nanopigmentação">
+    <span>Sobrancelhas</span>
+    <h3>Nanopigmentação</h3>
+    <p>Procedimento para realçar o desenho das sobrancelhas com resultado delicado.</p>
+    <div class="procedimento-info">
+      <p><i class="fa-regular fa-clock"></i> 2h</p>
+      <p>R$ 250,00</p>
+    </div>
+    <a href="agendar.html?servico=sobrancelhas&procedimento=Nanopigmentação" class="btn-procedimento">Agendar</a>
+  </div>
+
+  <div class="procedimento-card" data-categoria="sobrancelhas">
+    <img src="images/catalogo/sombrancelha4.jpeg" alt="Design com Henna">
+    <span>Sobrancelhas</span>
+    <h3>Design com Henna</h3>
+    <p>Design com preenchimento temporário para sobrancelhas mais marcadas.</p>
+    <div class="procedimento-info">
+      <p><i class="fa-regular fa-clock"></i> 30min</p>
+      <p>R$ 35,00</p>
+    </div>
+    <a href="agendar.html?servico=sobrancelhas&procedimento=Design%20com%20Henna" class="btn-procedimento">Agendar</a>
+  </div>
+
+  <div class="procedimento-card" data-categoria="sobrancelhas">
+    <img src="images/catalogo/sombrancelha3.jpeg" alt="Design Simples">
+    <span>Sobrancelhas</span>
+    <h3>Design Simples</h3>
+    <p>Modelagem das sobrancelhas respeitando o formato natural do rosto.</p>
+    <div class="procedimento-info">
+      <p><i class="fa-regular fa-clock"></i> 30min</p>
+      <p>R$ 25,00</p>
+    </div>
+    <a href="agendar.html?servico=sobrancelhas&procedimento=Design%20Simples" class="btn-procedimento">Agendar</a>
+  </div>
+
+  <div class="procedimento-card" data-categoria="sobrancelhas">
+    <img src="images/catalogo/sombrancelha5.jpeg" alt="Brow Lamination">
+    <span>Sobrancelhas</span>
+    <h3>Brow Lamination</h3>
+    <p>Técnica para alinhar os fios e criar aparência mais cheia e definida.</p>
+    <div class="procedimento-info">
+      <p><i class="fa-regular fa-clock"></i> 1h</p>
+      <p>R$ 90,00</p>
+    </div>
+    <a href="agendar.html?servico=sobrancelhas&procedimento=Brow%20Lamination" class="btn-procedimento">Agendar</a>
+  </div>
+
+  <div class="procedimento-card" data-categoria="cilios">
+    <img src="images/catalogo/lash1.jpeg" alt="Lash Lifting">
+    <span>Cílios</span>
+    <h3>Lash Lifting</h3>
+    <p>Curvatura dos cílios naturais para um olhar mais aberto e marcante.</p>
+    <div class="procedimento-info">
+      <p><i class="fa-regular fa-clock"></i> 1h30</p>
+      <p>R$ 120,00</p>
+    </div>
+    <a href="agendar.html?servico=cilios&procedimento=Lash%20Lifting" class="btn-procedimento">Agendar</a>
+  </div>
+
+  <div class="procedimento-card" data-categoria="cuidados">
+    <img src="images/catalogo/pe2.jpeg" alt="Spa dos Pés">
+    <span>Cuidados</span>
+    <h3>Spa dos Pés</h3>
+    <p>Cuidado relaxante para hidratar, renovar e trazer bem-estar aos pés.</p>
+    <div class="procedimento-info">
+      <p><i class="fa-regular fa-clock"></i> 1h</p>
+      <p>R$ 70,00</p>
+    </div>
+    <a href="agendar.html?servico=cuidados&procedimento=Spa%20dos%20Pés" class="btn-procedimento">Agendar</a>
+  </div>
+
+  <div class="procedimento-card" data-categoria="cuidados">
+    <img src="images/LIMPEZAPELE.jpeg" alt="Limpeza de Pele">
+    <span>Cuidados</span>
+    <h3>Limpeza de Pele</h3>
+    <p>Remove impurezas e ajuda a deixar a pele com aspecto mais saudável.</p>
+    <div class="procedimento-info">
+      <p><i class="fa-regular fa-clock"></i> 1h15</p>
+      <p>R$ 100,00</p>
+    </div>
+    <a href="agendar.html?servico=cuidados&procedimento=Limpeza%20de%20Pele" class="btn-procedimento">Agendar</a>
+  </div>
+
+</div>
+
+<section class="cta-agendar">
+
+  <h2>Gostou dos nossos serviços?</h2>
+  <p>Venha realçar ainda mais a sua beleza com a gente!</p>
+
+  <a href="agendar.html" class="btn btn-cta"><b>AGENDAR AGORA</b></a>
+
+</section>
 
 <footer>
   <div class="footer-container">
@@ -104,81 +257,6 @@
 </div>
   
 </footer>
-
-
-<!-- ===== MODAL ===== -->
-<div id="modalCatalogo" class="modal hidden">
-
-  <div class="modal-content">
-
-    <span class="fechar" onclick="fecharCatalogo()">&times;</span>
-
-    <h2 id="titulo-catalogo"></h2>
-
-    <div class="grid-catalogo" id="gridCatalogo"></div>
-
-  </div>
-
-</div>
-
-<!-- ===== JS ===== -->
-<script>
-
-const catalogos = {
-
-maquiagem: [
-"images/catalogo/maquiagem1.jpeg",
-"images/catalogo/maquiagem2.jpeg",
-"images/catalogo/maquiagem3.jpeg"
-],
-
-cabelo: [
-"images/catalogo/ondas1.jpeg",
-"images/catalogo/ondas2.jpeg",
-"images/catalogo/penteado1.jpeg",
-"images/catalogo/penteado2.jpeg",
-"images/catalogo/penteado3.jpeg"
-],
-
-sobrancelha: [
-"images/catalogo/sombrancelha6.jpeg",
-"images/catalogo/sombrancelha5.jpeg",
-"images/catalogo/sombrancelha4.jpeg",
-"images/catalogo/sombrancelha1.jpeg",
-"images/catalogo/sombrancelha3.jpeg",
-"images/catalogo/sombrancelha2.jpeg"
-],
-cuidados: [
-"images/catalogo/pe1.jpeg",
-"images/catalogo/pe2.jpeg"
-]
-
-};
-
-function abrirCatalogo(tipo){
-
-const modal = document.getElementById("modalCatalogo");
-const grid = document.getElementById("gridCatalogo");
-const titulo = document.getElementById("titulo-catalogo");
-
-if(!catalogos[tipo]) return;
-
-modal.classList.remove("hidden");
-grid.innerHTML = "";
-
-titulo.innerText = tipo.toUpperCase();
-
-catalogos[tipo].forEach(img => {
-grid.innerHTML += `<img src="${img}">`;
-});
-
-}
-
-function fecharCatalogo(){
-document.getElementById("modalCatalogo").classList.add("hidden");
-}
-
-</script>
 
 </body>
 </html>
