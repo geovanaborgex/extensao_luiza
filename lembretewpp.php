@@ -10,7 +10,7 @@ $calendarId = 'geovanaborges304@gmail.com';
 
 $agora = new DateTime();
 
-$mais12h = new DateTime('+5 minutes');
+$mais12h = new DateTime('+12 hours');
 
 $eventos = $service->events->listEvents($calendarId, [
 
