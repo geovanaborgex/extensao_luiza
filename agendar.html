@@ -195,7 +195,7 @@ const procedimentosInfo = {
     duracao: "1 hora"
   },
 
-  "Cachos/ondas": {
+  "Cachos/Ondas": {
     valor: "R$ 55,00",
     duracao: "30 minutos"
   },
@@ -205,7 +205,7 @@ const procedimentosInfo = {
     duracao: "30 minutos"
   },
 
-  "Tintura com tinta profissional": {
+  "Tintura com Tinta Profissional": {
     valor: "R$ 150,00",
     duracao: "30 minutos"
   },
@@ -216,12 +216,12 @@ const procedimentosInfo = {
     duracao: "2 horas"
   },
 
-  "Design com henna": {
+  "Design com Henna": {
     valor: "R$ 35,00",
     duracao: "30 minutos"
   },
 
-  "Design simples": {
+  "Design Simples": {
     valor: "R$ 25,00",
     duracao: "30 minutos"
   },
@@ -237,12 +237,12 @@ const procedimentosInfo = {
   },
 
   // CUIDADOS
-  "Limpeza de pele": {
+  "Limpeza de Pele": {
     valor: "R$ 100,00",
     duracao: "1h15"
   },
 
-  "Spa dos pés": {
+  "Spa dos Pés": {
     valor: "R$ 70,00",
     duracao: "1 hora"
   }
@@ -363,44 +363,73 @@ function mostrarInfoProcedimento(){
 
     <h3>Horários disponíveis</h3>
 
-    <div class="horarios-modal">
-      <button>08:00</button>
-      <button>09:00</button>
-      <button>10:00</button>
-      <button>11:00</button>
-      <button>13:00</button>
-      <button>14:00</button>
-      <button>15:00</button>
-      <button>16:00</button>
-    </div>
+  <div class="horarios-topo">
 
-    <div class="resumo-modal">
-      <p><strong>Procedimento:</strong> <span id="resumoProcedimento">-</span></p>
-      <p><strong>Duração:</strong> <span id="resumoDuracao">-</span></p>
-      <p><strong>Valor:</strong> <span id="resumoValor">-</span></p>
-    </div>
-
-    <button class="btn-confirmar-horario">
-      CONFIRMAR AGENDAMENTO
+    <button
+      type="button"
+      onclick="voltarHorarios()"
+      class="btn-seta-horario"
+    >
+      ‹
     </button>
 
+    <div class="horarios-modal"></div>
+
+    <button
+      type="button"
+      onclick="avancarHorarios()"
+      class="btn-seta-horario"
+    >
+      ›
+    </button>
+
+  </div>
+
+  <div class="resumo-modal">
+    <p><strong>Nome:</strong> <span id="resumoNome">-</span></p>
+    <p><strong>Telefone:</strong> <span id="resumoTelefone">-</span></p>
+     <p><strong>Procedimento:</strong> <span id="resumoProcedimento">-</span></p>
+     <p><strong>Duração:</strong> <span id="resumoDuracao">-</span></p>
+     <p><strong>Valor:</strong> <span id="resumoValor">-</span></p>
+  </div>
+
+  <p id="statusAgendamento" class="status-agendamento"></p>
+
+  <button
+    type="button"
+    class="btn-confirmar-horario"
+    onclick="confirmarAgendamento()"
+  >
+    CONFIRMAR AGENDAMENTO
+  </button>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
-function abrirModalHorario() {
-  document.getElementById("modalHorario").style.display = "flex";
-}
-
-function fecharModalHorario() {
-  document.getElementById("modalHorario").style.display = "none";
-}
-</script>
-
 <script> /* criar o agendamento */
 function abrirModalHorario() {
+  const nome = document.querySelector('input[name="nome"]').value;
+  const telefone = document.querySelector('input[name="telefone"]').value;
+  const procedimento = document.getElementById("procedimento").value;
+
+  if (!nome || !telefone || !procedimento) {
+    Swal.fire({
+      icon: "warning",
+      title: "Preencha os dados",
+      text: "Informe nome, telefone e procedimento antes de reservar o horário.",
+      confirmButtonColor: "#6B6E55"
+    });
+    return;
+  }
+
+  document.getElementById("resumoNome").innerText = nome;
+  document.getElementById("resumoTelefone").innerText = telefone;
+  document.getElementById("resumoProcedimento").innerText = procedimento;
+  document.getElementById("resumoDuracao").innerText =
+    document.getElementById("duracaoProcedimento").innerText;
+  document.getElementById("resumoValor").innerText =
+    document.getElementById("valorProcedimento").innerText;
 
   document.getElementById("modalHorario").style.display = "flex";
 
@@ -410,6 +439,8 @@ function abrirModalHorario() {
 function fecharModalHorario() {
   document.getElementById("modalHorario").style.display = "none";
 }
+
+/* COMEÇO FUNÇÃO DE GERAR DIAS E HORÁRIOS */
 
 let inicioCalendario = 0;
 
@@ -428,19 +459,14 @@ function gerarDias() {
   const hoje = new Date();
   const diasVisiveis = [];
 
-  let contador = 0;
   let i = inicioCalendario;
 
-  while (diasVisiveis.length < 6) {
+  while (diasVisiveis.length < 7) {
     const data = new Date();
     data.setDate(hoje.getDate() + i);
 
-    if (data.getDay() !== 0) {
-      diasVisiveis.push(data);
-    }
-
+    diasVisiveis.push(data);
     i++;
-    contador++;
   }
 
   mesAtual.innerText =
@@ -448,20 +474,119 @@ function gerarDias() {
 
   diasVisiveis.forEach(data => {
     const botao = document.createElement("button");
+    const ehDomingo = data.getDay() === 0;
+    const ehHoje =
+    data.toDateString() === hoje.toDateString();
 
     botao.innerHTML = `
       ${diasSemana[data.getDay()]}<br>
       <strong>${data.getDate()}</strong>
     `;
 
-    botao.onclick = () => {
-      document.querySelectorAll(".dias-modal button")
-        .forEach(btn => btn.classList.remove("ativo"));
-
+    if (ehHoje) {
+      botao.classList.add("hoje");
       botao.classList.add("ativo");
-    };
+
+      dataSelecionada =
+        dataSelecionada = formatarDataLocal(data);
+    }
+
+    if (ehDomingo) {
+      botao.classList.add("domingo");
+      botao.disabled = true;
+    } else {
+      botao.onclick = () => {
+        document.querySelectorAll(".dias-modal button")
+          .forEach(btn => btn.classList.remove("ativo"));
+
+        botao.classList.add("ativo");
+
+        dataSelecionada = data.toISOString().split("T")[0];
+        horarioSelecionado = "";
+
+        buscarHorarios(dataSelecionada);
+      };
+    }
 
     container.appendChild(botao);
+    if (ehHoje && !ehDomingo) {
+      buscarHorarios(dataSelecionada);
+    }
+  });
+}
+
+function formatarDataLocal(data) {
+  const ano = data.getFullYear();
+  const mes = String(data.getMonth() + 1).padStart(2, "0");
+  const dia = String(data.getDate()).padStart(2, "0");
+
+  return `${ano}-${mes}-${dia}`;
+}
+
+let dataSelecionada = "";
+let horarioSelecionado = "";
+
+function buscarHorarios(data) {
+  const procedimento = document.getElementById("procedimento").value;
+  const container = document.querySelector(".horarios-modal");
+
+  container.innerHTML = "<p>Carregando horários...</p>";
+
+  const dados = new FormData();
+  dados.append("data", data);
+  dados.append("procedimento", procedimento);
+
+  fetch("buscar_horarios.php", {
+    method: "POST",
+    body: dados
+  })
+  .then(response => response.json())
+  .then(data => {
+    container.innerHTML = "";
+
+    if (data.horarios.length === 0) {
+      container.innerHTML = "<p>Nenhum horário disponível para este dia.</p>";
+      return;
+    }
+
+    data.horarios.forEach(horario => {
+      const botao = document.createElement("button");
+
+      botao.type = "button";
+      botao.innerText = horario;
+
+      botao.onclick = () => {
+        document.querySelectorAll(".horarios-modal button")
+          .forEach(btn => btn.classList.remove("ativo"));
+
+        botao.classList.add("ativo");
+        horarioSelecionado = horario;
+      };
+
+      container.appendChild(botao);
+    });
+  });
+}
+
+let scrollHorario = 0;
+
+function avancarHorarios() {
+  const container =
+    document.querySelector(".horarios-modal");
+
+  container.scrollBy({
+    left: 300,
+    behavior: "smooth"
+  });
+}
+
+function voltarHorarios() {
+  const container =
+    document.querySelector(".horarios-modal");
+
+  container.scrollBy({
+    left: -300,
+    behavior: "smooth"
   });
 }
 
@@ -475,6 +600,116 @@ function voltarDias() {
     inicioCalendario -= 6;
     gerarDias();
   }
+}
+
+/* CONFIRMAÇÃO DO AGENDAMENTO */
+
+let agendamentoEmAndamento = false;
+
+function confirmarAgendamento() {
+  if (agendamentoEmAndamento) return;
+
+  const form = document.getElementById("formAgendamento");
+  const status = document.getElementById("statusAgendamento");
+  const botao = document.querySelector(".btn-confirmar-horario");
+
+  if (!dataSelecionada || !horarioSelecionado) {
+    Swal.fire({
+      icon: "warning",
+      title: "Escolha data e horário",
+      text: "Selecione um dia e um horário antes de confirmar.",
+      confirmButtonColor: "#6B6E55"
+    });
+    return;
+  }
+
+  agendamentoEmAndamento = true;
+  status.style.display = "block";
+  status.innerText = "Confirmando seu horário...";
+  botao.disabled = true;
+  botao.innerText = "CONFIRMANDO...";
+
+  const dados = new FormData(form);
+  dados.append("data", dataSelecionada);
+  dados.append("horario", horarioSelecionado);
+
+  fetch("salvar_agendamento.php", {
+    method: "POST",
+    body: dados
+  })
+  .then(response => response.json())
+  .then(data => {
+    agendamentoEmAndamento = false;
+    botao.disabled = false;
+    botao.innerText = "CONFIRMAR AGENDAMENTO";
+    status.style.display = "none";
+
+    if (data.status === "sucesso") {
+      const nome = document.querySelector('input[name="nome"]').value;
+      const telefone = document.querySelector('input[name="telefone"]').value;
+      const procedimento = document.getElementById("procedimento").value;
+      const duracao = document.getElementById("duracaoProcedimento").innerText;
+      const valor = document.getElementById("valorProcedimento").innerText;
+
+      const mensagem = `Olá, Luiza! Acabei de realizar um agendamento pelo site.
+
+Cliente: ${nome}
+Telefone: ${telefone}
+Procedimento: ${procedimento}
+Data: ${dataSelecionada}
+Horário: ${horarioSelecionado}
+Duração: ${duracao}
+Valor: ${valor}`;
+
+      const numeroLuiza = "5537998420727";
+      const linkWhatsApp = `https://wa.me/${numeroLuiza}?text=${encodeURIComponent(mensagem)}`;
+
+      fecharModalHorario();
+
+      Swal.fire({
+        icon: "success",
+        title: "Agendamento realizado!",
+        text: "Seu horário foi reservado com sucesso.",
+        showCancelButton: true,
+        confirmButtonText: "Enviar confirmação no WhatsApp",
+        cancelButtonText: "Fechar",
+        confirmButtonColor: "#25D366",
+        cancelButtonColor: "#6B6E55"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.open(linkWhatsApp, "_blank");
+        }
+
+        form.reset();
+        dataSelecionada = "";
+        horarioSelecionado = "";
+      });
+
+    } else {
+      Swal.fire({
+        icon: "warning",
+        title: "Horário indisponível",
+        text: data.mensagem,
+        confirmButtonColor: "#C9A86A"
+      });
+
+      buscarHorarios(dataSelecionada);
+      horarioSelecionado = "";
+    }
+  })
+  .catch(() => {
+    agendamentoEmAndamento = false;
+    botao.disabled = false;
+    botao.innerText = "CONFIRMAR AGENDAMENTO";
+    status.style.display = "none";
+
+    Swal.fire({
+      icon: "error",
+      title: "Erro",
+      text: "Não foi possível realizar o agendamento. Tente novamente.",
+      confirmButtonColor: "#6B6E55"
+    });
+  });
 }
 </script>
 

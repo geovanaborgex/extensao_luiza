@@ -789,38 +789,57 @@ border:1px solid #ccc;
   transform: translateY(-3px);
 }
 
-/* HORÁRIOS */
+/* BARRA HORÁRIOS AGENDAMENTOS */
+
+.horarios-topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 15px;
+}
 
 .horarios-modal {
   display: flex;
   gap: 12px;
-  flex-wrap: wrap;
-  margin: 25px 0 40px;
+  overflow: hidden;
+  flex: 1;
 }
 
 .horarios-modal button {
+  min-width: 90px;
   border: 1px solid #D2C2A1;
   background: white;
   color: #6B6E55;
   border-radius: 14px;
-  padding: 14px 24px;
+  padding: 14px 22px;
   cursor: pointer;
   transition: .3s;
   font-family: 'Poppins';
-  font-weight: 500;
 }
 
-.horarios-modal button:hover {
-  background: linear-gradient(
-    90deg,
-    #C8AA72,
-    #DCC08D,
-    #B89055
-  );
+.horarios-modal button.ativo {
+  background: rgba(200,170,114,0.15);
+  border: 2px solid #C8AA72;
+  color: #6B6E55;
+  font-weight: 700;
+}
+
+.btn-seta-horario {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: #F5F3EC;
+  color: #6B6E55;
+  font-size: 28px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.btn-seta-horario:hover {
+  background: #C8AA72;
   color: white;
-  border-color: transparent;
 }
-
 /* TÍTULO HORÁRIOS */
 
 .modal-conteudo h3 {
@@ -935,4 +954,39 @@ border:1px solid #ccc;
   justify-content: center;
   flex-wrap: nowrap;
   margin-bottom: 35px;
+}
+
+/* domingo esconder */
+.dias-modal button.domingo {
+  background: #ECECEC;
+  color: #A9A9A9;
+  border-color: #DADADA;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.dias-modal button.domingo:hover {
+  transform: none;
+  background: #ECECEC;
+  color: #A9A9A9;
+}
+
+/* hoje colorido */
+.dias-modal button.hoje {
+  background: rgba(200,170,114,0.15);
+  border: 2px solid #C8AA72;
+  color: #6B6E55;
+  font-weight: 700;
+}
+
+.dias-modal button.hoje strong {
+  color: #B89055;
+}
+
+.status-agendamento {
+  display: none;
+  text-align: center;
+  color: #6B6E55;
+  font-weight: 600;
+  margin: 15px 0;
 }

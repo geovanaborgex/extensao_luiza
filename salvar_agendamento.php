@@ -2,6 +2,7 @@
 
 header('Content-Type: application/json; charset=utf-8');
 require 'google_calendar.php';
+date_default_timezone_set('America/Sao_Paulo');
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 
@@ -18,15 +19,15 @@ $duracoes = [
 
 "Maquiagem Profissional" => 60,
 
-"Spa dos pés" => 60,
+"Spa dos Pés" => 60,
 
-"Limpeza de pele" => 75,
+"Limpeza de Pele" => 75,
 
-"Tintura com tinta profissional" => 30,
+"Tintura com Tinta Profissional" => 30,
 
 "Chapa" => 60,
 
-"Cachos/ondas" => 30,
+"Cachos/Ondas" => 30,
 
 "Escova" => 30,
 
@@ -34,15 +35,32 @@ $duracoes = [
 
 "Nanopigmentação" => 120,
 
-"Design com henna" => 30,
+"Design com Henna" => 30,
 
 "Brow Lamination" => 60,
 
-"Lash Lifting" => 90,
+"Cílios - Lash Lifting" => 90,
 
-"Design simples" => 30
+"Design Simples" => 30
 
 ];
+
+/* VERIFICA SE O PROCEDIMENTO EXISTE - VAZIO OU INVÁLIDO */
+
+if (!$data || !$horario) {
+    echo json_encode([
+        "status" => "erro",
+        "mensagem" => "Data ou horário não informado."
+    ]);
+    exit;
+}
+if (!isset($duracoes[$procedimento])) {
+    echo json_encode([
+        "status" => "erro",
+        "mensagem" => "Procedimento inválido."
+    ]);
+    exit;
+}
 
 $duracao = $duracoes[$procedimento];
 
