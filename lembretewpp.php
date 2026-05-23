@@ -1,79 +1,80 @@
 <?php
 
+file_put_contents(__DIR__ . "/cron_teste.txt", date('Y-m-d H:i:s') . PHP_EOL, FILE_APPEND);
+
 require 'google_calendar.php';
 
 date_default_timezone_set('America/Sao_Paulo');
 
 $calendarId = 'geovanaborges304@gmail.com';
 
-/* pega eventos próximas 12h */
-
-$agora = new DateTime();
-
-$mais12h = new DateTime('+10 minutes');
+$inicio = new DateTime('now');
+$fim = (clone $inicio)->modify('+24 hours');
 
 $eventos = $service->events->listEvents($calendarId, [
-
-'timeMin' => $agora->format(DateTime::RFC3339),
-'timeMax' => $mais12h->format(DateTime::RFC3339),
-'singleEvents' => true,
-'orderBy' => 'startTime',
-
+    'timeMin' => $inicio->format(DateTime::RFC3339),
+    'timeMax' => $fim->format(DateTime::RFC3339),
+    'singleEvents' => true,
+    'orderBy' => 'startTime',
 ]);
 
-foreach($eventos->getItems() as $evento){
+foreach ($eventos->getItems() as $evento) {
 
-if(strpos($descricao, '[LEMBRETE_ENVIADO]') !== false){
-continue;
-} 
+    $descricao = $evento->description ?? '';
 
-$descricao = $evento->description;
+    /* ❌ só pega eventos pendentes */
+    if (strpos($descricao, '[LEMBRETE_PENDENTE]') === false) {
+        continue;
+    }
 
-/* pega telefone */
+    /* ❌ evita duplicar envio */
+    if (strpos($descricao, '[LEMBRETE_ENVIADO]') !== false) {
+        continue;
+    }
 
 preg_match('/Telefone:\s*(.+)/', $descricao, $matches);
+preg_match('/Procedimento:\s*(.+)/', $descricao, $procMatch);
 
-if(isset($matches[1])){
+if (!isset($matches[1])) {
+    continue;
+}
 
 $telefone = preg_replace('/[^0-9]/', '', $matches[1]);
 
-$mensagem =
-"Olá 💚\nPassando para lembrar do seu horário agendado para amanhã, em caso de desistência, responder essa mensagem. ✨";
-
-$url = "https://api.ultramsg.com/instance176224/messages/chat";
-
-$dados = [
-
-'token' => 'e6tiqpy5ix2wenoo',
-'to' => '55'.$telefone,
-'body' => $mensagem
-
-];
-
-$options = [
-'http' => [
-'header'  => "Content-type: application/x-www-form-urlencoded",
-'method'  => 'POST',
-'content' => http_build_query($dados)
-]
-];
-
-$context = stream_context_create($options);
-
-file_get_contents($url, false, $context);
-
-$evento->setDescription(
-$descricao . "\n\n[LEMBRETE_ENVIADO]"
-);
-
-$service->events->update(
-$calendarId,
-$evento->id,
-$evento
-);
-
-echo "Lembrete enviado com sucesso!";
-
+if (substr($telefone, 0, 2) !== '55') {
+    $telefone = '55' . $telefone;
 }
 
+$procedimento = $procMatch[1] ?? 'seu atendimento';
+
+$mensagem = "Oi 💚\n"
+. "Passando para te lembrar do seu atendimento de $procedimento\n\n"
+. "Qualquer imprevisto, me chama aqui no WhatsApp ✨";
+
+
+    /* 📡 API ULTRAMSG */
+    $url = "https://api.ultramsg.com/instance176224/messages/chat";
+
+    file_get_contents($url, false, stream_context_create([
+        'http' => [
+            'header'  => "Content-type: application/x-www-form-urlencoded",
+            'method'  => 'POST',
+            'content' => http_build_query([
+                'token' => 'e6tiqpy5ix2wenoo',
+                'to' => $telefone,
+                'body' => $mensagem
+            ])
+        ]
+    ]));
+
+    /* ✅ marca como enviado */
+    $evento->setDescription($descricao . "\n\n[LEMBRETE_ENVIADO]");
+
+    $service->events->update(
+        $calendarId,
+        $evento->getId(),
+        $evento
+    );
+
+    echo "Lembrete enviado para: $telefone\n";
 }

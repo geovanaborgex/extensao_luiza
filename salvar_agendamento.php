@@ -2,146 +2,123 @@
 
 header('Content-Type: application/json; charset=utf-8');
 require 'google_calendar.php';
+
 date_default_timezone_set('America/Sao_Paulo');
 
-if($_SERVER["REQUEST_METHOD"] == "POST"){
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-$nome = $_POST["nome"];
-$telefone = $_POST["telefone"];
-$servico = $_POST["servico"];
-$procedimento = $_POST["procedimento"];
-$data = $_POST["data"];
-$horario = $_POST["horario"];
+    $nome = $_POST["nome"];
+    $telefone = $_POST["telefone"];
+    $servico = $_POST["servico"];
+    $procedimento = $_POST["procedimento"];
+    $data = $_POST["data"];
+    $horario = $_POST["horario"];
 
-/* DURAÇÕES */
+    /* DURAÇÕES */
+    $duracoes = [
 
-$duracoes = [
+        "Maquiagem Profissional" => 60,
+        "Spa dos Pés" => 60,
+        "Limpeza de Pele" => 75,
+        "Tintura com Tinta Profissional" => 30,
+        "Chapa" => 60,
+        "Cachos/Ondas" => 30,
+        "Escova" => 30,
+        "Penteado" => 30,
+        "Nanopigmentação" => 120,
+        "Design com Henna" => 30,
+        "Brow Lamination" => 60,
+        "Lash Lifting" => 90,
+        "Design Simples" => 30
 
-"Maquiagem Profissional" => 60,
+    ];
 
-"Spa dos Pés" => 60,
+    /* VALIDAÇÕES */
+    if (!$data || !$horario) {
+        echo json_encode([
+            "status" => "erro",
+            "mensagem" => "Data ou horário não informado."
+        ]);
+        exit;
+    }
 
-"Limpeza de Pele" => 75,
+    if (!isset($duracoes[$procedimento])) {
+        echo json_encode([
+            "status" => "erro",
+            "mensagem" => "Procedimento inválido."
+        ]);
+        exit;
+    }
 
-"Tintura com Tinta Profissional" => 30,
+    $duracao = $duracoes[$procedimento];
 
-"Chapa" => 60,
+    /* INÍCIO E FIM */
+    $inicio = new DateTime("$data $horario");
+    $fim = clone $inicio;
+    $fim->modify("+$duracao minutes");
 
-"Cachos/Ondas" => 30,
+    $calendarId = 'geovanaborges304@gmail.com';
 
-"Escova" => 30,
+    /* VERIFICA CONFLITO */
+    $optParams = [
+        'timeMin' => $inicio->format(DateTime::RFC3339),
+        'timeMax' => $fim->format(DateTime::RFC3339),
+        'singleEvents' => true,
+        'orderBy' => 'startTime',
+    ];
 
-"Penteado" => 30,
+    $eventos = $service->events->listEvents($calendarId, $optParams);
 
-"Nanopigmentação" => 120,
+    if (count($eventos->getItems()) > 0) {
+        echo json_encode([
+            "status" => "erro",
+            "mensagem" => "Esse horário já está ocupado. Por favor, escolha outro horário."
+        ]);
+        exit;
+    }
 
-"Design com Henna" => 30,
+    /* CRIA EVENTO */
+    $evento = new Google_Service_Calendar_Event([
 
-"Brow Lamination" => 60,
+        'summary' => "$procedimento - $nome",
 
-"Lash Lifting" => 90,
-
-"Design Simples" => 30
-
-];
-
-/* VERIFICA SE O PROCEDIMENTO EXISTE - VAZIO OU INVÁLIDO */
-
-if (!$data || !$horario) {
-    echo json_encode([
-        "status" => "erro",
-        "mensagem" => "Data ou horário não informado."
-    ]);
-    exit;
-}
-if (!isset($duracoes[$procedimento])) {
-    echo json_encode([
-        "status" => "erro",
-        "mensagem" => "Procedimento inválido."
-    ]);
-    exit;
-}
-
-$duracao = $duracoes[$procedimento];
-
-/* INÍCIO */
-
-$inicio = new DateTime("$data $horario");
-
-/* FIM */
-
-$fim = clone $inicio;
-$fim->modify("+$duracao minutes");
-
-/* GOOGLE */
-
-$calendarId = 'geovanaborges304@gmail.com';
-
-/* BUSCA EVENTOS DO HORÁRIO */
-
-$optParams = [
-'timeMin' => $inicio->format(DateTime::RFC3339),
-'timeMax' => $fim->format(DateTime::RFC3339),
-'singleEvents' => true,
-'orderBy' => 'startTime',
-];
-
-$eventos = $service->events->listEvents($calendarId, $optParams);
-
-/* VERIFICA CONFLITO */
-
-if(count($eventos->getItems()) > 0){
-
-echo json_encode([
-    "status" => "erro",
-    "mensagem" => "Esse horário já está ocupado. Por favor, escolha outro horário."
-]);
-exit;
-
-exit;
-
-}
-
-/* CRIA EVENTO */
-
-$evento = new Google_Service_Calendar_Event([
-
-'summary' => "$procedimento - $nome",
-
-'description' =>
-"Cliente: $nome
+        'description' =>
+        "Cliente: $nome
 Telefone: $telefone
 Serviço: $servico
-Procedimento: $procedimento",
+Procedimento: $procedimento
+[LEMBRETE_PENDENTE]",
 
-'start' => [
-'dateTime' => $inicio->format(DateTime::RFC3339),
-'timeZone' => 'America/Sao_Paulo',
-],
+        'start' => [
+            'dateTime' => $inicio->format(DateTime::RFC3339),
+            'timeZone' => 'America/Sao_Paulo',
+        ],
 
-'end' => [
-'dateTime' => $fim->format(DateTime::RFC3339),
-'timeZone' => 'America/Sao_Paulo',
-],
+        'end' => [
+            'dateTime' => $fim->format(DateTime::RFC3339),
+            'timeZone' => 'America/Sao_Paulo',
+        ],
 
-]);
-
-try {
-    $service->events->insert($calendarId, $evento);
-
-    echo json_encode([
-        "status" => "sucesso",
-        "mensagem" => "Você irá receber uma mensagem de confirmação no número informado um dia antes do procedimento. Em caso de desistência, nos chame no WhatsApp."
     ]);
-    exit;
 
-} catch (Exception $e) {
-    echo json_encode([
-        "status" => "erro",
-        "mensagem" => "Não foi possível realizar o agendamento. Erro: " . $e->getMessage()
-    ]);
-    exit;
-}
+    try {
 
+        $service->events->insert($calendarId, $evento);
+
+        echo json_encode([
+            "status" => "sucesso",
+            "mensagem" => "Agendamento realizado com sucesso! Você receberá confirmação via WhatsApp antes do horário."
+        ]);
+        exit;
+
+    } catch (Exception $e) {
+
+        echo json_encode([
+            "status" => "erro",
+            "mensagem" => "Erro ao agendar: " . $e->getMessage()
+        ]);
+        exit;
+
+    }
 }
 ?>
