@@ -39,7 +39,7 @@ $duracoes = [
 
 "Brow Lamination" => 60,
 
-"Cílios - Lash Lifting" => 90,
+"Lash Lifting" => 90,
 
 "Design Simples" => 30
 

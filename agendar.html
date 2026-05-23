@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body style="background: #f1f3ea;">
+<body style="background: #f1f3ea;" >
 
 <!-- HEADER -->
 <header>
@@ -281,7 +281,6 @@ function mostrarProcedimentos(){
       <option>Design com Henna</option>
       <option>Design Simples</option>
       <option>Brow Lamination</option>
-      <option>Cílios - Lash Lifting</option>
     `;
 
   }
@@ -499,8 +498,7 @@ function gerarDias() {
       botao.classList.add("hoje");
       botao.classList.add("ativo");
 
-      dataSelecionada =
-        dataSelecionada = formatarDataLocal(data);
+      dataSelecionada = formatarDataLocal(data);
     }
 
     if (ehDomingo) {
@@ -539,12 +537,29 @@ let dataSelecionada = "";
 let horarioSelecionado = "";
 
 function buscarHorarios(data) {
-  const procedimento = document.getElementById("procedimento").value;
-  const container = document.querySelector(".horarios-modal");
 
-  container.innerHTML = "<p>Carregando horários...</p>";
+  const procedimento = document
+  .getElementById("procedimento")
+  .options[document.getElementById("procedimento").selectedIndex]
+  ?.text || "";
+
+  console.log("DATA:", data);
+console.log("PROCEDIMENTO:", procedimento);
+
+  const container =
+    document.querySelector(".horarios-modal");
+
+  container.innerHTML =
+    "<p>Carregando horários...</p>";
+
+  if (!procedimento) {
+    container.innerHTML =
+      "<p>Selecione um procedimento.</p>";
+    return;
+  }
 
   const dados = new FormData();
+
   dados.append("data", data);
   dados.append("procedimento", procedimento);
 
@@ -552,32 +567,70 @@ function buscarHorarios(data) {
     method: "POST",
     body: dados
   })
+
   .then(response => response.json())
+
   .then(data => {
+
+    console.log(data);
+
     container.innerHTML = "";
 
-    if (data.horarios.length === 0) {
-      container.innerHTML = "<p>Nenhum horário disponível para este dia.</p>";
+    // ERRO PHP
+    if (data.status === "erro") {
+
+      container.innerHTML =
+        `<p>${data.mensagem}</p>`;
+
       return;
     }
 
+    // SEM HORÁRIOS
+    if (!data.horarios || data.horarios.length === 0) {
+
+      container.innerHTML =
+        "<p>Nenhum horário disponível para este dia.</p>";
+
+      return;
+    }
+
+    // HORÁRIOS
     data.horarios.forEach(horario => {
-      const botao = document.createElement("button");
+
+      const botao =
+        document.createElement("button");
 
       botao.type = "button";
       botao.innerText = horario;
 
       botao.onclick = () => {
-        document.querySelectorAll(".horarios-modal button")
-          .forEach(btn => btn.classList.remove("ativo"));
+
+        document
+          .querySelectorAll(".horarios-modal button")
+          .forEach(btn =>
+            btn.classList.remove("ativo")
+          );
 
         botao.classList.add("ativo");
+
         horarioSelecionado = horario;
       };
 
       container.appendChild(botao);
+
     });
+
+  })
+
+  .catch(error => {
+
+    console.log(error);
+
+    container.innerHTML =
+      "<p>Erro ao carregar horários.</p>";
+
   });
+
 }
 
 let scrollHorario = 0;
