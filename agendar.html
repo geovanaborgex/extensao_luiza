@@ -13,22 +13,38 @@
 
   <!-- CSS -->
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/header.css">
 </head>
 
 <body style="background: #f1f3ea;" >
 
-<!-- HEADER -->
-<header>
-  <img src="images/LOGO_NOME_FUNDO_VERDE-removebg-preview.png" class="logo">
-  <div class="linha"></div>
-</header>
+<header id="header" class="header-interno">
 
-<nav>
-  <a href="index.html">Início</a>
-  <a href="servicos.html">Catálogo</a>
-  <a href="agendar.html">Agendamento</a>
-  <a href="#historia">História</a>
-</nav>
+  <a href="index.html">
+    <img src="images/LOGO_NOME_FUNDO_VERDE-removebg-preview.png" class="logo">
+  </a>
+
+  <nav id="nav">
+
+    <a href="index.html">Início</a>
+
+    <a href="servicos.html">Catálogo</a>
+
+    <a href="agendar.html" class="ativo">Agendamentos</a>
+
+    <a href="#historia">História</a>
+
+  </nav>
+
+  <a href="agendamento.html" class="btn-header">
+    AGENDAR
+  </a>
+
+  <div class="menu-toggle" id="menu-toggle">
+    ☰
+  </div>
+
+</header>
 
 <!-- FORM -->
 <div class="form-agendamento">

@@ -1,0 +1,485 @@
+/* ================================================= */
+/* HEADER PREMIUM */
+/* ================================================= */
+/* =================================================
+HEADER PÁGINAS SERVICO E AGENDAMENTO
+================================================= */
+
+.header-interno{
+
+  position: relative;
+
+  background: white !important;
+
+  box-shadow: 0 2px 15px rgba(0,0,0,.05);
+
+  padding: 18px 55px;
+}
+
+/* links verdes */
+
+.header-interno nav a{
+  color: #6B6E55;
+}
+
+/* hover dourado */
+
+.header-interno nav a:hover,
+.header-interno nav a.ativo{
+  color: #C8AA72;
+}
+
+/* botão */
+
+.header-interno .btn-header{
+  color: #6B6E55;
+  border-color: #C8AA72;
+}
+
+.header-interno .btn-header:hover{
+  color: white;
+}
+
+header{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 25px 55px;
+
+  z-index: 9999;
+
+  transition: .35s ease;
+
+  background: transparent !important;
+}
+
+/* SCROLL */
+
+header.scrolled{
+  background: #6B6E55;
+  backdrop-filter: blur(10px);
+
+  padding: 16px 45px;
+}
+
+/* HEADER AO ROLAR */
+
+header.scrolled nav a{
+  color: #6B6E55;
+}
+
+header.scrolled nav a:hover,
+header.scrolled nav a.ativo{
+  color: #C8AA72;
+}
+
+/* linha dourada continua */
+
+header.scrolled nav a::after{
+  background: #C8AA72;
+}
+
+/* botão */
+
+header.scrolled .btn-header{
+  color: #6B6E55;
+  border-color: #C8AA72;
+}
+
+header.scrolled .btn-header:hover{
+  color: white;
+}
+
+/* ================================================= */
+/* LOGO */
+/* ================================================= */
+
+.logo{
+  width: 230px;
+  height: auto;
+
+  object-fit: contain;
+
+  transition: .3s ease;
+}
+
+header.scrolled .logo{
+  width: 200px;
+}
+
+/* ================================================= */
+/* NAV */
+/* ================================================= */
+
+nav{
+  display: flex;
+  align-items: center;
+  gap: 42px;
+
+  background: transparent !important;
+
+  padding: 0;
+}
+
+nav a{
+  color: white;
+  text-decoration: none;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+
+  position: relative;
+
+  transition: .3s ease;
+}
+
+/* linha dourada */
+
+nav a::after{
+  content: "";
+
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+
+  width: 0%;
+  height: 2px;
+
+  background: #D6B777;
+
+  transition: .3s ease;
+}
+
+nav a:hover::after,
+nav a.ativo::after{
+  width: 100%;
+}
+
+nav a:hover,
+nav a.ativo{
+  color: #D6B777;
+}
+
+/* ================================================= */
+/* BOTÃO */
+/* ================================================= */
+
+.btn-header{
+  padding: 14px 28px;
+
+  border-radius: 40px;
+
+  border: 1.5px solid #D6B777;
+
+  color: white;
+  text-decoration: none;
+
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  transition: .3s ease;
+}
+
+.btn-header:hover{
+  background: linear-gradient(
+    90deg,
+    #C8AA72,
+    #DCC08D,
+    #B89055
+  );
+
+  transform: translateY(-2px);
+}
+
+/* ================================================= */
+/* MENU MOBILE */
+/* ================================================= */
+
+.menu-toggle{
+  display: none;
+
+  color: white;
+
+  font-size: 2rem;
+
+  cursor: pointer;
+}
+
+/* ================================================= */
+/* RESPONSIVO */
+/* ================================================= */
+
+@media(max-width:950px){
+
+  header{
+    padding: 18px 20px;
+  }
+
+  .logo{
+    width: 160px;
+  }
+
+  header.scrolled .logo{
+    width: 145px;
+  }
+
+  .menu-toggle{
+    display: block;
+
+    position: absolute;
+    right: 20px;
+    top: 22px;
+  }
+
+  nav{
+    position: absolute;
+
+    top: 100%;
+    left: 0;
+
+    width: 100%;
+
+    background: rgba(0,0,0,.96);
+
+    flex-direction: column;
+
+    gap: 24px;
+
+    padding: 30px 0;
+
+    display: none;
+  }
+
+  nav.active{
+    display: flex;
+  }
+
+  .btn-header{
+    display: none;
+  }
+}
+
+/* CELULAR PEQUENO */
+
+@media(max-width:480px){
+
+  .logo{
+    width: 135px;
+  }
+
+  header.scrolled .logo{
+    width: 125px;
+  }
+
+  nav a{
+    font-size: .95rem;
+  }
+}
+
+/* ================================================= */
+/* HERO PREMIUM */
+/* ================================================= */
+
+.hero{
+  position: relative;
+
+  height: 100vh;
+  min-height: 900px;
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+
+  border-radius: 0 0 35px 35px;
+}
+
+/* FUNDO */
+
+.hero::before{
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background-image:
+  linear-gradient(
+    90deg,
+    rgba(0,0,0,.68) 0%,
+    rgba(0,0,0,.45) 35%,
+    rgba(0,0,0,.15) 70%
+  ),
+  url('../images/luiza_paisagem.png');
+
+  background-size: cover;
+
+  background-position: center top;
+
+  transform: scale(1);
+
+  transition:
+  transform 1.5s ease,
+  filter 1s ease;
+
+  z-index: 0;
+}
+
+/* zoom suave */
+
+.hero:hover::before{
+  transform: scale(1.03);
+}
+
+/* ================================================= */
+/* CONTEÚDO */
+/* ================================================= */
+
+.hero-content{
+  position: relative;
+  z-index: 2;
+
+  max-width: 620px;
+
+  margin-left: 8%;
+
+  color: white;
+}
+
+.hero-content h1{
+  font-family: "Playfair Display", serif;
+
+  font-size: 5rem;
+
+  line-height: 1.05;
+
+  font-weight: 500;
+
+  margin-bottom: 18px;
+}
+
+.hero-content h1 span{
+  display: block;
+
+  color: #D6B777;
+
+  font-style: italic;
+
+  font-weight: 400;
+}
+
+.hero-content p{
+  font-family: "Poppins", sans-serif;
+
+  font-size: 1.25rem;
+
+  line-height: 1.7;
+
+  margin-bottom: 35px;
+
+  max-width: 520px;
+}
+
+/* ================================================= */
+/* BOTÃO */
+/* ================================================= */
+
+.btn-hero{
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 18px 34px;
+
+  border-radius: 40px;
+
+  border: 1.5px solid #D6B777;
+
+  color: #D6B777;
+  text-decoration: none;
+
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+
+  transition: .35s ease;
+}
+
+.btn-hero:hover{
+  background: linear-gradient(
+    90deg,
+    #C8AA72,
+    #DCC08D,
+    #B89055
+  );
+
+  color: white;
+
+  transform: translateY(-3px);
+}
+
+/* ================================================= */
+/* RESPONSIVO */
+/* ================================================= */
+
+@media(max-width:950px){
+
+  .hero{
+    min-height: 780px;
+
+    align-items: center;
+  }
+
+  .hero::before{
+    background-position: 68% center;
+  }
+
+  .hero-content{
+    margin: 140px auto 0;
+
+    padding: 0 25px;
+
+    text-align: center;
+  }
+
+  .hero-content h1{
+    font-size: 3.4rem;
+  }
+
+  .hero-content p{
+    font-size: 1rem;
+
+    margin: 0 auto 30px;
+  }
+}
+
+/* CELULAR */
+
+@media(max-width:480px){
+
+  .hero{
+    min-height: 740px;
+  }
+
+  .hero-content h1{
+    font-size: 2.6rem;
+  }
+
+  .hero-content p{
+    font-size: .95rem;
+  }
+
+  .btn-hero{
+    padding: 16px 28px;
+    font-size: .95rem;
+  }
+}
