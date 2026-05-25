@@ -121,7 +121,6 @@ header.scrolled .btn-header:hover{
 
 .logo-catalogo {
   width: 210px;
-  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.45));
 }
 /* SCROLL NAO NECESSARIO AINDA, MAS DEIXEI PRONTO PARA FUTURAS IMPLEMENTAÇÕES
 header.scrolled .logo{
