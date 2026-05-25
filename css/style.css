@@ -303,30 +303,35 @@ body {
 }
 
 /* BOTÃO AGENDAR */
-.btn-agendar {
-    background: transparent;
-    padding: 15px 35px;
-    font-size: 1rem;
-    border-radius: 30px;
-    border: 1.8px solid #C9A86A;
-    text-decoration: none;
-    color: #B89254 !important; /* dourado antes do hover */
-    font-weight: 600;
-    transition: all 0.35s ease;
-    display: inline-block;
-}
+.btn-agendar-float{
+  position: fixed;
 
-.btn-agendar:hover {
-    transform: scale(1.05);
-    background: var(--dourado-gradiente);
-     background-color: linear-gradient(
-        90deg,
-        #C8AA72,
-        #DCC08D,
-        #B89055
-    );
-    color: white !important;
-    box-shadow: 0 6px 18px rgba(184, 144, 85, 0.18);
+  right: 24px !important;
+  bottom: 160px !important;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  background: #6B6E55;
+  color: #D6B777;
+
+  padding: 14px 22px;
+
+  border-radius: 40px;
+
+  text-decoration: none;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,.18);
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(15px);
+
+  transition: .3s ease;
+  z-index: 9999;
 }
 
 
@@ -554,6 +559,39 @@ body {
   display: none;
 }
 
+
+/* botao subir page */
+/* ===================*/
+.btn-topo {
+  position: fixed;
+  bottom: 95px;
+  right: 26px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: #6B6E55;
+  color: #D6B777;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition: 0.3s ease;
+  z-index: 9999;
+}
+
+.btn-topo.aparecer {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.btn-topo:hover {
+  background: linear-gradient(90deg,#C8AA72,#DCC08D,#B89055);
+  color: white;
+}
 
 /* ===================== */
 /* FOOTER */

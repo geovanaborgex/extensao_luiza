@@ -27,13 +27,11 @@
 
     <a href="servicos.html">Catálogo</a>
 
-    <a href="agendar.html">Agendamentos</a>
-
     <a href="#historia">História</a>
 
   </nav>
 
-  <a href="agendamento.html" class="btn-header">
+  <a href="agendar.html" class="btn-header">
     AGENDAR
   </a>
 
@@ -56,9 +54,10 @@
       confiante todos os dias.
     </p>
 
-    <a href="agendamento.html" class="btn-hero">
-      AGENDE AQUI!
-    </a>
+<a href="#agendamento" class="btn-hero">
+  <i class="fa-solid fa-calendar-days"></i>
+  AGENDE AQUI!
+</a>
 
   </div>
 
@@ -206,16 +205,19 @@
 </div>
   
 </footer>
+
+
+
 <script>
 
-const toggle = document.getElementById("menu-toggle");
+/*const toggle = document.getElementById("menu-toggle");
 const nav = document.getElementById("nav");
 
 toggle.addEventListener("click", () => {
   nav.classList.toggle("active");
 });
 
-/* efeito scroll */
+ efeito scroll 
 
 window.addEventListener("scroll", () => {
 
@@ -227,10 +229,9 @@ window.addEventListener("scroll", () => {
     header.classList.remove("scrolled");
   }
 
-});
+}); */
 
-</script>
-
+</script> 
 
 <!-- JAVA SCRIPT -->
 <script>
@@ -263,5 +264,41 @@ function autoSlide() {
 
 setInterval(autoSlide, 3000);
 </script>
+
+<a href="agendar.html" id="btnAgendarFloat" class="btn-agendar-float">
+  <i class="fa-solid fa-calendar-days"></i>
+  Agendar
+</a>
+<br>
+<br>
+
+<button id="btnTopo" class="btn-topo" onclick="voltarAoTopo()">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+
+
+<script>
+const btnTopo = document.getElementById("btnTopo");
+const btnAgendarFloat = document.getElementById("btnAgendarFloat");
+
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 450) {
+    btnTopo.classList.add("aparecer");
+    btnAgendarFloat.classList.add("aparecer");
+  } else {
+    btnTopo.classList.remove("aparecer");
+    btnAgendarFloat.classList.remove("aparecer");
+  }
+});
+
+function voltarAoTopo() {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+</script>
+
 </body>
 </html>
