@@ -20,23 +20,17 @@
 
 <header id="header" class="header-interno">
 
-  <a href="index.html">
-    <img src="images/LOGO_NOME_FUNDO_VERDE-removebg-preview.png" class="logo">
-  </a>
-
   <nav id="nav">
 
     <a href="index.html">Início</a>
 
     <a href="servicos.html">Catálogo</a>
 
-    <a href="#historia">História</a>
-
   </nav>
 
-  <a href="agendar.html" class="btn-header">
-    AGENDAR
-  </a>
+  <a href="index.html" class="logo-link-catalogo">
+      <img src="images/LOGO_NOME_FUNDO_VERDE-removebg-preview.png" class="logo-catalogo">
+    </a>
 
   <div class="menu-toggle" id="menu-toggle">
     ☰
@@ -58,10 +52,17 @@
     </div>
 
     <!-- TELEFONE -->
-    <div class="form-group">
-      <label>Telefone</label>
-      <input type="text" name="telefone" required>
-    </div>
+  <div class="form-group">
+    <label>Telefone</label>
+    <input
+      type="tel"
+      id="telefone"
+      name="telefone"
+      placeholder="(XX) 9XXXX-XXXX"
+      maxlength="15"
+      required
+    >
+  </div>
 
     <!-- SERVIÇO -->
     <div class="form-group">
@@ -143,8 +144,6 @@
         <li><a href="#">Início</a></li>
         <li><a href="servicos.html">Catálogo</a></li>
         <li><a href="agendar.html">Agendamento</a></li>
-        <li><a href="#historia">História</a></li>
-        <li><a href="#contato">Contato</a></li>
       </ul>
 
     </div>
@@ -437,6 +436,20 @@ function abrirModalHorario() {
   const nome = document.querySelector('input[name="nome"]').value;
   const telefone = document.querySelector('input[name="telefone"]').value;
   const procedimento = document.getElementById("procedimento").value;
+
+  const telefoneNumeros =
+telefone.replace(/\D/g, "");
+
+if (telefoneNumeros.length !== 11) {
+  Swal.fire({
+    icon: "warning",
+    title: "Telefone inválido",
+    text: "Confira se o DDD e todos os dígitos estão corretos.",
+    confirmButtonColor: "#6B6E55"
+  });
+
+  return;
+}
 
   if (!nome || !telefone || !procedimento) {
     Swal.fire({
@@ -812,6 +825,35 @@ window.addEventListener("DOMContentLoaded", () => {
       mostrarInfoProcedimento();
     }, 100);
   }
+});
+</script>
+
+
+<script>
+const telefoneInput =
+document.getElementById("telefone");
+
+telefoneInput.addEventListener("input", function(e){
+
+  let valor = e.target.value
+    .replace(/\D/g, "");
+
+  // limita em 11 números (DDD + 9 dígitos)
+  valor = valor.substring(0, 11);
+
+  // (37) 9
+  valor = valor.replace(
+    /^(\d{2})(\d)/,
+    "($1) $2"
+  );
+
+  // (37) 99999-9999
+  valor = valor.replace(
+    /(\d{5})(\d)/,
+    "$1-$2"
+  );
+
+  e.target.value = valor;
 });
 </script>
 

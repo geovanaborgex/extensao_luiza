@@ -50,17 +50,13 @@ header{
   align-items: center;
   justify-content: space-between;
 
-  padding: 18px 55px;
+  padding: 28px 70px;
 
   z-index: 9999;
-
-  transition: .35s ease;
-
   background: transparent !important;
-
 }
 
-/* SCROLL */
+/* SCROLL NAO NECESSARIO AINDA, MAS DEIXEI PRONTO PARA FUTURAS IMPLEMENTAÇÕES 
 
 header.scrolled{
   background: #6B6E55;
@@ -69,7 +65,9 @@ header.scrolled{
   padding: 16px 45px;
 }
 
-/* HEADER AO ROLAR */
+*/
+
+/* HEADER AO ROLAR - DESATIVEI PARA TESTES, MAS DEIXEI PRONTO PARA FUTURAS IMPLEMENTAÇÕES
 
 header.scrolled nav a{
   color: #6B6E55;
@@ -80,13 +78,13 @@ header.scrolled nav a.ativo{
   color: #C8AA72;
 }
 
-/* linha dourada continua */
+ linha dourada continua ----------------------
 
 header.scrolled nav a::after{
   background: #C8AA72;
 }
 
-/* botão */
+botão ----------------
 
 header.scrolled .btn-header{
   color: #6B6E55;
@@ -97,19 +95,35 @@ header.scrolled .btn-header:hover{
   color: white;
 }
 
+*/
+
 /* ================================================= */
 /* LOGO */
 /* ================================================= */
 
-.logo{
-  width: 200px;
-  height: auto;
-
-  object-fit: contain;
-
-  transition: .3s ease;
+.logo-link {
+  background: transparent;
+  padding: 0;
 }
 
+.logo {
+  width: 200px;
+  height: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1) drop-shadow(0 4px 10px rgba(0,0,0,.45));
+}
+
+.logo-link-catalogo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.logo-catalogo {
+  width: 210px;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.45));
+}
+/* SCROLL NAO NECESSARIO AINDA, MAS DEIXEI PRONTO PARA FUTURAS IMPLEMENTAÇÕES
 header.scrolled .logo{
   width: 200px;
 }
@@ -121,10 +135,8 @@ header.scrolled .logo{
 nav{
   display: flex;
   align-items: center;
-  gap: 42px;
-
+  gap: 50px;
   background: transparent !important;
-
   padding: 0;
 }
 
@@ -331,13 +343,13 @@ nav a.ativo{
 }
 
 
-/* zoom suave */
+/* efeito hover - desativado para não atrapalhar a leitura, mas deixei pronto para futuras implementações
 
 .hero:hover::before{
   transform: scale(1.02);
   filter: brightness(.88);
 }
-
+*/
 /* ================================================= */
 /* CONTEÚDO */
 /* ================================================= */
@@ -416,6 +428,7 @@ nav a.ativo{
 
   transform: translateY(-3px);
 }
+
 
 /* ================================================= */
 /* RESPONSIVO */

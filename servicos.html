@@ -18,23 +18,18 @@
 
 <header id="header" class="header-interno">
 
-  <a href="index.html">
-    <img src="images/LOGO_NOME_FUNDO_VERDE-removebg-preview.png" class="logo">
-  </a>
-
   <nav id="nav">
 
     <a href="index.html">Início</a>
 
-    <a href="servicos.html" class="ativo">Catálogo</a>
-
-    <a href="#historia">História</a>
+    <a href="servicos.html">Catálogo</a>
 
   </nav>
 
-  <a href="agendar.html" class="btn-header">
-    AGENDAR
-  </a>
+  <a href="index.html" class="logo-link-catalogo">
+      <img src="images/LOGO_NOME_FUNDO_VERDE-removebg-preview.png" class="logo-catalogo">
+    </a>
+
 
   <div class="menu-toggle" id="menu-toggle">
     ☰
@@ -223,14 +218,6 @@
 
 </div>
 
-<section class="cta-agendar">
-
-  <h2>Gostou dos nossos serviços?</h2>
-  <p>Venha realçar ainda mais a sua beleza com a gente!</p>
-
-  <a href="agendar.html" class="btn btn-cta"><b>AGENDAR AGORA</b></a>
-
-</section>
 
 <footer>
   <div class="footer-container">
@@ -247,8 +234,6 @@
         <li><a href="#">Início</a></li>
         <li><a href="servicos.html">Catálogo</a></li>
         <li><a href="agendar.html">Agendamento</a></li>
-        <li><a href="#historia">História</a></li>
-        <li><a href="#contato">Contato</a></li>
       </ul>
     </div>
 
@@ -273,6 +258,39 @@
   
 </footer>
 
+<a href="agendar.html" id="btnAgendarFloat" class="btn-agendar-float">
+  <i class="fa-solid fa-calendar-days"></i>
+  Agendar
+</a>
+<br>
+<br>
 
+<button id="btnTopo" class="btn-topo" onclick="voltarAoTopo()">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+
+
+<script>
+const btnTopo = document.getElementById("btnTopo");
+const btnAgendarFloat = document.getElementById("btnAgendarFloat");
+
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 450) {
+    btnTopo.classList.add("aparecer");
+    btnAgendarFloat.classList.add("aparecer");
+  } else {
+    btnTopo.classList.remove("aparecer");
+    btnAgendarFloat.classList.remove("aparecer");
+  }
+});
+
+function voltarAoTopo() {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+</script>
 </body>
 </html>
