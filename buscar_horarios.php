@@ -201,6 +201,26 @@ $horariosDisponiveis = [];
 
 $horarioTeste = clone $inicioExpediente;
 
+$agora = new DateTime("now", new DateTimeZone("America/Sao_Paulo"));
+$dataHoje = $agora->format("Y-m-d");
+
+if ($data === $dataHoje && $horarioTeste < $agora) {
+    $horarioTeste = clone $agora;
+
+    $minuto = (int)$horarioTeste->format("i");
+
+    if ($minuto > 0 && $minuto <= 15) {
+        $horarioTeste->setTime((int)$horarioTeste->format("H"), 15);
+    } elseif ($minuto > 15 && $minuto <= 30) {
+        $horarioTeste->setTime((int)$horarioTeste->format("H"), 30);
+    } elseif ($minuto > 30 && $minuto <= 45) {
+        $horarioTeste->setTime((int)$horarioTeste->format("H"), 45);
+    } else {
+        $horarioTeste->modify("+1 hour");
+        $horarioTeste->setTime((int)$horarioTeste->format("H"), 0);
+    }
+}
+
 while ($horarioTeste < $fimExpediente) {
 
     $inicioNovo = clone $horarioTeste;

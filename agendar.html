@@ -185,6 +185,15 @@
 
   </div>
 
+  <div class="footer-bottom">
+
+  <p>
+    © 2026 Luiza Rodrigues Beleza & Estética.
+    Todos os direitos reservados.
+  </p>
+
+</div>
+
 </footer>
 
 <!-- JS -->
@@ -373,7 +382,7 @@ function mostrarInfoProcedimento(){
 
     <button class="fechar-modal" onclick="fecharModalHorario()">×</button>
 
-    <h2>Escolha seu horário</h2>
+    <h2>Escolha seu horário:</h2>
 
   <div class="calendario-topo">
     <button type="button" onclick="voltarDias()">‹</button>
@@ -737,37 +746,55 @@ function confirmarAgendamento() {
     status.style.display = "none";
 
     if (data.status === "sucesso") {
-      const nome = document.querySelector('input[name="nome"]').value;
-      const telefone = document.querySelector('input[name="telefone"]').value;
-      const procedimento = document.getElementById("procedimento").value;
-      const duracao = document.getElementById("duracaoProcedimento").innerText;
-      const valor = document.getElementById("valorProcedimento").innerText;
+    const nome =
+    document.querySelector('input[name="nome"]').value;
 
-      const mensagem = `Olá, Luiza! Acabei de realizar um agendamento pelo site.
+    const telefone =
+    document.querySelector('input[name="telefone"]').value;
 
-Cliente: ${nome}
-Telefone: ${telefone}
-Procedimento: ${procedimento}
-Data: ${dataSelecionada}
-Horário: ${horarioSelecionado}
-Duração: ${duracao}
-Valor: ${valor}`;
+    const procedimento =
+    document.getElementById("procedimento").value;
+
+    const duracao =
+    document.getElementById("duracaoProcedimento").innerText;
+
+    const valor =
+    document.getElementById("valorProcedimento").innerText;
+
+    const dataFormatada = dataSelecionada
+      .split("-")
+      .reverse()
+      .join("/");
+
+    const mensagem = `Olá, Luiza! Acabei de realizar um agendamento pelo site.
+
+    Cliente: ${nome}
+    Telefone: ${telefone}
+    Procedimento: ${procedimento}
+    Data: ${dataFormatada}
+    Horário: ${horarioSelecionado}
+    Duração: ${duracao}
+    Valor: ${valor}`;
 
       const numeroLuiza = "5537998420727";
       const linkWhatsApp = `https://wa.me/${numeroLuiza}?text=${encodeURIComponent(mensagem)}`;
 
       fecharModalHorario();
 
-      Swal.fire({
-        icon: "success",
-        title: "Agendamento realizado!",
-        text: "Seu horário foi reservado com sucesso.",
-        showCancelButton: true,
-        confirmButtonText: "Enviar confirmação no WhatsApp",
-        cancelButtonText: "Fechar",
-        confirmButtonColor: "#25D366",
-        cancelButtonColor: "#6B6E55"
-      }).then((result) => {
+  Swal.fire({
+    icon: "success",
+    title: "Agendamento realizado!",
+    text: "Seu horário foi reservado com sucesso.",
+    showCancelButton: true,
+    confirmButtonText: '<i class="fa-brands fa-whatsapp"></i> Enviar no WhatsApp',
+    cancelButtonText: "Fechar",
+    customClass: {
+      popup: "swal-premium",
+      confirmButton: "swal-btn-whatsapp",
+      cancelButton: "swal-btn-fechar"
+    },
+    buttonsStyling: false
+  }).then((result) => {
         if (result.isConfirmed) {
           window.open(linkWhatsApp, "_blank");
         }
