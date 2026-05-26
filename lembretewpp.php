@@ -1,7 +1,5 @@
 <?php
 
-file_put_contents(__DIR__ . "/cron_teste.txt", date('Y-m-d H:i:s') . PHP_EOL, FILE_APPEND);
-
 require 'google_calendar.php';
 
 date_default_timezone_set('America/Sao_Paulo');
