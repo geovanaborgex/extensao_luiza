@@ -542,7 +542,7 @@ body {
 /* ===================== */
 .carousel {
   width: 78%;
-  max-width: 920px;
+  max-width: 1000px;
   margin: 15px auto 0;
   overflow: hidden;
 }
