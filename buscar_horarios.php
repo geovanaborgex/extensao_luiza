@@ -156,13 +156,8 @@ try {
 
 } catch (Exception $e) {
 
-    echo json_encode([
-        "status" => "erro",
-        "mensagem" => "Erro ao consultar Google Calendar.",
-        "erro" => $e->getMessage()
-    ]);
+    die($e->getMessage());
 
-    exit;
 }
 
 /* EVENTOS OCUPADOS */
