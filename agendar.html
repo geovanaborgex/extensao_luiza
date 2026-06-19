@@ -33,10 +33,9 @@
   <a href="index.html" class="logo-link-catalogo">
       <img src="images/LOGO_NOME_FUNDO_VERDE-removebg-preview.png" class="logo-catalogo">
     </a>
-
-  <div class="menu-toggle" id="menu-toggle">
-    ☰
-  </div>
+    <div class="menu-toggle" style="color: #6B6E55;" onclick="toggleMenu()">
+      ☰
+    </div>
 
 </header>
 
@@ -443,6 +442,15 @@ function mostrarInfoProcedimento(){
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script> /* criar o agendamento */
+
+
+function toggleMenu() {
+  const menu = document.getElementById("nav");
+  nav.classList.toggle("ativo");
+}
+
+
+
 function abrirModalHorario() {
   const nome = document.querySelector('input[name="nome"]').value;
   const telefone = document.querySelector('input[name="telefone"]').value;
