@@ -386,7 +386,7 @@ body {
 
 .servicos-cards-home {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 22px;
   max-width: 1200px;
   margin: 0 auto 34px;
@@ -603,21 +603,31 @@ body {
 /* ===================== */
 /* FOOTER */
 /* ===================== */
+
 footer {
   background: #6B6E55;
   color: white;
-
+  
   padding: 50px 20px 0;
   margin-bottom: 0;
 }
 
 .footer-container {
   display: flex;
-  justify-content: center;
-  align-items: left;
+  justify-content: space-between;
   align-items: flex-start;
-  gap: 60px;
+
+  gap: 40px;
   flex-wrap: wrap;
+
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.footer-col {
+  flex: 1;
+  min-width: 180px;
+  margin: 0;
 }
 
 .footer-col h3 {
@@ -625,29 +635,40 @@ footer {
   font-size: 1.1rem;
 }
 
-.footer-bottom {
-  border-top: 1px solid rgba(255,255,255,.12);
-  text-align: center;
-  margin-top: 40px;
-  padding: 18px 20px 18px;
-  margin-bottom: 0;
+.footer-col p {
+  margin-bottom: 8px;
+  font-size: 0.9rem;
 }
 
-.footer-bottom p {
+.footer-logo {
+  width: 140px;
+  max-width: 100%;
+  opacity: 0.9;
   margin: 0;
-
-  font-family: "Poppins", sans-serif;
-  font-size: 0.92rem;
-  font-weight: 300;
-  text-align: center;
-  color: rgba(255,255,255,.75);
-
-  letter-spacing: 0.3px;
 }
 
+/* LINKS */
+.footer-links {
+  list-style: none;
+  padding: 0;
+  color: #fff;
+}
 
+.footer-links li {
+  margin-bottom: 8px;
+}
 
-/* redes */
+.footer-links a {
+  color: white;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.footer-links a:hover {
+  color: #D6B777;
+}
+
+/* REDES */
 .redes {
   display: flex;
   gap: 15px;
@@ -664,61 +685,22 @@ footer {
   opacity: 0.8;
 }
 
-/* copyright */
-.copy {
-  margin-top: 30px;
-  font-size: 0.85rem;
-  opacity: 0.8;
+/* BOTTOM */
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,.12);
   text-align: center;
+
+  margin-top: 40px;
+  padding: 18px 20px;
 }
 
-.footer-links {
-  list-style: none;
-  padding: 0;
-}
-
-.footer-links li {
-  margin-bottom: 8px;
-}
-
-.footer-links a {
-  color: white;
-  text-decoration: none;
-  transition: 0.3s;
-}
-
-.footer-links a:hover {
-  color: var(--dourado-gradiente); /* dourado do seu tema */
-}
-
-
-.footer-logo {
-  width: 140px; /* diminui aqui */
-  max-width: 100%;
-  opacity: 0.9;
-  margin-left: 50px;
-}
-
-/* mantém colunas alinhadas */
-.footer-col {
-  flex: 1;
-  min-width: 180px;
-  margin-left: -50px;
-}
-
-.footer-col p {
-  margin-bottom: 8px;
-  font-size: 0.9rem;
-}
-
-.footer-col a {
-  color: var(--dourado-gradiente); /* dourado do seu tema */
-  text-decoration: none;
-  transition: 0.3s;
-}
-
-.footer-col a:hover {
-  text-decoration: underline;
+.footer-bottom p {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.92rem;
+  font-weight: 300;
+  color: rgba(255,255,255,.75);
+  letter-spacing: 0.3px;
 }
 /* ===================== */
 /* ANIMAÇÃO */
