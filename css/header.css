@@ -299,6 +299,8 @@ nav a.ativo{
   }
 }
 
+
+
 /* ================================================= */
 /* HERO PREMIUM */
 /* ================================================= */
@@ -527,4 +529,70 @@ nav a.ativo{
   );
 
   color: white;
+}
+/* =================================================
+   HERO RESPONSIVO (SEM MUDAR DESIGN DO DESKTOP)
+================================================= */
+
+/* TABLET */
+@media (max-width: 950px) {
+
+  .hero {
+    height: 420px;
+  }
+
+  .hero-content {
+    margin-left: 6%;
+    margin-bottom: 40px;
+    max-width: 90%;
+  }
+
+  .hero-content h1 {
+    font-size: 2.4rem;
+    line-height: 1.1;
+  }
+
+  .hero-content p {
+    font-size: 1rem;
+    max-width: 100%;
+  }
+}
+
+/* CELULAR */
+@media (max-width: 600px) {
+
+  .hero {
+    height: 380px;
+  }
+
+  .hero-content {
+    margin: 0 auto;
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+
+  .hero-content h1 span {
+    white-space: normal; /* evita quebrar estranho no mobile */
+  }
+
+  .hero-content p {
+    font-size: 0.95rem;
+    max-width: 100%;
+  }
+}
+
+/* CELULAR PEQUENO */
+@media (max-width: 400px) {
+
+  .hero-content h1 {
+    font-size: 1.7rem;
+  }
+
+  .hero-content p {
+    font-size: 0.9rem;
+  }
 }
