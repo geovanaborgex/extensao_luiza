@@ -1220,6 +1220,69 @@ border:1px solid #ccc;
 
   z-index: 999999 !important;
 }
+@media (max-width: 768px) {
+
+  .modal-conteudo {
+    width: 95% !important;
+    max-width: 95% !important;
+    padding: 22px 18px !important;
+    border-radius: 22px !important;
+
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-conteudo h2 {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+
+  .calendario-topo {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .calendario-topo h3 {
+    font-size: 1.1rem;
+  }
+
+  .dias-modal {
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .dias-modal button {
+    width: 60px;
+    height: 70px;
+    font-size: 0.8rem;
+  }
+
+  .horarios-topo {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .horarios-modal {
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .horarios-modal button {
+    min-width: 80px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+
+  .resumo-modal {
+    padding: 18px;
+  }
+
+  .btn-confirmar-horario {
+    min-width: 100%;
+    font-size: 0.95rem;
+  }
+}
 
 
 /* calendario */
