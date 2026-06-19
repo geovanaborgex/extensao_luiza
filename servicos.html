@@ -31,11 +31,9 @@
   <a href="index.html" class="logo-link-catalogo">
       <img src="images/LOGO_NOME_FUNDO_VERDE-removebg-preview.png" class="logo-catalogo">
     </a>
-
-
-  <div class="menu-toggle" id="menu-toggle">
-    ☰
-  </div>
+    <div class="menu-toggle" style="color: #6B6E55;" onclick="toggleMenu()">
+      ☰
+    </div>
 
 </header>
 
@@ -282,6 +280,13 @@
 
 
 <script>
+
+function toggleMenu() {
+  const menu = document.getElementById("nav");
+  nav.classList.toggle("ativo");
+}
+
+
 const btnTopo = document.getElementById("btnTopo");
 const btnAgendarFloat = document.getElementById("btnAgendarFloat");
 
