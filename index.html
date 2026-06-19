@@ -31,10 +31,10 @@
   <a href="index.html" class="logo-link">
     <img src="images/LOGO_NOME_FUNDO_VERDE-removebg-preview.png" class="logo">
   </a>
-
-  <div class="menu-toggle" id="menu-toggle">
+  <div class="menu-toggle" onclick="toggleMenu()">
     ☰
   </div>
+  
 
 </header>
 <section class="hero">
@@ -215,6 +215,11 @@
 
 <!-- JAVA SCRIPT -->
 <script>
+
+function toggleMenu() {
+  const menu = document.getElementById("nav");
+  nav.classList.toggle("ativo");
+}
 
 const track = document.querySelector(".carousel-track");
 const slides = document.querySelectorAll(".carousel-track img");
