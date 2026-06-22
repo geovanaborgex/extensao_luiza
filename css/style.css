@@ -658,6 +658,12 @@ footer a:hover {
   color: #D6B777;
 }
 
+.redes a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .footer-links {
   list-style: none;
   padding: 0;
