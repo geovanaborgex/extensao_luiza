@@ -18,7 +18,7 @@
 <body>
 <header id="header">
 
-  <nav id="nav">
+  <nav id="nav" class="ativo">
 
     <a href="index.html" class="ativo">Início</a>
 
@@ -218,7 +218,13 @@
 
 function toggleMenu() {
   const menu = document.getElementById("nav");
-  nav.classList.toggle("ativo");
+
+  console.log(menu);
+  console.log(menu.classList);
+
+  menu.classList.toggle("ativo");
+
+  console.log(menu.className);
 }
 
 const track = document.querySelector(".carousel-track");
