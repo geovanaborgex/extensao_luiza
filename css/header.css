@@ -130,16 +130,14 @@ header.scrolled .logo{
 /* ================================================= */
 /* NAV */
 /* ================================================= */
-
-nav{
+nav {
   display: flex;
   align-items: center;
   gap: 50px;
-  background: transparent !important;
-  padding: 0;
 }
 
-nav a{
+
+nav a {
   color: white;
   text-decoration: none;
 
@@ -148,13 +146,12 @@ nav a{
   font-weight: 500;
 
   position: relative;
-
   transition: .3s ease;
 }
 
-/* linha dourada */
 
-nav a::after{
+/* linha dourada */
+nav a::after {
   content: "";
 
   position: absolute;
@@ -169,14 +166,81 @@ nav a::after{
   transition: .3s ease;
 }
 
-nav a:hover::after,
-nav a.ativo::after{
+nav a:hover::after {
   width: 100%;
 }
 
-nav a:hover,
-nav a.ativo{
+
+/* BOTÃO MENU */
+.menu-toggle {
+  cursor: pointer;
+  font-size: 35px;
+  color: white;
+  position: relative;
+  z-index: 1001;
+}
+
+
+/* MENU FECHADO */
+#nav {
+  position: absolute;
+
+  top: 60px;
+  right: 0;
+
+  left: auto;
+
+  width: 180px;
+
+  background: white;
+
+  border-radius: 15px;
+
+  padding: 25px 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,.15);
+
+  opacity: 0;
+  visibility: hidden;
+
+  transform: translateY(-10px);
+
+  transition: .3s ease;
+
+  z-index: 1000;
+}
+
+
+/* MENU ABERTO */
+#nav.ativo {
+
+  opacity: 1;
+
+  visibility: visible;
+
+  transform: translateY(0);
+}
+
+
+/* LINKS DO MENU MOBILE */
+#nav a {
+
+  color: #222;
+
+  font-size: 16px;
+
+}
+
+
+#nav a:hover {
+
   color: #D6B777;
+
 }
 
 /* ================================================= */
