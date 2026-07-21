@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $fim = clone $inicio;
     $fim->modify("+$duracao minutes");
 
-    $calendarId = 'geovanaborges304@gmail.com';
+    $calendarId = 'luizagues99@gmail.com';
 
     /* VERIFICA CONFLITO */
     $optParams = [
