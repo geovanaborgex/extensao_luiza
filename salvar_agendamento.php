@@ -88,8 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         "Cliente: $nome
         Telefone: $telefone
         Serviço: $servico
-        Procedimento: $procedimento
-        [LEMBRETE_PENDENTE]",
+        Procedimento: $procedimento",
 
         'start' => [
             'dateTime' => $inicio->format(DateTime::RFC3339),
