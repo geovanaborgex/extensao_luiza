@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Luiza Rodrigues Beleza e Estética</title>
 
-  <link rel="icon" type="image/png" sizes="30x30" href="images/LOGOFUNDOBRANCO.jpeg">
-  <link rel="apple-touch-icon" href="images/LOGOFUNDOBRANCO.jpeg">
+  <link rel="icon" type="image/png" sizes="30x30" href="images/logocirculo.png">
+  <link rel="apple-touch-icon" href="images/logocirculo.png">
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 
@@ -199,80 +199,90 @@
 
 <!-- JS -->
 <script>
-
 const procedimentosInfo = {
 
-  // MAQUIAGEM
-  "Maquiagem Profissional": {
-    valor: "R$ 120,00",
-    duracao: "1 hora"
-  },
+// MAQUIAGEM
+"Maquiagem Profissional": {
+  valor: "R$ 120,00",
+  duracao: "1 hora"
+},
 
-  // CABELOS
-  "Escova": {
-    valor: "R$ 45,00",
-    duracao: "30 minutos"
-  },
+"Maquiagem Express": {
+  valor: "R$ 80,00",
+  duracao: "30 minutos"
+},
 
-  "Chapa": {
-    valor: "R$ 40,00",
-    duracao: "1 hora"
-  },
+// CABELOS
+"Escova": {
+  valor: "R$ 45,00",
+  duracao: "30 minutos"
+},
 
-  "Cachos/Ondas": {
-    valor: "R$ 55,00",
-    duracao: "30 minutos"
-  },
+"Chapa": {
+  valor: "R$ 40,00",
+  duracao: "40 minutos"
+},
 
-  "Penteado": {
-    valor: "R$ 80,00",
-    duracao: "30 minutos"
-  },
+"Cachos/Ondas": {
+  valor: "R$ 30,00",
+  duracao: "30 minutos"
+},
 
-  "Tintura com Tinta Profissional": {
-    valor: "R$ 150,00",
-    duracao: "30 minutos"
-  },
+"Penteado": {
+  valor: "R$ 80,00",
+  duracao: "30 minutos"
+},
 
-  // SOBRANCELHAS
-  "Nanopigmentação": {
-    valor: "R$ 250,00",
-    duracao: "2 horas"
-  },
+"Tintura com Tinta Profissional": {
+  valor: "R$ 65,00",
+  duracao: "1h30"
+},
 
-  "Design com Henna": {
-    valor: "R$ 35,00",
-    duracao: "30 minutos"
-  },
+"Tintura com Tinta da Cliente": {
+  valor: "R$ 30,00",
+  duracao: "30 minutos"
+},
 
-  "Design Simples": {
-    valor: "R$ 25,00",
-    duracao: "30 minutos"
-  },
+// SOBRANCELHAS
+"Nanopigmentação": {
+  valor: "R$ 400,00",
+  duracao: "2 horas"
+},
 
-  "Brow Lamination": {
-    valor: "R$ 90,00",
-    duracao: "1 hora"
-  },
+"Design com Henna": {
+  valor: "R$ 50,00",
+  duracao: "40 minutos"
+},
 
-  //CILIOS
-  "Lash Lifting": {
-    valor: "R$ 120,00",
-    duracao: "1h30"
-  },
+"Design Simples": {
+  valor: "R$ 40,00",
+  duracao: "30 minutos"
+},
 
-  // CUIDADOS
-  "Limpeza de Pele": {
-    valor: "R$ 100,00",
-    duracao: "1h15"
-  },
+"Brow Lamination": {
+  valor: "R$ 60,00",
+  duracao: "40 minutos"
+},
 
-  "Spa dos Pés": {
-    valor: "R$ 70,00",
-    duracao: "1 hora"
-  }
+// CÍLIOS
+"Lash Lifting": {
+  valor: "R$ 60,00",
+  duracao: "1 hora"
+},
+
+// CUIDADOS
+"Limpeza de Pele": {
+  valor: "R$ 120,00",
+  duracao: "1 hora"
+},
+
+"Spa dos Pés": {
+  valor: "R$ 70,00",
+  duracao: "1 hora"
+}
 
 };
+
 
 function mostrarProcedimentos(){
 
@@ -328,6 +338,7 @@ function mostrarProcedimentos(){
       <option>Cachos/Ondas</option>
       <option>Penteado</option>
       <option>Tintura com Tinta Profissional</option>
+      <option>Tintura com Tinta da Cliente</option>
     `;
 
   }
@@ -349,6 +360,7 @@ function mostrarProcedimentos(){
     procedimento.innerHTML = `
       <option value="">Selecione</option>
       <option>Maquiagem Profissional</option>
+      <option>Maquiagem Express</option>
     `;
 
   }
