@@ -1,5 +1,5 @@
-<?php
-
+ <?php
+/*
 require 'google_calendar.php';
 
 date_default_timezone_set('America/Sao_Paulo');
@@ -20,12 +20,12 @@ foreach ($eventos->getItems() as $evento) {
 
     $descricao = $evento->description ?? '';
 
-    /* ❌ só pega eventos pendentes */
+    /* ❌ só pega eventos pendentes *//*
     if (strpos($descricao, '[LEMBRETE_PENDENTE]') === false) {
         continue;
     }
 
-    /* ❌ evita duplicar envio */
+    /* ❌ evita duplicar envio *//*
     if (strpos($descricao, '[LEMBRETE_ENVIADO]') !== false) {
         continue;
     }
@@ -50,7 +50,7 @@ $mensagem = "Oi 💚\n"
 . "Qualquer imprevisto, me chama aqui no WhatsApp ✨";
 
 
-    /* 📡 API ULTRAMSG */
+    /* 📡 API ULTRAMSG *//*
     $url = "https://api.ultramsg.com/instance176224/messages/chat";
 
     file_get_contents($url, false, stream_context_create([
@@ -65,7 +65,7 @@ $mensagem = "Oi 💚\n"
         ]
     ]));
 
-    /* ✅ marca como enviado */
+    /* ✅ marca como enviado *//*
     $evento->setDescription($descricao . "\n\n[LEMBRETE_ENVIADO]");
 
     $service->events->update(
@@ -75,4 +75,5 @@ $mensagem = "Oi 💚\n"
     );
 
     echo "Lembrete enviado para: $telefone\n";
-}
+    
+    */

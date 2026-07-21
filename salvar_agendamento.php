@@ -17,19 +17,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     /* DURAÇÕES */
     $duracoes = [
 
-        "Maquiagem Profissional" => 60,
-        "Spa dos Pés" => 60,
-        "Limpeza de Pele" => 75,
-        "Tintura com Tinta Profissional" => 30,
-        "Chapa" => 60,
-        "Cachos/Ondas" => 30,
-        "Escova" => 30,
-        "Penteado" => 30,
-        "Nanopigmentação" => 120,
-        "Design com Henna" => 30,
-        "Brow Lamination" => 60,
-        "Lash Lifting" => 90,
-        "Design Simples" => 30
+    "Maquiagem Profissional" => 60,
+    "Spa dos Pés" => 60,
+    "Limpeza de Pele" => 60,
+    "Tintura com Tinta Profissional" => 90,
+    "Chapa" => 40,
+    "Cachos/Ondas" => 30,
+    "Escova" => 30,
+    "Penteado" => 30,
+    "Nanopigmentação" => 120,
+    "Design com Henna" => 40,
+    "Brow Lamination" => 40,
+    "Lash Lifting" => 60,
+    "Design Simples" => 30,
+    "Maquiagem Express" => 30,
+    "Tintura com Tinta da Cliente" => 30,
 
     ];
 
@@ -84,10 +86,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         'description' =>
         "Cliente: $nome
-Telefone: $telefone
-Serviço: $servico
-Procedimento: $procedimento
-[LEMBRETE_PENDENTE]",
+        Telefone: $telefone
+        Serviço: $servico
+        Procedimento: $procedimento
+        [LEMBRETE_PENDENTE]",
 
         'start' => [
             'dateTime' => $inicio->format(DateTime::RFC3339),
