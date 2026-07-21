@@ -475,3 +475,105 @@
 }
 
 }
+
+/* ================================================= */
+/* CHAMADA A'LU COSMÉTICOS */
+/* ================================================= */
+
+.home-cosmeticos{
+
+    padding:90px 8%;
+
+    background:#f9f8f6;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+}
+
+.logo-home-alu{
+
+    width:220px;
+
+    margin-bottom:30px;
+
+    transition:.35s;
+
+}
+
+.logo-home-alu:hover{
+
+    transform:scale(1.05);
+
+}
+
+.home-cosmeticos span{
+
+    color:#C8AA72;
+
+    font-family:"Poppins",sans-serif;
+
+    font-weight:600;
+
+    letter-spacing:3px;
+
+    text-transform:uppercase;
+
+    margin-bottom:12px;
+
+}
+
+.home-cosmeticos h2{
+
+    font-family:"Playfair Display",serif;
+
+    color:#6B6E55;
+
+    font-size:2.8rem;
+
+    margin-bottom:25px;
+
+}
+
+.home-cosmeticos p{
+
+    max-width:700px;
+
+    color:#666;
+
+    font-family:"Poppins",sans-serif;
+
+    line-height:1.9;
+
+    margin-bottom:40px;
+
+}
+
+@media(max-width:768px){
+
+    .logo-home-alu{
+
+        width:170px;
+
+    }
+
+    .home-cosmeticos h2{
+
+        font-size:2.1rem;
+
+    }
+
+    .home-cosmeticos{
+
+        padding:70px 25px;
+
+    }
+
+}

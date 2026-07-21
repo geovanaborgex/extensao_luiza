@@ -130,10 +130,26 @@ header.scrolled .logo{
 /* ================================================= */
 /* NAV */
 /* ================================================= */
-nav {
-  display: flex;
-  align-items: center;
-  gap: 50px;
+nav{
+
+  position:absolute;
+
+  top:100%;
+
+  left:0;
+
+  width:100%;
+
+  background:rgba(0,0,0,.96);
+
+  flex-direction:column;
+
+  gap:25px;
+
+  padding:35px 0;
+
+  display:none;
+
 }
 
 
@@ -281,15 +297,20 @@ nav a:hover::after {
 /* ================================================= */
 /* MENU MOBILE */
 /* ================================================= */
-
 .menu-toggle{
-  display: none;
 
-  color: white;
+  display:block;
 
-  font-size: 2rem;
+  color:white;
 
-  cursor: pointer;
+  font-size:2rem;
+
+  cursor:pointer;
+
+  position:relative;
+
+  z-index:1001;
+
 }
 
 /* ================================================= */
@@ -308,14 +329,6 @@ nav a:hover::after {
 
   header.scrolled .logo{
     width: 145px;
-  }
-
-  .menu-toggle{
-    display: block;
-
-    position: absolute;
-    right: 20px;
-    top: 22px;
   }
 
   nav{
@@ -337,7 +350,7 @@ nav a:hover::after {
     display: none;
   }
 
-  nav.active{
+  nav.ativo{
     display: flex;
   }
 
