@@ -1473,3 +1473,84 @@ border:1px solid #ccc;
 }
 
 
+.aviso-agendamento{
+
+  margin-top:20px;
+
+  padding:16px 20px;
+
+  border-radius:14px;
+
+  background:#F8F6F2;
+
+  border:1px solid rgba(200,170,114,.35);
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+  gap:18px;
+
+  font-family:"Poppins",sans-serif;
+
+  font-size:.92rem;
+
+  color:#555;
+
+}
+
+.aviso-agendamento i{
+
+  color:#25D366;
+
+  font-size:1.3rem;
+
+}
+
+.aviso-agendamento strong{
+
+  color:#6B6E55;
+
+}
+
+.aviso-agendamento a{
+
+  background:#25D366;
+
+  color:white;
+
+  text-decoration:none;
+
+  padding:10px 18px;
+
+  border-radius:30px;
+
+  font-weight:600;
+
+  transition:.3s;
+
+  white-space:nowrap;
+
+}
+
+.aviso-agendamento a:hover{
+
+  transform:translateY(-2px);
+
+  background:#20bd5a;
+
+}
+
+@media(max-width:768px){
+
+  .aviso-agendamento{
+
+      flex-direction:column;
+
+      text-align:center;
+
+  }
+
+}
