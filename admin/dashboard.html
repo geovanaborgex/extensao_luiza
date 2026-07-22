@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel da Luiza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Painel da Luiza</h1>
+    </div>
+    <div class="date" id="today-label"></div>
+  </header>
+
+  <div id="status-banner" style="display:none;background:#FBEDEA;border:1px solid #F0CFC7;color:var(--danger);padding:12px 16px;border-radius:10px;font-size:13.5px;margin-bottom:24px;"></div>
+
+  <div class="cards" id="summary-cards"></div>
+
+  <section>
+    <div class="section-head">
+      <h2>Destaque de hoje</h2>
+      <div class="count" id="today-count"></div>
+    </div>
+    <div class="timeline" id="today-timeline"></div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Semana</h2>
+      <div class="count" id="week-count"></div>
+    </div>
+    <div class="week-grid" id="week-grid"></div>
+  </section>
+
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <button class="close-x" id="close-modal">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const TODAY = new Date();
+
+let appointments = [];
+
+let activeId = null;
+
+const CURRENT_TIME_MINUTES =
+    TODAY.getHours() * 60 + TODAY.getMinutes();
+
+
+
+function iso(d){
+    return d.toISOString().slice(0,10);
+}
+
+
+function addDays(d,n){
+    const r = new Date(d);
+    r.setDate(r.getDate()+n);
+    return r;
+}
+
+
+function timeToMin(t){
+    const [h,m]=t.split(':').map(Number);
+    return h*60+m;
+}
+
+
+
+/*
+==========================================
+BUSCAR GOOGLE CALENDAR
+==========================================
+*/
+
+async function loadAppointments(){
+
+    try{
+
+        const response = await fetch(
+            "dashboard.php?acao=listar"
+        );
+
+
+        const data = await response.json();
+
+
+        if(data.status !== "sucesso"){
+            throw new Error(data.mensagem);
+        }
+
+
+        appointments = data.agendamentos.map(a=>({
+
+            id:a.id,
+
+            date:a.data,
+
+            time:a.horario,
+
+            client:a.nome,
+
+            service:a.servico || a.procedimento,
+
+            status:"confirmed"
+
+        }));
+
+
+        renderAll();
+
+
+    }catch(error){
+
+        const banner =
+        document.getElementById("status-banner");
+
+
+        banner.style.display="block";
+
+        banner.innerHTML =
+        "Erro ao carregar agenda: "+error.message;
+
+    }
+
+}
+
+
+
+
+
+function renderAll(){
+
+    renderSummary();
+
+    renderToday();
+
+    renderWeek();
+
+}
+
+
+
+/*
+==========================================
+RESUMO
+==========================================
+*/
+
+
+function renderSummary(){
+
+
+const hoje = iso(TODAY);
+
+
+const todayList =
+appointments.filter(a=>
+a.date===hoje
+);
+
+
+const weekStart =
+addDays(
+TODAY,
+-((TODAY.getDay()+6)%7)
+);
+
+
+const weekEnd =
+addDays(weekStart,6);
+
+
+
+const weekList =
+appointments.filter(a=>
+a.date>=iso(weekStart)
+&&
+a.date<=iso(weekEnd)
+);
+
+
+
+const next =
+todayList
+.filter(a=>
+timeToMin(a.time)>=CURRENT_TIME_MINUTES
+)
+.sort((a,b)=>
+timeToMin(a.time)-timeToMin(b.time)
+)[0];
+
+
+
+document.getElementById(
+"today-label"
+).textContent =
+TODAY.toLocaleDateString(
+"pt-BR",
+{
+weekday:"long",
+day:"2-digit",
+month:"long"
+}
+);
+
+
+
+document.getElementById(
+"summary-cards"
+).innerHTML=`
+
+<div class="card accent">
+
+<div class="label">
+Atendimentos hoje
+</div>
+
+<div class="big">
+${todayList.length}
+</div>
+
+<div class="sub">
+${todayList.length} agendados
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<div class="label">
+Atendimentos na semana
+</div>
+
+<div class="big">
+${weekList.length}
+</div>
+
+<div class="sub">
+segunda a domingo
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<div class="label">
+Próximo atendimento
+</div>
+
+<div class="big" style="font-size:26px">
+${next ? next.time : "—"}
+</div>
+
+
+<div class="sub">
+${next ?
+next.client+" · "+next.service :
+"Nenhum restante hoje"
+}
+</div>
+
+
+</div>
+
+`;
+
+}
+
+
+
+/*
+==========================================
+AGENDA DE HOJE
+==========================================
+*/
+
+
+function renderToday(){
+
+
+const hoje = iso(TODAY);
+
+
+const list =
+appointments
+.filter(a=>a.date===hoje)
+.sort((a,b)=>
+timeToMin(a.time)-timeToMin(b.time)
+);
+
+
+
+document.getElementById(
+"today-count"
+).textContent =
+`${list.length} no total`;
+
+
+
+document.getElementById(
+"today-timeline"
+).innerHTML =
+
+
+list.map(a=>`
+
+<div class="slot"
+onclick="openModal('${a.id}')">
+
+
+<div class="time">
+${a.time}
+</div>
+
+
+<div class="client">
+${a.client}
+</div>
+
+
+<div class="service">
+${a.service}
+</div>
+
+
+</div>
+
+`).join("")
+||
+`
+<div class="day-empty">
+Nenhum atendimento hoje.
+</div>
+`;
+
+}
+
+
+
+/*
+==========================================
+SEMANA
+==========================================
+*/
+
+
+function renderWeek(){
+
+
+const start =
+addDays(
+TODAY,
+-((TODAY.getDay()+6)%7)
+);
+
+
+const days =
+Array.from(
+{length:7},
+(_,i)=>addDays(start,i)
+);
+
+
+
+document.getElementById(
+"week-grid"
+).innerHTML =
+
+
+days.map(d=>{
+
+
+const data = iso(d);
+
+
+const itens =
+appointments
+.filter(a=>a.date===data)
+.sort((a,b)=>
+timeToMin(a.time)-timeToMin(b.time)
+);
+
+
+
+return `
+
+
+<div class="day-col">
+
+<div class="day-label">
+${d.toLocaleDateString(
+"pt-BR",
+{
+weekday:"short"
+}
+)}
+</div>
+
+
+<div class="day-num">
+${d.getDate()}
+</div>
+
+
+
+${
+itens.length ?
+
+itens.map(a=>`
+
+<div class="day-item"
+onclick="openModal('${a.id}')">
+
+<span class="t">
+${a.time}
+</span>
+
+${a.client.split(" ")[0]}
+
+</div>
+
+`).join("")
+:
+
+`<div class="day-empty">
+Livre
+</div>`
+
+}
+
+
+
+</div>
+
+
+`;
+
+
+}).join("");
+
+}
+
+
+
+
+
+/*
+==========================================
+MODAL
+==========================================
+*/
+
+
+function openModal(id){
+
+
+activeId=id;
+
+
+const a =
+appointments.find(x=>x.id===id);
+
+
+if(!a)return;
+
+
+
+document.getElementById(
+"modal-body"
+).innerHTML=`
+
+
+<h3>
+${a.client}
+</h3>
+
+
+<div class="meta">
+
+${a.service}
+<br>
+${a.date}
+às ${a.time}
+
+</div>
+
+
+
+<label>
+Nova data
+</label>
+
+
+<input 
+type="date"
+id="new-date"
+value="${a.date}"
+>
+
+
+
+<label>
+Novo horário
+</label>
+
+
+<input
+type="time"
+id="new-time"
+value="${a.time}"
+>
+
+
+
+<div class="modal-actions">
+
+
+<button
+class="btn btn-primary"
+onclick="reschedule()">
+
+Remarcar
+
+</button>
+
+
+
+<button
+class="btn btn-danger"
+onclick="cancelAppointment()">
+
+Cancelar
+
+</button>
+
+
+
+<button
+class="btn btn-ghost"
+onclick="closeModal()">
+
+Fechar
+
+</button>
+
+
+</div>
+
+
+`;
+
+
+
+document
+.getElementById("overlay")
+.classList.add("open");
+
+}
+
+
+
+
+
+/*
+==========================================
+REMARCAR GOOGLE CALENDAR
+==========================================
+*/
+
+
+async function reschedule(){
+
+
+const form =
+new FormData();
+
+
+
+form.append(
+"id",
+activeId
+);
+
+
+form.append(
+"data",
+document.getElementById("new-date").value
+);
+
+
+
+form.append(
+"horario",
+document.getElementById("new-time").value
+);
+
+
+
+const response =
+await fetch(
+"api.php?acao=remarcar",
+{
+method:"POST",
+body:form
+}
+);
+
+
+
+const result =
+await response.json();
+
+
+
+alert(result.mensagem);
+
+
+
+if(result.status==="sucesso"){
+
+closeModal();
+
+loadAppointments();
+
+}
+
+
+}
+
+
+
+
+
+/*
+==========================================
+CANCELAR GOOGLE CALENDAR
+==========================================
+*/
+
+
+async function cancelAppointment(){
+
+
+const form =
+new FormData();
+
+
+form.append(
+"id",
+activeId
+);
+
+
+
+const response =
+await fetch(
+"api.php?acao=cancelar",
+{
+method:"POST",
+body:form
+}
+);
+
+
+
+const result =
+await response.json();
+
+
+
+alert(result.mensagem);
+
+
+
+if(result.status==="sucesso"){
+
+closeModal();
+
+loadAppointments();
+
+}
+
+
+}
+
+
+
+
+function closeModal(){
+
+document
+.getElementById("overlay")
+.classList.remove("open");
+
+
+activeId=null;
+
+}
+
+
+
+document
+.getElementById("close-modal")
+.onclick=closeModal;
+
+
+
+document
+.getElementById("overlay")
+.onclick=e=>{
+
+if(e.target.id==="overlay")
+closeModal();
+
+};
+
+
+
+
+
+function showToast(msg){
+
+const t =
+document.getElementById("toast");
+
+
+t.textContent=msg;
+
+
+t.classList.add("show");
+
+
+setTimeout(()=>{
+
+t.classList.remove("show");
+
+},3000);
+
+}
+
+
+
+
+// inicia carregando Google Calendar
+loadAppointments();
+
+</script>
+</body>
+</html>
