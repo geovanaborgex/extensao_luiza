@@ -530,7 +530,7 @@ function gerarDias() {
   const hoje = new Date();
   const diasVisiveis = [];
 
-  let i = inicioCalendario;
+  let i = inicioCalendario + 1;
 
   while (diasVisiveis.length < 7) {
     const data = new Date();
@@ -546,20 +546,14 @@ function gerarDias() {
   diasVisiveis.forEach(data => {
     const botao = document.createElement("button");
     const ehDomingo = data.getDay() === 0;
-    const ehHoje =
-    data.toDateString() === hoje.toDateString();
+
 
     botao.innerHTML = `
       ${diasSemana[data.getDay()]}<br>
       <strong>${data.getDate()}</strong>
     `;
 
-    if (ehHoje) {
-      botao.classList.add("hoje");
-      botao.classList.add("ativo");
 
-      dataSelecionada = formatarDataLocal(data);
-    }
 
     if (ehDomingo) {
       botao.classList.add("domingo");
@@ -571,7 +565,7 @@ function gerarDias() {
 
         botao.classList.add("ativo");
 
-        dataSelecionada = data.toISOString().split("T")[0];
+        dataSelecionada = formatarDataLocal(data);
         horarioSelecionado = "";
 
         buscarHorarios(dataSelecionada);
@@ -579,9 +573,15 @@ function gerarDias() {
     }
 
     container.appendChild(botao);
-    if (ehHoje && !ehDomingo) {
-      buscarHorarios(dataSelecionada);
-    }
+    if (diasVisiveis.indexOf(data) === 0 && !ehDomingo) {
+
+        botao.classList.add("ativo");
+
+        dataSelecionada = formatarDataLocal(data);
+
+        buscarHorarios(dataSelecionada);
+
+        }
   });
 }
 
