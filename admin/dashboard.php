@@ -260,18 +260,11 @@ if($acao == "listar"){
     exit;
 
 }
-
-
-
-
-
 /*
 ====================================================
 REMARCAR
 ====================================================
 */
-
-
 if($acao=="remarcar"){
 
 
@@ -291,8 +284,6 @@ if($acao=="remarcar"){
 
     }
 
-
-
     $id =
         $_POST['id'] ?? '';
 
@@ -307,8 +298,6 @@ if($acao=="remarcar"){
         $_POST['horario'] ?? '';
 
 
-
-
     if(!$id || !$novaData || !$novoHorario){
 
 
@@ -321,14 +310,9 @@ if($acao=="remarcar"){
         ]);
 
         exit;
-
     }
 
-
-
-
     try{
-
 
         $evento =
             $service->events->get(
@@ -352,9 +336,6 @@ if($acao=="remarcar"){
 
     }
 
-
-
-
     $inicioAntigo =
         new DateTime(
             $evento->getStart()->getDateTime()
@@ -365,8 +346,6 @@ if($acao=="remarcar"){
         new DateTime(
             $evento->getEnd()->getDateTime()
         );
-
-
 
     $duracao =
         (
@@ -391,8 +370,6 @@ if($acao=="remarcar"){
     $novoFim->modify("+$duracao minutes");
 
 
-
-
     // atualiza
 
     $evento
@@ -408,8 +385,6 @@ if($acao=="remarcar"){
             'America/Sao_Paulo'
         );
 
-
-
     $evento
         ->getEnd()
         ->setDateTime(
@@ -423,19 +398,12 @@ if($acao=="remarcar"){
             'America/Sao_Paulo'
         );
 
-
-
-
     try{
-
-
         $service->events->update(
             $calendarId,
             $id,
             $evento
         );
-
-
 
         echo json_encode([
 
@@ -444,7 +412,6 @@ if($acao=="remarcar"){
             "mensagem"=>"Atendimento remarcado."
 
         ]);
-
 
 
     }catch(Exception $e){
@@ -460,14 +427,9 @@ if($acao=="remarcar"){
 
     }
 
-
     exit;
 
 }
-
-
-
-
 
 /*
 ====================================================
@@ -475,10 +437,7 @@ CANCELAR
 ====================================================
 */
 
-
 if($acao=="cancelar"){
-
-
 
     if($_SERVER["REQUEST_METHOD"]!="POST"){
 
@@ -495,16 +454,10 @@ if($acao=="cancelar"){
 
     }
 
-
-
-
     $id =
         $_POST['id'] ?? '';
 
-
-
     if(!$id){
-
 
         echo json_encode([
 
@@ -518,11 +471,7 @@ if($acao=="cancelar"){
 
     }
 
-
-
-
     try{
-
 
         $service->events->delete(
 
@@ -532,8 +481,6 @@ if($acao=="cancelar"){
 
         );
 
-
-
         echo json_encode([
 
             "status"=>"sucesso",
@@ -541,8 +488,6 @@ if($acao=="cancelar"){
             "mensagem"=>"Atendimento cancelado."
 
         ]);
-
-
 
     }catch(Exception $e){
 
@@ -557,13 +502,9 @@ if($acao=="cancelar"){
 
     }
 
-
-
     exit;
 
 }
-
-
 
 
 

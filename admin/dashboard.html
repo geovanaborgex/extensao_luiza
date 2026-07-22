@@ -13,7 +13,7 @@
 
   <header class="top">
     <div>
-      <h1>Painel da Luiza</h1>
+      <h1>Painel de Admin/h1>
     </div>
     <div class="date" id="today-label"></div>
   </header>
@@ -616,7 +616,7 @@ document.getElementById("new-time").value
 
 const response =
 await fetch(
-"api.php?acao=remarcar",
+"dashboard.php?acao=remarcar",
 {
 method:"POST",
 body:form
@@ -672,7 +672,7 @@ activeId
 
 const response =
 await fetch(
-"api.php?acao=cancelar",
+"dashboard.php?acao=cancelar",
 {
 method:"POST",
 body:form
