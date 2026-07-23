@@ -813,15 +813,21 @@ function confirmarAgendamento() {
       .reverse()
       .join("/");
 
-    const mensagem = `Olá, Luiza! Acabei de realizar um agendamento pelo site.
+    const mensagem = `✨ *Novo agendamento pelo site*
 
-    Cliente: ${nome}
-    Telefone: ${telefone}
-    Procedimento: ${procedimento}
-    Data: ${dataFormatada}
-    Horário: ${horarioSelecionado}
-    Duração: ${duracao}
-    Valor: ${valor}`;
+        👩 Cliente: ${nome}
+
+        📞 Telefone: ${telefone}
+
+        💄 Procedimento: ${procedimento}
+
+        📅 Data: ${dataFormatada}
+
+        🕒 Horário: ${horarioSelecionado}
+
+        ⏳ Duração: ${duracao}
+
+        💰 Valor: ${valor}`;
 
       const numeroLuiza = "5537999049543";
       const linkWhatsApp = `https://wa.me/${numeroLuiza}?text=${encodeURIComponent(mensagem)}`;
