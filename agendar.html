@@ -711,19 +711,18 @@ let horarioSelecionado = "";
 function buscarHorarios(data) {
 
   console.log("DATA:", data);
-console.log("PROCEDIMENTO:", procedimento);
-
+  console.log("PROCEDIMENTOS:", procedimentosSelecionados);
   const container =
     document.querySelector(".horarios-modal");
 
   container.innerHTML =
     "<p>Carregando horários...</p>";
 
-  if (!procedimento) {
+    if (procedimentosSelecionados.length === 0) {
     container.innerHTML =
-      "<p>Selecione um procedimento.</p>";
+        "<p>Selecione pelo menos um procedimento.</p>";
     return;
-  }
+}
 
   const dados = new FormData();
   dados.append("data", data);
@@ -863,6 +862,10 @@ function confirmarAgendamento() {
   const dados = new FormData(form);
   dados.append("data", dataSelecionada);
   dados.append("horario", horarioSelecionado);
+  dados.append(
+    "procedimentos",
+    procedimentosSelecionados.join(",")
+);
 
   fetch("salvar_agendamento.php", {
     method: "POST",

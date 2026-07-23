@@ -12,7 +12,7 @@ date_default_timezone_set('America/Sao_Paulo');
 /* DADOS RECEBIDOS */
 
 $data = $_POST["data"] ?? "";
-$procedimento = $_POST["procedimento"] ?? "";
+$procedimento = $_POST["procedimentos"] ?? "";
 
 /* DEBUG */
 
