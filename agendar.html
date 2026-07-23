@@ -324,6 +324,7 @@ atualizarListaProcedimentos();
 
 }
 
+
 function atualizarListaProcedimentos(){
 
 const lista =
@@ -395,117 +396,86 @@ document.getElementById("valorTotal").innerHTML =
 
 }
 
+
 function removerProcedimento(indice){
-
 procedimentosSelecionados.splice(indice,1);
-
 atualizarListaProcedimentos();
-
 }
 
-function mostrarProcedimentos(){
 
-  const servico = document.getElementById("servico").value;
+function mostrarProcedimentos() {
 
-  const grupo = document.getElementById("procedimentos-group");
+const servico = document.getElementById("servico").value;
 
-  const procedimentos = procedimentosSelecionados.join(", ");
+const grupo = document.getElementById("procedimentos-group");
 
-  procedimento.innerHTML = "";
+const procedimento = document.getElementById("procedimento");
 
-  document.getElementById("infoProcedimento").classList.add("hidden");
+procedimento.innerHTML = "";
 
-  // ESCONDE
-  if(servico === ""){
+if (servico == "") {
     grupo.classList.add("hidden");
     return;
-  }
+}
 
-  // MOSTRA
-  grupo.classList.remove("hidden");
+grupo.classList.remove("hidden");
 
-  // SOBRANCELHAS
-  if(servico === "sobrancelhas"){
+if (servico == "sobrancelhas") {
 
     procedimento.innerHTML = `
-      <option value="">Selecione</option>
-      <option>Nanopigmentação</option>
-      <option>Design com Henna</option>
-      <option>Design Simples</option>
-      <option>Brow Lamination</option>
+        <option value="">Selecione</option>
+        <option>Nanopigmentação</option>
+        <option>Design com Henna</option>
+        <option>Design Simples</option>
+        <option>Brow Lamination</option>
     `;
-
-  }
-
-  //CILIOS
-    if(servico === "cilios"){
-
-    procedimento.innerHTML = `
-      <option value="">Selecione</option>
-      <option>Lash Lifting</option>
-    `;
-
-  }
-
-  // CABELOS
-  if(servico === "cabelos"){
-
-    procedimento.innerHTML = `
-      <option value="">Selecione</option>
-      <option>Corte</option>
-      <option>Hidratação + Escova</option>
-      <option>Escova</option>
-      <option>Chapa</option>
-      <option>Cachos/Ondas</option>
-      <option>Penteado</option>
-      <option>Tintura com Tinta Profissional</option>
-      <option>Tintura com Tinta da Cliente</option>
-    `;
-
-  }
-
-  // CUIDADOS
-  if(servico === "cuidados"){
-
-    procedimento.innerHTML = `
-      <option value="">Selecione</option>
-      <option>Limpeza de Pele</option>
-      <option>Spa dos Pés</option>
-    `;
-
-  }
-
-  // MAKE
-  if(servico === "maquiagem"){
-
-    procedimento.innerHTML = `
-      <option value="">Selecione</option>
-      <option>Maquiagem Profissional</option>
-      <option>Maquiagem Express</option>
-    `;
-
-  }
 
 }
 
-function mostrarInfoProcedimento(){
+if (servico == "cilios") {
 
-  const procedimento = document.getElementById("procedimento").value;
+    procedimento.innerHTML = `
+        <option value="">Selecione</option>
+        <option>Lash Lifting</option>
+    `;
 
-  const infoBox = document.getElementById("infoProcedimento");
+}
 
-  if(procedimento === ""){
-    infoBox.classList.add("hidden");
-    return;
-  }
+if (servico == "cabelos") {
 
-  const dados = procedimentosInfo[procedimento];
+    procedimento.innerHTML = `
+        <option value="">Selecione</option>
+        <option>Corte</option>
+        <option>Hidratação + Escova</option>
+        <option>Escova</option>
+        <option>Chapa</option>
+        <option>Cachos/Ondas</option>
+        <option>Penteado</option>
+        <option>Tintura com Tinta Profissional</option>
+        <option>Tintura com Tinta da Cliente</option>
+    `;
 
-  document.getElementById("duracaoProcedimento").innerText = dados.duracao;
+}
 
-  document.getElementById("valorProcedimento").innerText = dados.valor;
+if (servico == "cuidados") {
 
-  infoBox.classList.remove("hidden");
+    procedimento.innerHTML = `
+        <option value="">Selecione</option>
+        <option>Limpeza de Pele</option>
+        <option>Spa dos Pés</option>
+    `;
+
+}
+
+if (servico == "maquiagem") {
+
+    procedimento.innerHTML = `
+        <option value="">Selecione</option>
+        <option>Maquiagem Profissional</option>
+        <option>Maquiagem Express</option>
+    `;
+
+}
 
 }
 
