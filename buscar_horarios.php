@@ -49,6 +49,7 @@ $duracoes = [
     "Limpeza de Pele" => 60,
     "Tintura com Tinta Profissional" => 90,
     "Chapa" => 40,
+    "Corte" => 30,
     "Cachos/Ondas" => 30,
     "Escova" => 30,
     "Penteado" => 30,

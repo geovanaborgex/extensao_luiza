@@ -224,7 +224,14 @@ const procedimentosInfo = {
   valor: "R$ 40,00",
   duracao: "40 minutos"
 },
-
+"Corte": {
+  valor: "R$ 40,00",
+  duracao: "30 minutos"
+},
+"Hidratação + Escova": {
+  valor: "R$ 85,00",
+  duracao: "1 hora e 10 minutos"
+},
 "Cachos/Ondas": {
   valor: "R$ 30,00",
   duracao: "30 minutos"
@@ -237,7 +244,7 @@ const procedimentosInfo = {
 
 "Tintura com Tinta Profissional": {
   valor: "R$ 65,00",
-  duracao: "1h30"
+  duracao: "1 hora e 30 minutos"
 },
 
 "Tintura com Tinta da Cliente": {
@@ -335,6 +342,8 @@ function mostrarProcedimentos(){
 
     procedimento.innerHTML = `
       <option value="">Selecione</option>
+      <option>Corte</option>
+      <option>Hidratação</option>
       <option>Escova</option>
       <option>Chapa</option>
       <option>Cachos/Ondas</option>
