@@ -1,20 +1,23 @@
 <?php
 
 header('Content-Type: application/json; charset=utf-8');
+
 require 'google_calendar.php';
 
 date_default_timezone_set('America/Sao_Paulo');
 
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $nome = $_POST["nome"];
-    $telefone = $_POST["telefone"];
-    $servico = $_POST["servico"];
 
-    $procedimentos = explode(",", $_POST["procedimentos"]);
+    $nome = $_POST["nome"] ?? "";
+    $telefone = $_POST["telefone"] ?? "";
 
-    $data = $_POST["data"];
-    $horario = $_POST["horario"];
+    $procedimentos = $_POST["procedimentos"] ?? [];
+
+    $data = $_POST["data"] ?? "";
+    $horario = $_POST["horario"] ?? "";
+
 
     $duracoes = [
 
@@ -38,108 +41,195 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     ];
 
-    if (!$data || !$horario || empty($procedimentos)) {
+
+
+    if(
+        empty($nome) ||
+        empty($telefone) ||
+        empty($data) ||
+        empty($horario) ||
+        empty($procedimentos)
+    ){
 
         echo json_encode([
             "status"=>"erro",
-            "mensagem"=>"Dados inválidos."
+            "mensagem"=>"Dados incompletos."
         ]);
 
         exit;
     }
+
+
+
+    // Calcula duração total dos procedimentos
 
     $duracao = 0;
 
-foreach($procedimentos as $proc){
 
-    $proc = trim($proc);
+    foreach($procedimentos as $proc){
 
-    if(!isset($duracoes[$proc])){
+        $proc = trim($proc);
 
-        echo json_encode([
-            "status"=>"erro",
-            "mensagem"=>"Procedimento inválido."
-        ]);
-        exit;
+
+        if(!isset($duracoes[$proc])){
+
+            echo json_encode([
+                "status"=>"erro",
+                "mensagem"=>"Procedimento inválido: ".$proc
+            ]);
+
+            exit;
+        }
+
+
+        $duracao += $duracoes[$proc];
+
     }
 
-    $duracao += $duracoes[$proc];
-}
+
+
+    // Horário inicial
 
     $inicio = new DateTime("$data $horario");
 
+
+    // Horário final baseado na soma dos procedimentos
+
     $fim = clone $inicio;
-    $fim->modify("+{$duracaoTotal} minutes");
+
+    $fim->modify("+{$duracao} minutes");
+
+
 
     $calendarId = 'luizagues99@gmail.com';
+
+
+
+    // Busca conflitos no Google Agenda
 
     $optParams = [
 
         'timeMin' => $inicio->format(DateTime::RFC3339),
+
         'timeMax' => $fim->format(DateTime::RFC3339),
+
         'singleEvents' => true,
+
         'orderBy' => 'startTime'
 
     ];
 
-    $eventos = $service->events->listEvents($calendarId,$optParams);
+
+
+    $eventos = $service->events->listEvents(
+        $calendarId,
+        $optParams
+    );
+
+
 
     if(count($eventos->getItems()) > 0){
 
+
         echo json_encode([
+
             "status"=>"erro",
+
             "mensagem"=>"Esse horário já está ocupado."
+
         ]);
+
 
         exit;
 
     }
 
-    $listaProcedimentos = implode(" + ",$procedimentos);
+
+
+    // Junta os procedimentos para mostrar no calendário
+
+    $listaProcedimentos = implode(" + ", $procedimentos);
+
+
+
+    // Cria evento
 
     $evento = new Google_Service_Calendar_Event([
 
-        'summary' => implode(" + ", $procedimentos)." - ".$nome,
+
+        'summary' => $listaProcedimentos." - ".$nome,
+
 
         'description' =>
-        "Cliente: $nome
 
-        Telefone: $telefone
+        "Cliente: ".$nome."
 
-        Serviço: $servico
+Telefone: ".$telefone."
 
-        Procedimentos: ".implode(", ", $procedimentos)."
+Procedimentos: ".$listaProcedimentos."
 
-        Tempo Total: ".$duracaoTotal." minutos",
+Tempo Total: ".$duracao." minutos",
+
+
 
         'start'=>[
+
             'dateTime'=>$inicio->format(DateTime::RFC3339),
+
             'timeZone'=>'America/Sao_Paulo'
+
         ],
 
+
+
         'end'=>[
+
             'dateTime'=>$fim->format(DateTime::RFC3339),
+
             'timeZone'=>'America/Sao_Paulo'
+
         ]
+
 
     ]);
 
+
+
+
     try{
 
-        $service->events->insert($calendarId,$evento);
+
+        $service->events->insert(
+            $calendarId,
+            $evento
+        );
+
+
 
         echo json_encode([
+
             "status"=>"sucesso",
-            "duracao"=>$duracaoTotal
+
+            "duracao"=>$duracao
+
         ]);
+
+
 
     }catch(Exception $e){
 
+
         echo json_encode([
+
             "status"=>"erro",
+
             "mensagem"=>$e->getMessage()
+
         ]);
 
     }
 
+
 }
+
+?>

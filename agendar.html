@@ -862,10 +862,9 @@ function confirmarAgendamento() {
   const dados = new FormData(form);
   dados.append("data", dataSelecionada);
   dados.append("horario", horarioSelecionado);
-  dados.append(
-    "procedimentos",
-    procedimentosSelecionados.join(",")
-);
+  procedimentosSelecionados.forEach(p => {
+    dados.append("procedimentos[]", p);
+});
 
   fetch("salvar_agendamento.php", {
     method: "POST",
