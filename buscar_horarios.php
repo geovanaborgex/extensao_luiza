@@ -12,17 +12,15 @@ date_default_timezone_set('America/Sao_Paulo');
 /* DADOS RECEBIDOS */
 
 $data = $_POST["data"] ?? "";
-$procedimento = $_POST["procedimentos"] ?? "";
+$procedimentos = $_POST["procedimentos"] ?? "";
 
-/* DEBUG */
+/* VALIDA DADOS */
 
-if (!$data || !$procedimento) {
+if (empty($data) || empty($procedimentos)) {
 
     echo json_encode([
         "status" => "erro",
-        "mensagem" => "Data ou procedimento não informado.",
-        "data_recebida" => $data,
-        "procedimento_recebido" => $procedimento
+        "mensagem" => "Data ou procedimento não informado."
     ]);
 
     exit;
@@ -45,42 +43,51 @@ if (!isset($service)) {
 $duracoes = [
 
     "Maquiagem Profissional" => 60,
-    "Spa dos Pés" => 60,
-    "Limpeza de Pele" => 60,
-    "Tintura com Tinta Profissional" => 90,
-    "Chapa" => 40,
-    "Hidratação + Escova" => 70,
-    "Corte" => 30,
-    "Cachos/Ondas" => 30,
+    "Maquiagem Express" => 30,
+
     "Escova" => 30,
+    "Chapa" => 40,
+    "Corte" => 30,
+    "Hidratação + Escova" => 70,
+    "Cachos/Ondas" => 30,
     "Penteado" => 30,
+    "Tintura com Tinta Profissional" => 90,
+    "Tintura com Tinta da Cliente" => 30,
+
     "Nanopigmentação" => 120,
     "Design com Henna" => 40,
-    "Brow Lamination" => 75,
-    "Lash Lifting" => 60,
     "Design Simples" => 30,
-    "Maquiagem Express" => 30,
-    "Tintura com Tinta da Cliente" => 30,
+    "Brow Lamination" => 75,
+
+    "Lash Lifting" => 60,
+
+    "Limpeza de Pele" => 60,
+    "Spa dos Pés" => 60
 
 ];
 
-/* VERIFICA PROCEDIMENTO */
+/* SOMA A DURAÇÃO DOS PROCEDIMENTOS */
 
-if (!isset($duracoes[$procedimento])) {
+$listaProcedimentos = array_map('trim', explode(",", $procedimentos));
 
-    echo json_encode([
-        "status" => "erro",
-        "mensagem" => "Procedimento não encontrado.",
-        "procedimento_recebido" => $procedimento
-    ]);
+$duracao = 0;
 
-    exit;
+foreach ($listaProcedimentos as $proc) {
+
+    if (!isset($duracoes[$proc])) {
+
+        echo json_encode([
+            "status" => "erro",
+            "mensagem" => "Procedimento não encontrado.",
+            "procedimento_recebido" => $proc
+        ]);
+
+        exit;
+    }
+
+    $duracao += $duracoes[$proc];
 }
-
-$duracao = $duracoes[$procedimento];
-
 /* DATA */
-
 try {
 
     $dataObj = new DateTime($data);
