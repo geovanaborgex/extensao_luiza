@@ -86,28 +86,48 @@
     <div class="form-group hidden" id="procedimentos-group">
 
       <label>Procedimento</label>
-
-      <select name="procedimento" id="procedimento" onchange="mostrarInfoProcedimento()">
-      </select>
-
-    </div>
-
-    <!-- INFO PROCEDIMENTO -->
-    <div class="info-procedimento hidden" id="infoProcedimento">
-
-      <h3 id="nomeProcedimento"></h3>
-
+  
+      <select id="procedimento"></select>
+  
+      <button
+          type="button"
+          class="btn-adicionar-procedimento"
+          onclick="adicionarProcedimento()">
+  
+          <i class="fa-solid fa-plus"></i>
+          Adicionar procedimento
+  
+      </button>
+  
+  </div>
+  
+  <div id="listaProcedimentos"></div>
+  
+  <div
+      class="info-procedimento hidden"
+      id="resumoProcedimentos">
+  
       <p>
-        <i class="fa-regular fa-clock"></i>
-        Duração: <span id="duracaoProcedimento"></span>
+  
+          <i class="fa-regular fa-clock"></i>
+  
+          Tempo total:
+  
+          <strong id="duracaoTotal"></strong>
+  
       </p>
-
+  
       <p>
-        <i class="fa-solid fa-tag"></i>
-        Valor: <span id="valorProcedimento"></span>
+  
+          <i class="fa-solid fa-tag"></i>
+  
+          Valor total:
+  
+          <strong id="valorTotal"></strong>
+  
       </p>
-
-    </div>
+  
+  </div>
 
     <center>
   <button type="button" class="btn-cta" onclick="abrirModalHorario()">
@@ -201,97 +221,187 @@
 
 <!-- JS -->
 <script>
-const procedimentosInfo = {
 
-// MAQUIAGEM
-"Maquiagem Profissional": {
-  valor: "R$ 120,00",
-  duracao: "1 hora"
-},
+let procedimentosSelecionados = [];
 
-"Maquiagem Express": {
-  valor: "R$ 80,00",
-  duracao: "30 minutos"
-},
+const procedimentosInfo = {};
 
-// CABELOS
-"Escova": {
-  valor: "R$ 45,00",
-  duracao: "30 minutos"
-},
-
-"Chapa": {
-  valor: "R$ 40,00",
-  duracao: "40 minutos"
-},
-"Corte": {
-  valor: "R$ 40,00",
-  duracao: "30 minutos"
-},
-"Hidratação + Escova": {
-  valor: "R$ 85,00",
-  duracao: "1 hora e 10 minutos"
-},
-"Cachos/Ondas": {
-  valor: "R$ 30,00",
-  duracao: "30 minutos"
-},
-
-"Penteado": {
-  valor: "R$ 80,00",
-  duracao: "30 minutos"
-},
-
-"Tintura com Tinta Profissional": {
-  valor: "R$ 65,00",
-  duracao: "1 hora e 30 minutos"
-},
-
-"Tintura com Tinta da Cliente": {
-  valor: "R$ 30,00",
-  duracao: "30 minutos"
-},
-
-// SOBRANCELHAS
-"Nanopigmentação": {
-  valor: "R$ 400,00",
-  duracao: "2 horas"
-},
-
-"Design com Henna": {
-  valor: "R$ 50,00",
-  duracao: "40 minutos"
-},
-
-"Design Simples": {
-  valor: "R$ 40,00",
-  duracao: "30 minutos"
-},
-
-"Brow Lamination": {
-  valor: "R$ 85,00",
-  duracao: "1 hora e 15 minutos"
-},
-
-// CÍLIOS
-"Lash Lifting": {
-  valor: "R$ 60,00",
-  duracao: "1 hora"
-},
-
-// CUIDADOS
-"Limpeza de Pele": {
-  valor: "R$ 120,00",
-  duracao: "1 hora"
-},
-
-"Spa dos Pés": {
-  valor: "R$ 70,00",
-  duracao: "1 hora"
-}
-
+procedimentosInfo["Maquiagem Profissional"] = {
+    valor: 120,
+    duracao: 60
 };
 
+procedimentosInfo["Maquiagem Express"] = {
+    valor: 80,
+    duracao: 30
+};
+
+procedimentosInfo["Corte"] = {
+    valor: 40,
+    duracao: 30
+};
+
+procedimentosInfo["Hidratação + Escova"] = {
+    valor: 85,
+    duracao: 70
+};
+
+procedimentosInfo["Escova"] = {
+    valor: 45,
+    duracao: 30
+};
+
+procedimentosInfo["Chapa"] = {
+    valor: 40,
+    duracao: 40
+};
+
+procedimentosInfo["Cachos/Ondas"] = {
+    valor: 30,
+    duracao: 30
+};
+
+procedimentosInfo["Penteado"] = {
+    valor: 80,
+    duracao: 30
+};
+
+procedimentosInfo["Tintura com Tinta Profissional"] = {
+    valor: 65,
+    duracao: 90
+};
+
+procedimentosInfo["Tintura com Tinta da Cliente"] = {
+    valor: 30,
+    duracao: 30
+};
+
+procedimentosInfo["Nanopigmentação"] = {
+    valor: 400,
+    duracao: 120
+};
+
+procedimentosInfo["Design com Henna"] = {
+    valor: 50,
+    duracao: 40
+};
+
+procedimentosInfo["Design Simples"] = {
+    valor: 40,
+    duracao: 30
+};
+
+procedimentosInfo["Brow Lamination"] = {
+    valor: 85,
+    duracao: 75
+};
+
+procedimentosInfo["Lash Lifting"] = {
+    valor: 60,
+    duracao: 60
+};
+
+procedimentosInfo["Limpeza de Pele"] = {
+    valor: 120,
+    duracao: 60
+};
+
+procedimentosInfo["Spa dos Pés"] = {
+    valor: 70,
+    duracao: 60
+};
+
+function adicionarProcedimento(){
+
+const nome =
+    document.getElementById("procedimento").value;
+
+if(nome=="") return;
+
+procedimentosSelecionados.push(nome);
+
+atualizarListaProcedimentos();
+
+}
+
+function atualizarListaProcedimentos(){
+
+const lista =
+    document.getElementById("listaProcedimentos");
+
+lista.innerHTML="";
+
+let minutos=0;
+
+let valor=0;
+
+procedimentosSelecionados.forEach((proc,index)=>{
+
+    minutos += procedimentosInfo[proc].duracao;
+
+    valor += procedimentosInfo[proc].valor;
+
+    lista.innerHTML += `
+
+    <div class="procedimento-item">
+
+        <strong>${proc}</strong>
+
+        <span>
+
+        ${procedimentosInfo[proc].duracao} min
+
+        •
+
+        R$ ${procedimentosInfo[proc].valor.toFixed(2)}
+
+        </span>
+
+        <button
+
+        type="button"
+
+        onclick="removerProcedimento(${index})">
+
+        <i class="fa-solid fa-trash"></i>
+
+        </button>
+
+    </div>
+
+    `;
+
+});
+
+if(procedimentosSelecionados.length){
+
+    document
+    .getElementById("resumoProcedimentos")
+    .classList.remove("hidden");
+
+}else{
+
+    document
+    .getElementById("resumoProcedimentos")
+    .classList.add("hidden");
+
+}
+
+document.getElementById("duracaoTotal").innerHTML =
+minutos+" minutos";
+
+document.getElementById("valorTotal").innerHTML =
+"R$ "+valor.toFixed(2);
+
+}
+
+function removerProcedimento(indice){
+
+procedimentosSelecionados.splice(indice,1);
+
+atualizarListaProcedimentos();
+
+}
 
 function mostrarProcedimentos(){
 
@@ -299,7 +409,7 @@ function mostrarProcedimentos(){
 
   const grupo = document.getElementById("procedimentos-group");
 
-  const procedimento = document.getElementById("procedimento");
+  const procedimentos = procedimentosSelecionados.join(", ");
 
   procedimento.innerHTML = "";
 
@@ -491,7 +601,7 @@ function toggleMenu() {
 function abrirModalHorario() {
   const nome = document.querySelector('input[name="nome"]').value;
   const telefone = document.querySelector('input[name="telefone"]').value;
-  const procedimento = document.getElementById("procedimento").value;
+  const procedimentos = procedimentosSelecionados.join(", ");
 
   const telefoneNumeros =
 telefone.replace(/\D/g, "");
@@ -507,7 +617,7 @@ if (telefoneNumeros.length !== 11) {
   return;
 }
 
-  if (!nome || !telefone || !procedimento) {
+  if (!nome || !telefone || procedimentosSelecionados.length == 0) {
     Swal.fire({
       icon: "warning",
       title: "Preencha os dados",
@@ -519,11 +629,20 @@ if (telefoneNumeros.length !== 11) {
 
   document.getElementById("resumoNome").innerText = nome;
   document.getElementById("resumoTelefone").innerText = telefone;
-  document.getElementById("resumoProcedimento").innerText = procedimento;
-  document.getElementById("resumoDuracao").innerText =
-    document.getElementById("duracaoProcedimento").innerText;
-  document.getElementById("resumoValor").innerText =
-    document.getElementById("valorProcedimento").innerText;
+  document.getElementById("resumoProcedimento").innerHTML=procedimentos;
+  let minutos = 0;
+  let valor = 0;
+
+  procedimentosSelecionados.forEach(p=>{
+      minutos += procedimentosInfo[p].duracao;
+      valor += procedimentosInfo[p].valor;
+  });
+
+  document.getElementById("resumoDuracao").innerHTML =
+  minutos + " minutos";
+
+  document.getElementById("resumoValor").innerHTML =
+  "R$ " + valor.toFixed(2);
 
   document.getElementById("modalHorario").style.display = "flex";
 
@@ -621,11 +740,6 @@ let horarioSelecionado = "";
 
 function buscarHorarios(data) {
 
-  const procedimento = document
-  .getElementById("procedimento")
-  .options[document.getElementById("procedimento").selectedIndex]
-  ?.text || "";
-
   console.log("DATA:", data);
 console.log("PROCEDIMENTO:", procedimento);
 
@@ -642,10 +756,9 @@ console.log("PROCEDIMENTO:", procedimento);
   }
 
   const dados = new FormData();
-
   dados.append("data", data);
-  dados.append("procedimento", procedimento);
-
+  dados.append("procedimentos", procedimentosSelecionados.join(","));
+  
   fetch("buscar_horarios.php", {
     method: "POST",
     body: dados
@@ -800,13 +913,19 @@ function confirmarAgendamento() {
     document.querySelector('input[name="telefone"]').value;
 
     const procedimento =
-    document.getElementById("procedimento").value;
+    procedimentosSelecionados.join(", ");
 
-    const duracao =
-    document.getElementById("duracaoProcedimento").innerText;
+    let minutos = 0;
+    procedimentosSelecionados.forEach(p=>{
+        minutos += procedimentosInfo[p].duracao;
+    });
+    const duracao = minutos + " minutos";
 
-    const valor =
-    document.getElementById("valorProcedimento").innerText;
+    let total = 0;
+    procedimentosSelecionados.forEach(p=>{
+        total += procedimentosInfo[p].valor;
+    });
+    const valor = "R$ " + total.toFixed(2);
 
     const dataFormatada = dataSelecionada
       .split("-")
@@ -848,6 +967,8 @@ window.location.href = linkWhatsApp;
 
 // Limpa o formulário
 form.reset();
+procedimentosSelecionados = [];
+atualizarListaProcedimentos();
 dataSelecionada = "";
 horarioSelecionado = "";
  
