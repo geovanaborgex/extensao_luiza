@@ -813,49 +813,44 @@ function confirmarAgendamento() {
       .reverse()
       .join("/");
 
-    const mensagem = `✨ *Novo agendamento pelo site*
+    const mensagem = `Olá, Luiza! Acabei de realizar um agendamento pelo site.
 
-        👩 Cliente: ${nome}
-
-        📞 Telefone: ${telefone}
-
-        💄 Procedimento: ${procedimento}
-
-        📅 Data: ${dataFormatada}
-
-        🕒 Horário: ${horarioSelecionado}
-
-        ⏳ Duração: ${duracao}
-
-        💰 Valor: ${valor}`;
+    Cliente: ${nome}
+    Telefone: ${telefone}
+    Procedimento: ${procedimento}
+    Data: ${dataFormatada}
+    Horário: ${horarioSelecionado}
+    Duração: ${duracao}
+    Valor: ${valor}`;
 
       const numeroLuiza = "5537999049543";
       const linkWhatsApp = `https://wa.me/${numeroLuiza}?text=${encodeURIComponent(mensagem)}`;
-
       fecharModalHorario();
 
-  Swal.fire({
+// Abre automaticamente o WhatsApp
+window.open(linkWhatsApp, "_blank");
+
+// Depois mostra a confirmação
+Swal.fire({
     icon: "success",
     title: "Agendamento realizado!",
-    text: "Seu horário foi reservado com sucesso.",
-    showCancelButton: true,
-    confirmButtonText: '<i class="fa-brands fa-whatsapp"></i> Enviar no WhatsApp',
-    cancelButtonText: "Fechar",
-    customClass: {
-      popup: "swal-premium",
-      confirmButton: "swal-btn-whatsapp",
-      cancelButton: "swal-btn-fechar"
-    },
-    buttonsStyling: false
-  }).then((result) => {
-        if (result.isConfirmed) {
-          window.open(linkWhatsApp, "_blank");
-        }
+    html: `
+        Seu horário foi reservado com sucesso.<br><br>
+        Você será direcionado ao WhatsApp para enviar a confirmação à Luiza.
+    `,
+    confirmButtonColor: "#6B6E55"
+});
+setTimeout(() => {
 
-        form.reset();
-        dataSelecionada = "";
-        horarioSelecionado = "";
-      });
+window.location.href = linkWhatsApp;
+
+},1800);
+
+// Limpa o formulário
+form.reset();
+dataSelecionada = "";
+horarioSelecionado = "";
+ 
 
     } else {
       Swal.fire({
