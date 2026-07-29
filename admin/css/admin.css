@@ -49,12 +49,12 @@
    }
    
    .wrap{
-   
-       width:min(1280px,92%);
-   
-       margin:60px auto 80px;
-   
-   }
+
+    margin-left: 260px;
+
+    padding: 40px;
+
+}
    
    /* =======================================================
       TOPO

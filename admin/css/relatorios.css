@@ -93,9 +93,9 @@ body{
 
 .conteudo{
 
-    flex:1;
+    margin-left: 260px;
 
-    padding:35px;
+    padding: 40px;
 
 }
 
