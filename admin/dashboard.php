@@ -181,18 +181,25 @@ if($acao == "listar"){
         }
 
         if(preg_match(
-                '/Valor Total:\s*R\$\s*([\d\.,]+)/iu',
-                $descricao,
-                $m
-            )){
-
-                $valor = (float) str_replace(
-                    ",",
-                    ".",
-                    str_replace(".", "", $m[1])
-                );
-
-            }
+            '/Valor Total:\s*R\$\s*([0-9\.,]+)/i',
+            $descricao,
+            $m
+        )){
+        
+            $valorTexto = trim($m[1]);
+        
+        
+            // remove ponto de milhar
+            $valorTexto = str_replace(".", "", $valorTexto);
+        
+        
+            // troca virgula decimal
+            $valorTexto = str_replace(",", ".", $valorTexto);
+        
+        
+            $valor = floatval($valorTexto);
+        
+        }
 
 
         if(preg_match(
