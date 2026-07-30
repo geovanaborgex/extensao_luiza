@@ -102,74 +102,60 @@ function gerarRelatorio(){
     for(let i=0;i<agendamentos.length;i++){
 
         let item = agendamentos[i];
-
-        if(item.data < inicio) continue;
-
-        if(item.data > fim) continue;
-
-        // =====================================================
-        // IGNORAR COMPROMISSOS INTERNOS
-        // =====================================================
-
+    
+    
+        // FILTRA BLOQUEIOS DO GOOGLE CALENDAR
         const bloqueios = [
-
             "Almoço",
-            "Pilates",
-            "Compromisso",
-
+            "almoco",
+            "compromisso",
+            "Pilates"
         ];
-
-
-        let descricao = (
-            item.servico ||
-            item.procedimento ||
-            ""
+    
+    
+        const textoEvento = (
+            String(item.procedimento || "") + " " +
+            String(item.servico || "")
         ).toLowerCase();
-
-
-
-        let ignorar = bloqueios.some(function(texto){
-
-            return descricao.includes(texto);
-
-        });
-
-
-
-        if(ignorar){
-
+    
+    
+    
+        if(
+            bloqueios.some(bloqueio =>
+                textoEvento.includes(bloqueio)
+            )
+        ){
+            console.log("Ignorado:", textoEvento);
             continue;
-
         }
-
+    
+    
+    
+        if(item.data < inicio) continue;
+    
+        if(item.data > fim) continue;
+    
+    
         quantidade++;
-
+    
         totalValor += Number(item.valor);
-
-
-
+    
+    
+    
         html += `
-
-        <tr>
-
-            <td>${formatarData(item.data)}</td>
-
-            <td>${item.horario}</td>
-
-            <td>${item.nome ?? item.cliente}</td>
-
-            <td>${item.procedimento}</td>
-
-            <td>
-
-                R$ ${Number(item.valor).toFixed(2).replace(".",",")}
-
-            </td>
-
-        </tr>
-
+            <tr>
+                <td>${formatarData(item.data)}</td>
+                <td>${item.horario}</td>
+                <td>${item.nome}</td>
+                <td>${item.procedimento}</td>
+                <td>
+                    R$ ${Number(item.valor)
+                    .toFixed(2)
+                    .replace(".",",")}
+                </td>
+            </tr>
         `;
-
+    
     }
 
 
