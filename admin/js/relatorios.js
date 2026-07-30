@@ -107,6 +107,41 @@ function gerarRelatorio(){
 
         if(item.data > fim) continue;
 
+        // =====================================================
+        // IGNORAR COMPROMISSOS INTERNOS
+        // =====================================================
+
+        const bloqueios = [
+
+            "Almoço",
+            "Pilates",
+            "Compromisso",
+
+        ];
+
+
+        let descricao = (
+            item.servico ||
+            item.procedimento ||
+            ""
+        ).toLowerCase();
+
+
+
+        let ignorar = bloqueios.some(function(texto){
+
+            return descricao.includes(texto);
+
+        });
+
+
+
+        if(ignorar){
+
+            continue;
+
+        }
+
         quantidade++;
 
         totalValor += Number(item.valor);
