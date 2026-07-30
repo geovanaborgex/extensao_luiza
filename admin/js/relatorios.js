@@ -1,6 +1,7 @@
 /* ============================================================
    RELATÓRIOS
 ============================================================ */
+console.log("Relatorios.js carregou");
 
 var agendamentos = [];
 
@@ -10,8 +11,11 @@ var agendamentos = [];
 ============================================================ */
 
 async function buscarAgendamentos(){
+    console.log("Entrou na função carregarRelatorios");
+
 
     try{
+
 
         const resposta = await fetch("dashboard.php?acao=listar");
 
@@ -43,6 +47,7 @@ async function buscarAgendamentos(){
     }catch(erro){
 
         alert("Erro ao carregar os agendamentos.");
+        console.log("ERRO:", erro);
 
     }
 
