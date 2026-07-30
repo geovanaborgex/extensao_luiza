@@ -9,7 +9,6 @@ date_default_timezone_set('America/Sao_Paulo');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-
     $nome = $_POST["nome"] ?? "";
     $telefone = $_POST["telefone"] ?? "";
 
@@ -18,6 +17,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $data = $_POST["data"] ?? "";
     $horario = $_POST["horario"] ?? "";
 
+    $valores = [
+        "Maquiagem Profissional" => 120,
+        "Maquiagem Express" => 80,
+        "Corte" => 40,
+        "Hidratação + Escova" => 85,
+        "Escova" => 45,
+        "Chapa" => 40,
+        "Cachos/Ondas" => 30,
+        "Penteado" => 80,
+        "Tintura com Tinta Profissional" => 65,
+        "Tintura com Tinta da Cliente" => 30,
+        "Nanopigmentação" => 400,
+        "Design com Henna" => 50,
+        "Design Simples" => 40,
+        "Brow Lamination" => 85,
+        "Lash Lifting" => 60,
+        "Limpeza de Pele" => 120,
+        "Spa dos Pés" => 70
+    ];
 
     $duracoes = [
 
@@ -38,10 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         "Tintura com Tinta da Cliente" => 30,
         "Corte" => 30,
         "Hidratação + Escova" => 70
-
     ];
-
-
 
     if(
         empty($nome) ||
@@ -50,48 +65,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         empty($horario) ||
         empty($procedimentos)
     ){
-
         echo json_encode([
             "status"=>"erro",
             "mensagem"=>"Dados incompletos."
         ]);
-
         exit;
     }
 
-
-
     // Calcula duração total dos procedimentos
-
     $duracao = 0;
-
-
+    $valorTotal = 0;
+    
     foreach($procedimentos as $proc){
-
+    
         $proc = trim($proc);
-
-
-        if(!isset($duracoes[$proc])){
-
+    
+        if(!isset($duracoes[$proc]) || !isset($valores[$proc])){
+    
             echo json_encode([
                 "status"=>"erro",
                 "mensagem"=>"Procedimento inválido: ".$proc
             ]);
-
             exit;
+    
         }
-
-
+    
         $duracao += $duracoes[$proc];
-
+        $valorTotal += $valores[$proc];
+    
     }
-
-
 
     // Horário inicial
 
     $inicio = new DateTime("$data $horario");
-
 
     // Horário final baseado na soma dos procedimentos
 
@@ -99,11 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $fim->modify("+{$duracao} minutes");
 
-
-
     $calendarId = 'luizagues99@gmail.com';
-
-
 
     // Busca conflitos no Google Agenda
 
@@ -120,13 +122,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     ];
 
 
-
     $eventos = $service->events->listEvents(
         $calendarId,
         $optParams
     );
-
-
 
     if(count($eventos->getItems()) > 0){
 
@@ -136,15 +135,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             "status"=>"erro",
 
             "mensagem"=>"Esse horário já está ocupado."
-
         ]);
-
-
         exit;
 
     }
-
-
 
     // Junta os procedimentos para mostrar no calendário
 
@@ -164,13 +158,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         "Cliente: ".$nome."
 
-Telefone: ".$telefone."
+        Telefone: ".$telefone."
 
-Procedimentos: ".$listaProcedimentos."
+        Procedimentos: ".$listaProcedimentos."
 
-Tempo Total: ".$duracao." minutos",
+        Valor Total: R$ " . number_format($valorTotal, 2, ",", ".") . "
 
-
+        Tempo Total: ".$duracao." minutos",
 
         'start'=>[
 
@@ -189,46 +183,37 @@ Tempo Total: ".$duracao." minutos",
             'timeZone'=>'America/Sao_Paulo'
 
         ]
-
-
     ]);
 
 
+   try{
 
+    $service->events->insert(
+        $calendarId,
+        $evento
+    );
 
-    try{
+    echo json_encode([
 
+        "status" => "sucesso",
 
-        $service->events->insert(
-            $calendarId,
-            $evento
-        );
+        "duracao" => $duracao,
 
+        "valor" => $valorTotal
 
+    ]);
 
-        echo json_encode([
+}catch(Exception $e){
 
-            "status"=>"sucesso",
+    echo json_encode([
 
-            "duracao"=>$duracao
+        "status"=>"erro",
 
-        ]);
+        "mensagem"=>$e->getMessage()
 
+    ]);
 
-
-    }catch(Exception $e){
-
-
-        echo json_encode([
-
-            "status"=>"erro",
-
-            "mensagem"=>$e->getMessage()
-
-        ]);
-
-    }
-
+}
 
 }
 

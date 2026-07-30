@@ -30,11 +30,7 @@ var idSelecionado = "";
 
    Exemplo:
 
-   29/07/2026
-
-   vira
-
-   2026-07-29
+   29/07/2026   vira   2026-07-29
 
 ============================================================ */
 
@@ -148,6 +144,10 @@ async function buscarAgendamentos(){
                 horario : item.horario,
 
                 cliente : item.nome,
+
+                valor : item.valor,
+
+                procedimento : item.procedimento,
 
                 servico : item.servico || item.procedimento,
 

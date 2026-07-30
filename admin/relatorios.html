@@ -107,318 +107,216 @@
     <main class="conteudo">
 
         <header class="topo">
-
+    
             <div>
-
+    
                 <h1>Relatórios de Agendamentos</h1>
-
-                <p>
-                    Consulte os resultados do salão por período.
-                </p>
-
+    
+                <p>Consulte os resultados do salão por período.</p>
+    
             </div>
-
+    
         </header>
-
+    
         <!-- FILTROS -->
-
+    
         <section class="filtros">
-
+    
             <div>
-
+    
                 <label>Data Inicial</label>
-
-                <input type="date">
-
+    
+                <input type="date" id="dataInicial">
+    
             </div>
-
+    
             <div>
-
+    
                 <label>Data Final</label>
-
-                <input type="date">
-
+    
+                <input type="date" id="dataFinal">
+    
             </div>
-
+    
             <div>
-
+    
                 <label>Procedimento</label>
-
-                <select>
-
-                    <option>Todos</option>
-
+    
+                <select id="filtroProcedimento">
+    
+                    <option value="">Todos</option>
+    
                 </select>
-
+    
             </div>
-
-            <button>
-
+    
+            <button id="btnGerar">
+    
                 <i class="fa-solid fa-magnifying-glass"></i>
-
+    
                 Gerar Relatório
-
+    
             </button>
-
+    
         </section>
-
+    
+    
+    
         <!-- CARDS -->
-
+    
         <section class="cards">
-
+    
             <div class="card">
-
+    
                 <i class="fa-solid fa-calendar-check"></i>
-
+    
                 <h3>Agendamentos</h3>
-
-                <span>96</span>
-
+    
+                <span id="totalAgendamentos">0</span>
+    
             </div>
-
+    
             <div class="card">
-
+    
                 <i class="fa-solid fa-sack-dollar"></i>
-
+    
                 <h3>Valor Agendado</h3>
-
-                <span>R$ 8.450,00</span>
-
+    
+                <span id="valorAgendado">R$ 0,00</span>
+    
             </div>
-
+    
             <div class="card">
-
+    
                 <i class="fa-solid fa-user-group"></i>
-
+    
                 <h3>Clientes</h3>
-
-                <span>61</span>
-
+    
+                <span id="totalClientes">0</span>
+    
             </div>
-
+    
             <div class="card">
-
+    
                 <i class="fa-solid fa-star"></i>
-
+    
                 <h3>Ticket Médio</h3>
-
-                <span>R$ 88,02</span>
-
+    
+                <span id="ticketMedio">R$ 0,00</span>
+    
             </div>
-
+    
         </section>
-
+    
+    
+    
         <!-- GRÁFICOS -->
-
+    
         <section class="graficos">
-
+    
             <div class="grafico">
-
+    
                 <h2>Procedimentos Mais Agendados</h2>
-
-                <div class="barra">
-
-                    <span>Escova</span>
-
-                    <div class="progresso">
-
-                        <div style="width:90%"></div>
-
-                    </div>
-
-                    <strong>25</strong>
-
-                </div>
-
-                <div class="barra">
-
-                    <span>Design Simples</span>
-
-                    <div class="progresso">
-
-                        <div style="width:70%"></div>
-
-                    </div>
-
-                    <strong>18</strong>
-
-                </div>
-
-                <div class="barra">
-
-                    <span>Maquiagem</span>
-
-                    <div class="progresso">
-
-                        <div style="width:55%"></div>
-
-                    </div>
-
-                    <strong>14</strong>
-
-                </div>
-
-                <div class="barra">
-
-                    <span>Limpeza de Pele</span>
-
-                    <div class="progresso">
-
-                        <div style="width:40%"></div>
-
-                    </div>
-
-                    <strong>10</strong>
-
-                </div>
-
+    
+                <div id="graficoProcedimentos"></div>
+    
             </div>
-
+    
+    
+    
             <div class="grafico">
-
+    
                 <h2>Resumo Financeiro</h2>
-
+    
                 <table>
-
-                    <tr>
-
-                        <td>Escova</td>
-
-                        <td>R$ 1.125,00</td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>Design Simples</td>
-
-                        <td>R$ 720,00</td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>Maquiagem</td>
-
-                        <td>R$ 1.680,00</td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>Limpeza de Pele</td>
-
-                        <td>R$ 1.200,00</td>
-
-                    </tr>
-
+    
+                    <tbody id="tabelaFinanceira">
+    
+                    </tbody>
+    
                 </table>
-
+    
             </div>
-
+    
         </section>
-
+    
+    
+    
         <!-- TABELA -->
-
+    
         <section class="tabela">
-
+    
             <div class="titulo-tabela">
-
-                <h2>Agendamentos</h2>
-
+    
+                <h2>Agendamentos Encontrados</h2>
+    
                 <div>
-
-                    <button class="btn-pdf">
-
+    
+                    <button class="btn-pdf" id="btnPDF">
+    
                         <i class="fa-solid fa-file-pdf"></i>
-
+    
                         PDF
-
+    
                     </button>
-
-                    <button class="btn-excel">
-
+    
+                    <button class="btn-excel" id="btnExcel">
+    
                         <i class="fa-solid fa-file-excel"></i>
-
+    
                         Excel
-
+    
                     </button>
-
+    
                 </div>
-
+    
             </div>
-
+    
+    
+    
             <table>
-
+    
                 <thead>
-
+    
                     <tr>
-
+    
                         <th>Data</th>
-
+    
                         <th>Hora</th>
-
+    
                         <th>Cliente</th>
-
-                        <th>Procedimentos</th>
-
+    
+                        <th>Procedimento</th>
+    
                         <th>Valor</th>
-
+    
                     </tr>
-
+    
                 </thead>
-
-                <tbody>
-
+    
+    
+    
+                <tbody id="tabelaRelatorio">
+    
                     <tr>
-
-                        <td>01/08/2026</td>
-
-                        <td>09:00</td>
-
-                        <td>Maria Silva</td>
-
-                        <td>Escova</td>
-
-                        <td>R$ 45,00</td>
-
+    
+                        <td colspan="5" style="text-align:center;padding:25px;">
+    
+                            Nenhum agendamento encontrado.
+    
+                        </td>
+    
                     </tr>
-
-                    <tr>
-
-                        <td>01/08/2026</td>
-
-                        <td>10:00</td>
-
-                        <td>Ana Souza</td>
-
-                        <td>Escova + Chapa</td>
-
-                        <td>R$ 85,00</td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>02/08/2026</td>
-
-                        <td>14:00</td>
-
-                        <td>Fernanda</td>
-
-                        <td>Maquiagem</td>
-
-                        <td>R$ 120,00</td>
-
-                    </tr>
-
+    
                 </tbody>
-
+    
             </table>
-
+    
         </section>
-
+    
     </main>
+    
+    <script src="js/relatorios.js"></script>
 
 </div>
 

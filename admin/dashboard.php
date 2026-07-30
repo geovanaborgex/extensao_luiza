@@ -153,13 +153,10 @@ if($acao == "listar"){
 
         }
 
-
-
         $telefone="";
-
         $servico="";
-
-
+        $valor = 0;
+        $status = "Confirmado";
 
         if(preg_match(
             '/Telefone:\s*(.+)/u',
@@ -183,6 +180,19 @@ if($acao == "listar"){
 
         }
 
+        if(preg_match(
+                '/Valor Total:\s*R\$\s*([\d\.,]+)/iu',
+                $descricao,
+                $m
+            )){
+
+                $valor = (float) str_replace(
+                    ",",
+                    ".",
+                    str_replace(".", "", $m[1])
+                );
+
+            }
 
 
         if(preg_match(
@@ -239,7 +249,8 @@ if($acao == "listar"){
                 ?:
                 trim($procedimento),
 
-
+            "valor" => $valor,
+            
             "procedimento"=>
                 trim($procedimento)
 
