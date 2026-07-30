@@ -115,7 +115,7 @@ body{
 
     font-size:30px;
 
-    color:#ffffff;
+    color:#6B6E55;
 
 }
 
@@ -307,5 +307,164 @@ body{
     font-weight:700;
 
     color:#6B6E55;
+
+}
+
+/* ============================================================
+   TABELA DE RELATÓRIOS
+============================================================ */
+
+.tabela{
+
+    background: #fff;
+
+    border-radius: 18px;
+
+    padding: 25px;
+
+    margin-top: 30px;
+
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+
+}
+
+
+
+.titulo-tabela{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+
+}
+
+
+
+.titulo-tabela h2{
+
+    font-size:22px;
+
+    font-weight:600;
+
+    color:#333;
+
+}
+
+
+
+.tabela table{
+
+    width:100%;
+
+    border-collapse:separate;
+
+    border-spacing:0;
+
+    overflow:hidden;
+
+}
+
+
+
+.tabela thead{
+
+    background:#f7f2ff;
+
+}
+
+
+
+.tabela th{
+
+    padding:16px 20px;
+
+    text-align:left;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#555;
+
+    border-bottom:1px solid #eee;
+
+}
+
+
+
+.tabela td{
+
+    padding:16px 20px;
+
+    font-size:14px;
+
+    color:#666;
+
+    border-bottom:1px solid #f0f0f0;
+
+}
+
+
+
+.tabela tbody tr{
+
+    transition:.2s;
+
+}
+
+
+
+.tabela tbody tr:hover{
+
+    background:#faf7ff;
+
+}
+
+
+
+.tabela tbody tr:last-child td{
+
+    border-bottom:none;
+
+}
+
+
+/* Primeira coluna */
+
+.tabela td:first-child{
+
+    font-weight:500;
+
+    color:#444;
+
+}
+
+
+
+/* Valor */
+
+.tabela td:last-child{
+
+    font-weight:600;
+
+    color:#7c4dff;
+
+}
+
+
+
+/* Mensagem sem dados */
+
+.tabela td[colspan]{
+
+    text-align:center;
+
+    padding:30px;
+
+    color:#999;
 
 }
