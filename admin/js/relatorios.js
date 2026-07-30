@@ -104,12 +104,14 @@ function gerarRelatorio(){
         let item = agendamentos[i];
     
     
-        // FILTRA BLOQUEIOS DO GOOGLE CALENDAR
+        console.log("ANALISANDO:", item.procedimento, item.servico);
+    
+    
         const bloqueios = [
-            "Almoço",
+            "almoço",
             "almoco",
             "compromisso",
-            "Pilates"
+            "pilates"
         ];
     
     
@@ -119,16 +121,10 @@ function gerarRelatorio(){
         ).toLowerCase();
     
     
-    
-        if(
-            bloqueios.some(bloqueio =>
-                textoEvento.includes(bloqueio)
-            )
-        ){
-            console.log("Ignorado:", textoEvento);
+        if(bloqueios.some(b => textoEvento.includes(b))){
+            console.log("BLOQUEADO:", textoEvento);
             continue;
         }
-    
     
     
         if(item.data < inicio) continue;
@@ -139,24 +135,6 @@ function gerarRelatorio(){
         quantidade++;
     
         totalValor += Number(item.valor);
-    
-    
-    
-        html += `
-            <tr>
-                <td>${formatarData(item.data)}</td>
-                <td>${item.horario}</td>
-                <td>${item.nome}</td>
-                <td>${item.procedimento}</td>
-                <td>
-                    R$ ${Number(item.valor)
-                    .toFixed(2)
-                    .replace(".",",")}
-                </td>
-            </tr>
-        `;
-    
-    }
 
 
 
@@ -196,8 +174,8 @@ function gerarRelatorio(){
     document.getElementById("corpoTabela").innerHTML =
     html;
 
+    }
 }
-
 
 /* ============================================================
    FORMATAR DATA
