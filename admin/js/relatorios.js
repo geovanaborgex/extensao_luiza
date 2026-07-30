@@ -5,6 +5,57 @@ console.log("Relatorios.js carregou");
 
 var agendamentos = [];
 
+/* ============================================================
+   CALCULAR VALOR PELO PROCEDIMENTO
+============================================================ */
+
+function calcularValorProcedimento(procedimento){
+
+    const valores = {
+
+        "Maquiagem Profissional": 120,
+        "Maquiagem Express": 80,
+        "Corte": 40,
+        "Hidratação + Escova": 85,
+        "Escova": 45,
+        "Chapa": 40,
+        "Cachos/Ondas": 30,
+        "Penteado": 80,
+        "Tintura com Tinta Profissional": 65,
+        "Tintura com Tinta da Cliente": 30,
+        "Nanopigmentação": 400,
+        "Design com Henna": 50,
+        "Design Simples": 40,
+        "Brow Lamination": 85,
+        "Lash Lifting": 60,
+        "Limpeza de Pele": 120,
+        "Spa dos Pés": 70
+
+    };
+
+
+    if(!procedimento){
+        return 0;
+    }
+
+
+    procedimento = procedimento.toLowerCase();
+
+
+    for(let nome in valores){
+
+        if(procedimento.includes(nome.toLowerCase())){
+
+            return valores[nome];
+
+        }
+
+    }
+
+
+    return 0;
+
+}
 
 /* ============================================================
    BUSCAR AGENDAMENTOS
@@ -129,10 +180,20 @@ function gerarRelatorio(){
         if(item.data > fim) continue;
 
 
-
+        let valorItem = Number(item.valor);
+        
+        if(valorItem == 0){
+        
+            valorItem = calcularValorProcedimento(
+                item.procedimento || item.servico
+            );
+        
+        }
+        
+        
         quantidade++;
-
-        totalValor += Number(item.valor);
+        
+        totalValor += valorItem;
 
 
 
@@ -148,11 +209,7 @@ function gerarRelatorio(){
 
             <td>${item.procedimento}</td>
 
-            <td>
-                R$ ${Number(item.valor)
-                .toFixed(2)
-                .replace(".",",")}
-            </td>
+             <td>R$ ${valorItem.toFixed(2).replace(".",",")}</td>
 
         </tr>
 
@@ -187,7 +244,7 @@ function gerarRelatorio(){
 
 
 
-    document.getElementById("cardValor").innerHTML =
+        document.getElementById("cardValor").innerHTML =
         "R$ " + totalValor.toFixed(2).replace(".",",");
 
 
