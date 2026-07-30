@@ -28,6 +28,7 @@
    
        --shadow:0 15px 40px rgba(0,0,0,.07);
    
+
    }
    
    *{
@@ -84,7 +85,7 @@
    
    .top h1{
    
-       font-family:"Playfair Display",serif;
+       font-family:'Poppins',sans-serif;
    
        color:var(--verde);
    
