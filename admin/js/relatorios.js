@@ -91,51 +91,75 @@ function gerarRelatorio(){
     const fim =
     document.getElementById("dataFinal").value;
 
+
     let totalValor = 0;
-
     let quantidade = 0;
-
     let html = "";
 
+
+    const bloqueios = [
+        "almoço",
+        "almoco",
+        "compromisso",
+        "pilates"
+    ];
 
 
     for(let i=0;i<agendamentos.length;i++){
 
         let item = agendamentos[i];
-    
-    
-        console.log("ANALISANDO:", item.procedimento, item.servico);
-    
-    
-        const bloqueios = [
-            "almoço",
-            "almoco",
-            "compromisso",
-            "pilates"
-        ];
-    
-    
+
+
         const textoEvento = (
             String(item.procedimento || "") + " " +
             String(item.servico || "")
         ).toLowerCase();
-    
-    
+
+
+
         if(bloqueios.some(b => textoEvento.includes(b))){
             console.log("BLOQUEADO:", textoEvento);
             continue;
         }
-    
-    
+
+
+
         if(item.data < inicio) continue;
-    
+
         if(item.data > fim) continue;
-    
-    
+
+
+
         quantidade++;
-    
+
         totalValor += Number(item.valor);
 
+
+
+        html += `
+
+        <tr>
+
+            <td>${formatarData(item.data)}</td>
+
+            <td>${item.horario}</td>
+
+            <td>${item.nome}</td>
+
+            <td>${item.procedimento}</td>
+
+            <td>
+                R$ ${Number(item.valor)
+                .toFixed(2)
+                .replace(".",",")}
+            </td>
+
+        </tr>
+
+        `;
+
+
+    }
 
 
     if(html==""){
@@ -144,7 +168,7 @@ function gerarRelatorio(){
 
         <tr>
 
-            <td colspan="5">
+            <td colspan="5" style="text-align:center;padding:20px">
 
                 Nenhum agendamento encontrado.
 
@@ -159,22 +183,18 @@ function gerarRelatorio(){
 
 
     document.getElementById("cardAgendamentos").innerHTML =
-    quantidade;
+        quantidade;
 
 
 
     document.getElementById("cardValor").innerHTML =
-    "R$ " +
-    totalValor
-        .toFixed(2)
-        .replace(".",",");
+        "R$ " + totalValor.toFixed(2).replace(".",",");
 
 
 
     document.getElementById("corpoTabela").innerHTML =
-    html;
+        html;
 
-    }
 }
 
 /* ============================================================
