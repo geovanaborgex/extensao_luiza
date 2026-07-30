@@ -15,7 +15,16 @@ async function buscarAgendamentos(){
 
         const resposta = await fetch("dashboard.php?acao=listar");
 
-        const dados = await resposta.json();
+        console.log("Status:", resposta.status);
+
+
+        const texto = await resposta.text();
+
+
+        console.log("Retorno PHP:", texto);
+
+
+        const dados = JSON.parse(texto);
 
         if(dados.status != "sucesso"){
 
