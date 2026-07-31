@@ -61,6 +61,11 @@ if($acao == "listar"){
 
     ];
 
+    echo json_encode([
+        "inicio" => $inicioPeriodo->format(DateTime::RFC3339),
+        "fim" => $fimPeriodo->format(DateTime::RFC3339)
+    ]);
+    exit;
 
 
     try {

@@ -61,37 +61,38 @@ function calcularValorProcedimento(procedimento){
    BUSCAR AGENDAMENTOS
 ============================================================ */
 
-async function buscarAgendamentos(){
-    console.log("Entrou na função carregarRelatorios");
+async function buscarAgendamentos(inicio = "", fim = ""){
 
+    console.log("Entrou na função buscarAgendamentos");
 
     try{
 
+        let url = "dashboard.php?acao=listar";
 
-        const resposta = await fetch("dashboard.php?acao=listar");
+        if(inicio !== "" && fim !== ""){
+
+            url += `&inicio=${inicio}&fim=${fim}`;
+
+        }
+
+        const resposta = await fetch(url);
 
         console.log("Status:", resposta.status);
 
-
         const texto = await resposta.text();
 
-
         console.log("Retorno PHP:", texto);
-
 
         const dados = JSON.parse(texto);
 
         if(dados.status != "sucesso"){
 
             alert(dados.mensagem);
-
             return;
 
         }
 
         agendamentos = dados.agendamentos;
-
-        definirDatas();
 
         gerarRelatorio();
 
@@ -107,8 +108,6 @@ async function buscarAgendamentos(){
 
 /* ============================================================
    DEFINIR DATAS PADRÃO
-
-   Primeiro dia do mês até hoje
 ============================================================ */
 
 function definirDatas(){
@@ -135,13 +134,6 @@ function definirDatas(){
 ============================================================ */
 
 function gerarRelatorio(){
-
-    const inicio =
-    document.getElementById("dataInicial").value;
-
-    const fim =
-    document.getElementById("dataFinal").value;
-
 
     let totalValor = 0;
     let quantidade = 0;
@@ -172,13 +164,6 @@ function gerarRelatorio(){
             console.log("BLOQUEADO:", textoEvento);
             continue;
         }
-
-
-
-        if(item.data < inicio) continue;
-
-        if(item.data > fim) continue;
-
 
         let valorItem = Number(item.valor);
         
@@ -271,13 +256,23 @@ function formatarData(data){
    BOTÃO GERAR
 ============================================================ */
 
-document
-.getElementById("btnGerar")
-.onclick = gerarRelatorio;
+document.getElementById("btnGerar").onclick = () => {
+
+    const inicio = document.getElementById("dataInicial").value;
+    const fim = document.getElementById("dataFinal").value;
+
+    buscarAgendamentos(inicio, fim);
+
+};
 
 
 /* ============================================================
    INICIAR
 ============================================================ */
 
-buscarAgendamentos();
+definirDatas();
+
+const inicio = document.getElementById("dataInicial").value;
+const fim = document.getElementById("dataFinal").value;
+
+buscarAgendamentos(inicio, fim);
