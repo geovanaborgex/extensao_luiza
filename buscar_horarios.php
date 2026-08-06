@@ -211,17 +211,22 @@ $agora = new DateTime("now", new DateTimeZone("America/Sao_Paulo"));
 $dataHoje = $agora->format("Y-m-d");
 
 if ($data === $dataHoje && $horarioTeste < $agora) {
+
     $horarioTeste = clone $agora;
 
+    $hora = (int)$horarioTeste->format("H");
     $minuto = (int)$horarioTeste->format("i");
 
-    if ($minuto > 0 && $minuto <= 30) {
-        $horarioTeste->setTime((int)$horarioTeste->format("H"), 15);
-    } elseif ($minuto > 15 && $minuto <= 30) {
-        $horarioTeste->setTime((int)$horarioTeste->format("H"), 30);
-    } elseif ($minuto > 30 && $minuto <= 45) {
-        $horarioTeste->setTime((int)$horarioTeste->format("H"), 45);
+    if ($minuto == 0) {
+        // Mantém a hora cheia
+        $horarioTeste->setTime($hora, 0);
+
+    } elseif ($minuto <= 30) {
+        // Arredonda para :30
+        $horarioTeste->setTime($hora, 30);
+
     } else {
+        // Vai para a próxima hora cheia
         $horarioTeste->modify("+1 hour");
         $horarioTeste->setTime((int)$horarioTeste->format("H"), 0);
     }
@@ -261,7 +266,7 @@ while ($horarioTeste < $fimExpediente) {
             $inicioNovo->format("H:i");
     }
 
-    $horarioTeste->modify("+15 minutes");
+    $horarioTeste->modify("+30 minutes");
 }
 
 /* RETORNO */
