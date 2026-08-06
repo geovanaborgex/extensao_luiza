@@ -215,7 +215,7 @@ if ($data === $dataHoje && $horarioTeste < $agora) {
 
     $minuto = (int)$horarioTeste->format("i");
 
-    if ($minuto > 0 && $minuto <= 15) {
+    if ($minuto > 0 && $minuto <= 30) {
         $horarioTeste->setTime((int)$horarioTeste->format("H"), 15);
     } elseif ($minuto > 15 && $minuto <= 30) {
         $horarioTeste->setTime((int)$horarioTeste->format("H"), 30);
