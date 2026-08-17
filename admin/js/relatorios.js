@@ -61,6 +61,10 @@ function calcularValorProcedimento(procedimento){
    CARREGAR FILTRO DE PROCEDIMENTOS
 ============================================================ */
 
+/* ============================================================
+   CARREGAR FILTRO DE PROCEDIMENTOS
+============================================================ */
+
 function carregarFiltroProcedimentos(){
 
     const select = document.getElementById("filtroProcedimento");
@@ -70,40 +74,35 @@ function carregarFiltroProcedimentos(){
         return;
     }
 
-    // Guarda o valor atualmente selecionado
+    const procedimentos = [
+        "Maquiagem Profissional",
+        "Maquiagem Express",
+        "Corte",
+        "Hidratação + Escova",
+        "Escova",
+        "Chapa",
+        "Cachos/Ondas",
+        "Penteado",
+        "Tintura com Tinta Profissional",
+        "Tintura com Tinta da Cliente",
+        "Nanopigmentação",
+        "Design com Henna",
+        "Design Simples",
+        "Brow Lamination",
+        "Lash Lifting",
+        "Limpeza de Pele",
+        "Spa dos Pés"
+    ];
+
+    // Guarda o filtro atual
     const valorAtual = select.value;
 
-    // Limpa as opções
+    // Limpa o select
     select.innerHTML = `
         <option value="">Todos</option>
     `;
 
-    const procedimentos = [];
-
-    for(let i = 0; i < agendamentos.length; i++){
-
-        const item = agendamentos[i];
-
-        const procedimento = item.procedimento || item.servico || "";
-
-        if(procedimento){
-
-            const nome = procedimento.trim();
-
-            if(nome && !procedimentos.includes(nome)){
-                procedimentos.push(nome);
-            }
-
-        }
-
-    }
-
-    // Ordena alfabeticamente
-    procedimentos.sort((a, b) => 
-        a.localeCompare(b, "pt-BR")
-    );
-
-    // Cria as opções
+    // Adiciona os procedimentos
     procedimentos.forEach(procedimento => {
 
         const option = document.createElement("option");
@@ -115,7 +114,7 @@ function carregarFiltroProcedimentos(){
 
     });
 
-    // Tenta manter o filtro selecionado
+    // Mantém o filtro selecionado, se existir
     if(procedimentos.includes(valorAtual)){
         select.value = valorAtual;
     }
@@ -170,7 +169,7 @@ async function buscarAgendamentos(inicio = "", fim = ""){
 
         }
         agendamentos = dados.agendamentos;
-        carregarFiltroProcedimentos();
+        
         gerarRelatorio();
 
     }catch(erro){
@@ -335,6 +334,8 @@ document.getElementById("btnGerar").onclick = () => {
 /* ============================================================
    INICIAR
 ============================================================ */
+
+carregarFiltroProcedimentos();
 
 definirDatas();
 
