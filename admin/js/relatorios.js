@@ -58,6 +58,84 @@ function calcularValorProcedimento(procedimento){
 }
 
 /* ============================================================
+   CARREGAR FILTRO DE PROCEDIMENTOS
+============================================================ */
+
+function carregarFiltroProcedimentos(){
+
+    const select = document.getElementById("filtroProcedimento");
+
+    if(!select){
+        console.log("Select filtroProcedimento não encontrado");
+        return;
+    }
+
+    // Guarda o valor atualmente selecionado
+    const valorAtual = select.value;
+
+    // Limpa as opções
+    select.innerHTML = `
+        <option value="">Todos</option>
+    `;
+
+    const procedimentos = [];
+
+    for(let i = 0; i < agendamentos.length; i++){
+
+        const item = agendamentos[i];
+
+        const procedimento = item.procedimento || item.servico || "";
+
+        if(procedimento){
+
+            const nome = procedimento.trim();
+
+            if(nome && !procedimentos.includes(nome)){
+                procedimentos.push(nome);
+            }
+
+        }
+
+    }
+
+    // Ordena alfabeticamente
+    procedimentos.sort((a, b) => 
+        a.localeCompare(b, "pt-BR")
+    );
+
+    // Cria as opções
+    procedimentos.forEach(procedimento => {
+
+        const option = document.createElement("option");
+
+        option.value = procedimento;
+        option.textContent = procedimento;
+
+        select.appendChild(option);
+
+    });
+
+    // Tenta manter o filtro selecionado
+    if(procedimentos.includes(valorAtual)){
+        select.value = valorAtual;
+    }
+
+}
+
+/* ============================================================
+   FILTRO DE PROCEDIMENTO
+============================================================ */
+
+document.getElementById("filtroProcedimento").addEventListener(
+    "change",
+    function(){
+
+        gerarRelatorio();
+
+    }
+);
+
+/* ============================================================
    BUSCAR AGENDAMENTOS
 ============================================================ */
 
@@ -91,9 +169,8 @@ async function buscarAgendamentos(inicio = "", fim = ""){
             return;
 
         }
-
         agendamentos = dados.agendamentos;
-
+        carregarFiltroProcedimentos();
         gerarRelatorio();
 
     }catch(erro){
@@ -139,6 +216,11 @@ function gerarRelatorio(){
     let quantidade = 0;
     let html = "";
 
+    const filtroProcedimento = document
+        .getElementById("filtroProcedimento")
+        .value
+        .trim()
+        .toLowerCase();
 
     const bloqueios = [
         "almoço",
@@ -147,96 +229,78 @@ function gerarRelatorio(){
         "pilates"
     ];
 
-
-    for(let i=0;i<agendamentos.length;i++){
+    for(let i = 0; i < agendamentos.length; i++){
 
         let item = agendamentos[i];
 
+        const procedimentoItem = String(
+            item.procedimento || item.servico || ""
+        ).trim();
 
         const textoEvento = (
             String(item.procedimento || "") + " " +
             String(item.servico || "")
         ).toLowerCase();
 
+        // Filtro de procedimento
+        if(
+            filtroProcedimento !== "" &&
+            procedimentoItem.toLowerCase() !== filtroProcedimento
+        ){
+            continue;
+        }
 
-
+        // Bloqueios
         if(bloqueios.some(b => textoEvento.includes(b))){
             console.log("BLOQUEADO:", textoEvento);
             continue;
         }
 
         let valorItem = Number(item.valor);
-        
+
         if(valorItem == 0){
-        
+
             valorItem = calcularValorProcedimento(
                 item.procedimento || item.servico
             );
-        
+
         }
-        
-        
+
         quantidade++;
-        
+
         totalValor += valorItem;
 
-
-
         html += `
-
-        <tr>
-
-            <td>${formatarData(item.data)}</td>
-
-            <td>${item.horario}</td>
-
-            <td>${item.nome}</td>
-
-            <td>${item.procedimento}</td>
-
-             <td>R$ ${valorItem.toFixed(2).replace(".",",")}</td>
-
-        </tr>
-
+            <tr>
+                <td>${formatarData(item.data)}</td>
+                <td>${item.horario}</td>
+                <td>${item.nome}</td>
+                <td>${item.procedimento || item.servico || ""}</td>
+                <td>R$ ${valorItem.toFixed(2).replace(".",",")}</td>
+            </tr>
         `;
-
-
     }
 
-
-    if(html==""){
+    if(html == ""){
 
         html = `
-
-        <tr>
-
-            <td colspan="5" style="text-align:center;padding:20px">
-
-                Nenhum agendamento encontrado.
-
-            </td>
-
-        </tr>
-
+            <tr>
+                <td colspan="5" style="text-align:center;padding:20px">
+                    Nenhum agendamento encontrado.
+                </td>
+            </tr>
         `;
 
     }
-
-
 
     document.getElementById("cardAgendamentos").innerHTML =
         quantidade;
 
-
-
-        document.getElementById("cardValor").innerHTML =
+    document.getElementById("cardValor").innerHTML =
         "R$ " + totalValor.toFixed(2).replace(".",",");
-
-
 
     document.getElementById("corpoTabela").innerHTML =
         html;
-
 }
 
 /* ============================================================
@@ -264,6 +328,8 @@ document.getElementById("btnGerar").onclick = () => {
     buscarAgendamentos(inicio, fim);
 
 };
+
+
 
 
 /* ============================================================
