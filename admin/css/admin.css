@@ -61,20 +61,6 @@ body{
 
 
 
-/* ===========================
-   CONTAINER
-=========================== */
-
-
-.wrap{
-
-    margin-left:260px;
-
-    padding:40px;
-
-}
-
-
 
 
 /* ===========================
@@ -703,15 +689,6 @@ button{
 
 
   .conteudo,
-  .wrap{
-
-      margin-left:0;
-
-      padding:20px;
-
-  }
-
-
   .slot{
 
       grid-template-columns:1fr;

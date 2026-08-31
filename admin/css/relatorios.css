@@ -8,6 +8,7 @@
     box-sizing:border-box;
 }
 
+
 body{
     font-family:'Poppins',sans-serif;
     background:#f5f6f8;
@@ -19,85 +20,11 @@ body{
     min-height:100vh;
 }
 
-/* ===========================
-   SIDEBAR
-=========================== */
-
-.sidebar{
-    width:260px;
-    background:#6B6E55;
-    color:#fff;
-    display:flex;
-    flex-direction:column;
-    padding:30px 20px;
-    box-shadow:3px 0 15px rgba(0,0,0,.08);
-}
-
-.logo{
-    margin-bottom:50px;
-}
-
-.logo h2{
-    font-size:30px;
-    font-weight:700;
-}
-
-.logo span{
-    font-size:13px;
-    opacity:.8;
-}
-
-.sidebar nav{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-}
-
-.sidebar nav a{
-
-    text-decoration:none;
-    color:white;
-
-    padding:14px 18px;
-
-    border-radius:12px;
-
-    transition:.25s;
-
-    display:flex;
-
-    align-items:center;
-
-    gap:12px;
-
-    font-size:15px;
-
-}
-
-.sidebar nav a:hover{
-
-    background:rgba(255,255,255,.15);
-
-}
-
-.sidebar nav a.ativo{
-
-    background:#C9A86A;
-    color:#fff;
-
-}
 
 /* ===========================
    CONTEÚDO
 =========================== */
 
-.conteudo{
-
-    margin-left: 260px;
-
-    padding: 40px;
-
-}
 
 .topo{
 

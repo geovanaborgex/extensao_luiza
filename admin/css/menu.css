@@ -2,86 +2,93 @@
    MENU LATERAL
 ========================================== */
 
-.sidebar{
-
+.sidebar {
     position: fixed;
-
     left: 0;
     top: 0;
 
     width: 260px;
-
     height: 100vh;
 
     background: #6B6E55;
+    color: #fff;
 
     padding: 30px 20px;
 
     overflow-y: auto;
 
+    display: flex;
+    flex-direction: column;
+
+    box-shadow: 3px 0 15px rgba(0, 0, 0, .08);
+
+    z-index: 1000;
 }
 
-.logo{
 
-    margin-bottom:50px;
+/* ==========================================
+   LOGO
+========================================== */
 
+.logo {
+    margin-bottom: 50px;
 }
 
-.logo h2{
-
-    font-size:30px;
-    font-weight:700;
-
+.logo h2 {
+    font-size: 30px;
+    font-weight: 700;
 }
 
-.logo span{
-
-    font-size:13px;
-    opacity:.8;
-
+.logo span {
+    font-size: 13px;
+    opacity: .8;
 }
 
-.sidebar nav{
 
-    display:flex;
-    flex-direction:column;
-    gap:8px;
+/* ==========================================
+   NAVEGAÇÃO
+========================================== */
 
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.sidebar nav a{
+.sidebar nav a {
+    text-decoration: none;
 
-    text-decoration:none;
+    color: #fff;
 
-    color:white;
+    padding: 14px 18px;
 
-    padding:14px 18px;
+    border-radius: 12px;
 
-    border-radius:12px;
+    display: flex;
+    align-items: center;
 
-    display:flex;
-    align-items:center;
-    gap:12px;
+    gap: 12px;
 
-    transition:.25s;
+    font-size: 15px;
 
+    transition: .25s;
 }
 
-.sidebar nav a:hover{
-
-    background:rgba(255,255,255,.15);
-
+.sidebar nav a:hover {
+    background: rgba(255, 255, 255, .15);
 }
 
-.sidebar nav a.ativo{
-
-    background:#C9A86A;
-
+.sidebar nav a.ativo {
+    background: #C9A86A;
+    color: #fff;
 }
 
-.sidebar i{
 
-    width:20px;
-    text-align:center;
+/* ==========================================
+   ÍCONES
+========================================== */
 
+.sidebar i {
+    width: 20px;
+    text-align: center;
 }
