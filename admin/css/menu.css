@@ -57,20 +57,13 @@
 
 .sidebar nav a {
     text-decoration: none;
-
     color: #fff;
-
     padding: 14px 18px;
-
     border-radius: 12px;
-
     display: flex;
     align-items: center;
-
     gap: 12px;
-
     font-size: 15px;
-
     transition: .25s;
 }
 
@@ -83,10 +76,6 @@
     color: #fff;
 }
 
-
-/* ==========================================
-   ÍCONES
-========================================== */
 
 .sidebar i {
     width: 20px;
