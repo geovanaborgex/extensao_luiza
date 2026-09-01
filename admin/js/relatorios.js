@@ -61,10 +61,6 @@ function calcularValorProcedimento(procedimento){
    CARREGAR FILTRO DE PROCEDIMENTOS
 ============================================================ */
 
-/* ============================================================
-   CARREGAR FILTRO DE PROCEDIMENTOS
-============================================================ */
-
 function carregarFiltroProcedimentos(){
 
     const select = document.getElementById("filtroProcedimento");
@@ -281,7 +277,6 @@ function gerarRelatorio(){
     }
 
     if(html == ""){
-
         html = `
             <tr>
                 <td colspan="5" style="text-align:center;padding:20px">
@@ -289,8 +284,13 @@ function gerarRelatorio(){
                 </td>
             </tr>
         `;
-
     }
+    const ticketMedio = quantidade > 0
+        ? totalValor / quantidade
+        : 0;
+
+    document.getElementById("ticketMedio").innerHTML =
+        "R$ " + ticketMedio.toFixed(2).replace(".", ",");
 
     document.getElementById("cardAgendamentos").innerHTML =
         quantidade;
@@ -300,6 +300,235 @@ function gerarRelatorio(){
 
     document.getElementById("corpoTabela").innerHTML =
         html;
+}
+
+/* ============================================================
+   GERAR PDF
+============================================================ */
+
+function gerarPDF(){
+
+    const { jsPDF } = window.jspdf;
+
+    const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4"
+    });
+
+    let totalValor = 0;
+    let quantidade = 0;
+
+    const filtroProcedimento = document
+        .getElementById("filtroProcedimento")
+        .value
+        .trim()
+        .toLowerCase();
+
+    const inicio = document.getElementById("dataInicial").value;
+    const fim = document.getElementById("dataFinal").value;
+
+    const bloqueios = [
+        "almoço",
+        "almoco",
+        "compromisso",
+        "pilates"
+    ];
+
+    const linhas = [];
+
+    for(let i = 0; i < agendamentos.length; i++){
+
+        const item = agendamentos[i];
+
+        const procedimentoItem = String(
+            item.procedimento || item.servico || ""
+        ).trim();
+
+        const textoEvento = (
+            String(item.procedimento || "") + " " +
+            String(item.servico || "")
+        ).toLowerCase();
+
+        // Filtro de procedimento
+        if(
+            filtroProcedimento !== "" &&
+            procedimentoItem.toLowerCase() !== filtroProcedimento
+        ){
+            continue;
+        }
+
+        // Bloqueios
+        if(bloqueios.some(b => textoEvento.includes(b))){
+            continue;
+        }
+
+        let valorItem = Number(item.valor);
+
+        if(valorItem === 0){
+
+            valorItem = calcularValorProcedimento(
+                item.procedimento || item.servico
+            );
+
+        }
+
+        quantidade++;
+        totalValor += valorItem;
+
+        linhas.push([
+            formatarData(item.data),
+            item.horario || "",
+            item.nome || "",
+            item.procedimento || item.servico || "",
+            "R$ " + valorItem.toFixed(2).replace(".", ",")
+        ]);
+
+    }
+
+    /* ========================================================
+       CABEÇALHO
+    ======================================================== */
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(20);
+
+    pdf.text("Luiza", 14, 18);
+
+    pdf.setFontSize(11);
+    pdf.setFont("helvetica", "normal");
+
+    pdf.text("Relatório de Agendamentos", 14, 26);
+
+    /* ========================================================
+       PERÍODO
+    ======================================================== */
+
+    pdf.setFontSize(10);
+
+    pdf.text(
+        `Período: ${formatarData(inicio)} até ${formatarData(fim)}`,
+        14,
+        35
+    );
+
+    if(filtroProcedimento !== ""){
+
+        pdf.text(
+            `Procedimento: ${filtroProcedimento}`,
+            14,
+            41
+        );
+
+    }
+
+    /* ========================================================
+       RESUMO
+    ======================================================== */
+
+    const ticketMedio = quantidade > 0
+        ? totalValor / quantidade
+        : 0;
+
+    pdf.setFont("helvetica", "bold");
+    pdf.text("Resumo", 14, 52);
+
+    pdf.setFont("helvetica", "normal");
+
+    pdf.text(
+        `Agendamentos: ${quantidade}`,
+        14,
+        59
+    );
+
+    pdf.text(
+        `Valor total: R$ ${totalValor.toFixed(2).replace(".", ",")}`,
+        70,
+        59
+    );
+
+    pdf.text(
+        `Ticket médio: R$ ${ticketMedio.toFixed(2).replace(".", ",")}`,
+        140,
+        59
+    );
+
+    /* ========================================================
+       TABELA
+    ======================================================== */
+
+    pdf.autoTable({
+
+        startY: 67,
+
+        head: [[
+            "Data",
+            "Hora",
+            "Cliente",
+            "Procedimento",
+            "Valor"
+        ]],
+
+        body: linhas,
+
+        theme: "grid",
+
+        styles: {
+            font: "helvetica",
+            fontSize: 9,
+            cellPadding: 3
+        },
+
+        headStyles: {
+            fontStyle: "bold"
+        },
+
+        columnStyles: {
+            0: { cellWidth: 25 },
+            1: { cellWidth: 20 },
+            2: { cellWidth: 45 },
+            3: { cellWidth: 55 },
+            4: { cellWidth: 30 }
+        }
+
+    });
+
+    /* ========================================================
+       RODAPÉ
+    ======================================================== */
+
+    const paginas = pdf.internal.getNumberOfPages();
+
+    for(let i = 1; i <= paginas; i++){
+
+        pdf.setPage(i);
+
+        pdf.setFontSize(8);
+        pdf.setFont("helvetica", "normal");
+
+        pdf.text(
+            `Página ${i} de ${paginas}`,
+            105,
+            290,
+            { align: "center" }
+        );
+
+        pdf.text(
+            "Relatório gerado pelo Painel Administrativo",
+            14,
+            290
+        );
+
+    }
+
+    /* ========================================================
+       SALVAR
+    ======================================================== */
+
+    pdf.save(
+        `relatorio_${inicio}_${fim}.pdf`
+    );
+
 }
 
 /* ============================================================
@@ -341,7 +570,10 @@ const fim = document.getElementById("dataFinal").value;
 
 buscarAgendamentos(inicio, fim);
 
-
+document.getElementById("btnPDF").addEventListener(
+    "click",
+    gerarPDF
+);
 
 /* ============================================================
    ABRIR MENU TOGGLE
