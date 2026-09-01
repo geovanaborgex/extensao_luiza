@@ -308,7 +308,7 @@ function gerarRelatorio(){
 
 function gerarPDF(){
 
-    const { jsPDF } = window.jspdf;
+    const jsPDF = window.jspdf.jsPDF;
 
     const pdf = new jsPDF({
         orientation: "portrait",
