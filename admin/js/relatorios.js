@@ -328,8 +328,31 @@ document.getElementById("btnGerar").onclick = () => {
 
 };
 
+/* ============================================================
+   ABRIR MENU TOGGLE
+============================================================ */
 
 
+const menuToggle=document.getElementById("menuToggle");
+const sidebar=document.querySelector(".sidebar");
+const menuOverlay=document.getElementById("menuOverlay");
+
+menuToggle.addEventListener("click",()=>{
+  sidebar.classList.toggle("open");
+  menuOverlay.classList.toggle("active");
+});
+
+menuOverlay.addEventListener("click",()=>{
+  sidebar.classList.remove("open");
+  menuOverlay.classList.remove("active");
+});
+
+document.querySelectorAll(".sidebar a").forEach(link=>{
+  link.addEventListener("click",()=>{
+    sidebar.classList.remove("open");
+    menuOverlay.classList.remove("active");
+  });
+});
 
 /* ============================================================
    INICIAR
