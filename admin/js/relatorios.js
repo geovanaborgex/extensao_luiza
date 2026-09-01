@@ -329,6 +329,21 @@ document.getElementById("btnGerar").onclick = () => {
 };
 
 /* ============================================================
+   INICIAR
+============================================================ */
+
+carregarFiltroProcedimentos();
+
+definirDatas();
+
+const inicio = document.getElementById("dataInicial").value;
+const fim = document.getElementById("dataFinal").value;
+
+buscarAgendamentos(inicio, fim);
+
+
+
+/* ============================================================
    ABRIR MENU TOGGLE
 ============================================================ */
 
@@ -353,16 +368,3 @@ document.querySelectorAll(".sidebar a").forEach(link=>{
     menuOverlay.classList.remove("active");
   });
 });
-
-/* ============================================================
-   INICIAR
-============================================================ */
-
-carregarFiltroProcedimentos();
-
-definirDatas();
-
-const inicio = document.getElementById("dataInicial").value;
-const fim = document.getElementById("dataFinal").value;
-
-buscarAgendamentos(inicio, fim);

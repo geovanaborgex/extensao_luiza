@@ -218,6 +218,49 @@
     font-weight:600;
     color:#444;
   }
+
+  #dataInicial,
+#dataFinal {
+    height: 44px;
+    padding: 0 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background-color: #fff;
+    color: #374151;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+/* Ícone do calendário */
+  #dataInicial:hover,
+  #dataFinal:hover {
+      border-color: #9ca3af;
+  }
+
+  #dataInicial:focus,
+  #dataFinal:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  }
+
+  /* Ícone do calendário */
+  #dataInicial::-webkit-calendar-picker-indicator,
+  #dataFinal::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      opacity: 0.65;
+      padding: 4px;
+      transition: 0.2s;
+  }
+
+  #dataInicial::-webkit-calendar-picker-indicator:hover,
+  #dataFinal::-webkit-calendar-picker-indicator:hover {
+      opacity: 1;
+  }
+  
   
   /* TABLET */
   
