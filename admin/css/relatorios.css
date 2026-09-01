@@ -1,5 +1,21 @@
 /* RELATÓRIOS */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+:root{
+  --verde:#6B6E55;
+  --verde-hover:#575945;
+  --dourado:#C9A86A;
+  --bg:#f5f6f8;
+  --card:#fff;
+  --texto:#333;
+  --texto2:#777;
+  --borda:#eee;
+  --danger:#C25A5A;
+  --success:#7E9A73;
+  --shadow:0 10px 30px rgba(0,0,0,.05);
+}
+ 
+  
 *{
     margin:0;
     padding:0;
@@ -8,9 +24,21 @@
   
   body{
     font-family:'Poppins',sans-serif;
-    background:#f5f6f8;
-    color:#333;
+    background:var(--bg);
+    color:var(--texto);
     overflow-x:hidden;
+  }
+
+  button,input,select{
+    font-family:'Poppins',sans-serif;
+  }
+  
+  h1,h2,h3{
+    font-family:'Poppins',sans-serif;
+  }
+  
+  p{
+    color:var(--texto2);
   }
   
   .layout{
@@ -31,16 +59,16 @@
     justify-content:space-between;
     align-items:center;
     margin-bottom:35px;
+    background:#fff;
+    padding:30px;
+    border-radius:18px;
+    box-shadow:var(--shadow);
   }
   
   .topo h1{
     font-size:30px;
-    color:#6B6E55;
-  }
-  
-  .topo p{
-    color:#777;
-    margin-top:5px;
+    font-weight:600;
+    color:var(--verde);
   }
   
   /* FILTROS */
@@ -303,9 +331,10 @@
       gap:8px;
       margin-bottom:25px;
     }
+
   
     .topo h1{
-      font-size:24px;
+      font-size:21px;
     }
   
     .topo p{
