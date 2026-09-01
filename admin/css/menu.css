@@ -1,83 +1,133 @@
-/* ==========================================
-   MENU LATERAL
-========================================== */
+/* MENU LATERAL */
 
-.sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-
-    width: 260px;
-    height: 100vh;
-
-    background: #6B6E55;
-    color: #fff;
-
-    padding: 30px 20px;
-
-    overflow-y: auto;
-
-    display: flex;
-    flex-direction: column;
-
-    box-shadow: 3px 0 15px rgba(0, 0, 0, .08);
-
-    z-index: 1000;
-}
-
-
-/* ==========================================
-   LOGO
-========================================== */
-
-.logo {
-    margin-bottom: 50px;
-}
-
-.logo h2 {
-    font-size: 30px;
-    font-weight: 700;
-}
-
-.logo span {
-    font-size: 13px;
-    opacity: .8;
-}
-
-
-/* ==========================================
-   NAVEGAÇÃO
-========================================== */
-
-.sidebar nav {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.sidebar nav a {
-    text-decoration: none;
-    color: #fff;
-    padding: 14px 18px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 15px;
-    transition: .25s;
-}
-
-.sidebar nav a:hover {
-    background: rgba(255, 255, 255, .15);
-}
-
-.sidebar nav a.ativo {
-    background: #C9A86A;
-    color: #fff;
-}
-
-
-.sidebar i {
-    width: 20px;
-    text-align: center;
-}
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:260px;
+    height:100vh;
+    background:#6B6E55;
+    color:#fff;
+    padding:30px 20px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    box-shadow:3px 0 15px rgba(0,0,0,.08);
+    z-index:1000;
+    transition:transform .3s ease;
+  }
+  
+  /* LOGO */
+  
+  .logo{
+    margin-bottom:50px;
+  }
+  
+  .logo h2{
+    font-size:30px;
+    font-weight:700;
+  }
+  
+  .logo span{
+    font-size:13px;
+    opacity:.8;
+  }
+  
+  /* NAVEGAÇÃO */
+  
+  .sidebar nav{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  
+  .sidebar nav a{
+    text-decoration:none;
+    color:#fff;
+    padding:14px 18px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:15px;
+    transition:.25s;
+  }
+  
+  .sidebar nav a:hover{
+    background:rgba(255,255,255,.15);
+  }
+  
+  .sidebar nav a.ativo{
+    background:#C9A86A;
+    color:#fff;
+  }
+  
+  .sidebar i{
+    width:20px;
+    text-align:center;
+  }
+  
+  /* BOTÃO SANDUÍCHE */
+  
+  .menu-toggle{
+    display:none;
+    position:fixed;
+    top:12px;
+    left:15px;
+    width:44px;
+    height:44px;
+    border:none;
+    border-radius:12px;
+    background:#6B6E55;
+    color:#fff;
+    font-size:22px;
+    cursor:pointer;
+    z-index:1100;
+    box-shadow:0 5px 15px rgba(0,0,0,.15);
+  }
+  
+  /* FUNDO ESCURO */
+  
+  .menu-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    z-index:999;
+  }
+  
+  .menu-overlay.active{
+    display:block;
+  }
+  
+  /* MOBILE */
+  
+  @media(max-width:800px){
+    .sidebar{
+      width:270px;
+      transform:translateX(-100%);
+      padding:25px 20px;
+    }
+  
+    .sidebar.open{
+      transform:translateX(0);
+    }
+  
+    .menu-toggle{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+  
+    .logo{
+      margin-bottom:35px;
+    }
+  
+    .logo h2{
+      font-size:27px;
+    }
+  
+    .sidebar nav a{
+      padding:15px 17px;
+    }
+  }
