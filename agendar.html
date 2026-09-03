@@ -202,6 +202,23 @@
 <!-- JS -->
 <script>
 
+function formatarDuracao(minutos) {
+
+const horas = Math.floor(minutos / 60);
+const minutosRestantes = minutos % 60;
+
+if (horas > 0 && minutosRestantes > 0) {
+    return `${horas}h ${minutosRestantes}min`;
+}
+
+if (horas > 0) {
+    return `${horas}h`;
+}
+
+return `${minutosRestantes}min`;
+}
+
+
 let procedimentosSelecionados = [];
 
 const procedimentosInfo = {};
@@ -538,15 +555,12 @@ if (servico == "maquiagem") {
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script> /* criar o agendamento */
-
+<script> 
 
 function toggleMenu() {
   const menu = document.getElementById("nav");
   nav.classList.toggle("ativo");
 }
-
-
 
 function abrirModalHorario() {
   const nome = document.querySelector('input[name="nome"]').value;
@@ -589,7 +603,7 @@ if (telefoneNumeros.length !== 11) {
   });
 
   document.getElementById("resumoDuracao").innerHTML =
-  minutos + " minutos";
+  formatarDuracao(minutos);
 
   document.getElementById("resumoValor").innerHTML =
   "R$ " + valor.toFixed(2);
@@ -602,8 +616,6 @@ if (telefoneNumeros.length !== 11) {
 function fecharModalHorario() {
   document.getElementById("modalHorario").style.display = "none";
 }
-
-/* COMEÇO FUNÇÃO DE GERAR DIAS E HORÁRIOS */
 
 let inicioCalendario = 0;
 
@@ -812,10 +824,7 @@ function voltarDias() {
   }
 }
 
-/* CONFIRMAÇÃO DO AGENDAMENTO */
-
 let agendamentoEmAndamento = false;
-
 function confirmarAgendamento() {
   if (agendamentoEmAndamento) return;
 
@@ -871,7 +880,7 @@ function confirmarAgendamento() {
     procedimentosSelecionados.forEach(p=>{
         minutos += procedimentosInfo[p].duracao;
     });
-    const duracao = minutos + " minutos";
+    const duracao = formatarDuracao(minutos);
 
     let total = 0;
     procedimentosSelecionados.forEach(p=>{
@@ -954,7 +963,7 @@ horarioSelecionado = "";
 </script>
 
 <script>
-window.addEventListener("DOMContentLoaded", () => {
+  window.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
 
   const servico = params.get("servico");
