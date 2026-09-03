@@ -390,15 +390,13 @@ function gerarPDF(){
        CABEÇALHO
     ======================================================== */
 
-    pdf.setFont("helvetica", "bold");
+    pdf.setFont("times", "bold");
     pdf.setFontSize(20);
 
-    pdf.text("Luiza", 14, 18);
+    pdf.text("Relatório de Agendamentos", 14, 18);
 
     pdf.setFontSize(11);
-    pdf.setFont("helvetica", "normal");
-
-    pdf.text("Relatório de Agendamentos", 14, 26);
+    pdf.setFont("times", "normal");
 
     /* ========================================================
        PERÍODO
@@ -430,10 +428,7 @@ function gerarPDF(){
         ? totalValor / quantidade
         : 0;
 
-    pdf.setFont("helvetica", "bold");
-    pdf.text("Resumo", 14, 52);
-
-    pdf.setFont("helvetica", "normal");
+    pdf.setFont("times", "bold");
 
     pdf.text(
         `Agendamentos: ${quantidade}`,
@@ -474,13 +469,14 @@ function gerarPDF(){
         theme: "grid",
 
         styles: {
-            font: "helvetica",
+            font: "times",
             fontSize: 9,
             cellPadding: 3
         },
 
         headStyles: {
-            fontStyle: "bold"
+            fontStyle: "bold",
+            fillColor:[107, 110, 85]
         },
 
         columnStyles: {
@@ -493,40 +489,13 @@ function gerarPDF(){
 
     });
 
-    /* ========================================================
-       RODAPÉ
-    ======================================================== */
-
-    const paginas = pdf.internal.getNumberOfPages();
-
-    for(let i = 1; i <= paginas; i++){
-
-        pdf.setPage(i);
-
-        pdf.setFontSize(8);
-        pdf.setFont("helvetica", "normal");
-
-        pdf.text(
-            `Página ${i} de ${paginas}`,
-            105,
-            290,
-            { align: "center" }
-        );
-
-        pdf.text(
-            "Relatório gerado pelo Painel Administrativo",
-            14,
-            290
-        );
-
-    }
 
     /* ========================================================
        SALVAR
     ======================================================== */
 
     pdf.save(
-        `relatorio_${inicio}_${fim}.pdf`
+        `RelatorioAgendamentos.pdf`
     );
 
 }

@@ -15,6 +15,7 @@
 
   <!-- CSS -->
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="css/header.css">
 </head>
 
@@ -198,6 +199,81 @@
 </div>
   
 </footer>
+
+<div id="modalHorario" class="modal-horario">
+  <div class="modal-conteudo">
+
+    <button class="fechar-modal" onclick="fecharModalHorario()">×</button>
+
+    <h2>Escolha seu horário:</h2>
+
+  <div class="calendario-topo">
+    <button type="button" onclick="voltarDias()">‹</button>
+    <h3 id="mesAtual"></h3>
+    <button type="button" onclick="avancarDias()">›</button>
+  </div>
+
+  <div class="dias-modal" id="diasModal"></div>
+
+    <hr>
+
+    <div class="aviso-agendamento">
+      <i class="fa-brands fa-whatsapp"></i>
+      <span>
+          Precisa de um horário <strong>para hoje?</strong>
+          Entre em contato pelo WhatsApp para verificar a disponibilidade de encaixes.
+      </span>
+  
+      <a href="https://wa.me/5537999049543?text=Olá! Gostaria de verificar a disponibilidade de um horário para hoje."
+         target="_blank">
+          Chamar no WhatsApp
+      </a>
+  </div>
+  
+
+    <h3>Horários disponíveis</h3>
+
+  <div class="horarios-topo">
+
+    <button
+      type="button"
+      onclick="voltarHorarios()"
+      class="btn-seta-horario"
+    >
+      ‹
+    </button>
+
+    <div class="horarios-modal"></div>
+
+    <button
+      type="button"
+      onclick="avancarHorarios()"
+      class="btn-seta-horario"
+    >
+      ›
+    </button>
+
+  </div>
+
+  <div class="resumo-modal">
+    <p><strong>Nome:</strong> <span id="resumoNome">-</span></p>
+    <p><strong>Telefone:</strong> <span id="resumoTelefone">-</span></p>
+     <p><strong>Procedimento:</strong> <span id="resumoProcedimento">-</span></p>
+     <p><strong>Duração:</strong> <span id="resumoDuracao">-</span></p>
+     <p><strong>Valor:</strong> <span id="resumoValor">-</span></p>
+  </div>
+
+  <p id="statusAgendamento" class="status-agendamento"></p>
+
+  <button
+    type="button"
+    class="btn-confirmar-horario"
+    onclick="confirmarAgendamento()"
+  >
+    CONFIRMAR AGENDAMENTO
+  </button>
+  </div>
+</div>
 
 <!-- JS -->
 <script>
@@ -463,83 +539,6 @@ if (servico == "maquiagem") {
 }
 
 </script>
-
-<div id="modalHorario" class="modal-horario">
-  <div class="modal-conteudo">
-
-    <button class="fechar-modal" onclick="fecharModalHorario()">×</button>
-
-    <h2>Escolha seu horário:</h2>
-
-  <div class="calendario-topo">
-    <button type="button" onclick="voltarDias()">‹</button>
-    <h3 id="mesAtual"></h3>
-    <button type="button" onclick="avancarDias()">›</button>
-  </div>
-
-  <div class="dias-modal" id="diasModal"></div>
-
-    <hr>
-
-    <div class="aviso-agendamento">
-      <i class="fa-brands fa-whatsapp"></i>
-      <span>
-          Precisa de um horário <strong>para hoje?</strong>
-          Entre em contato pelo WhatsApp para verificar a disponibilidade de encaixes.
-      </span>
-  
-      <a href="https://wa.me/5537999049543?text=Olá! Gostaria de verificar a disponibilidade de um horário para hoje."
-         target="_blank">
-          Chamar no WhatsApp
-      </a>
-  </div>
-  
-
-    <h3>Horários disponíveis</h3>
-
-  <div class="horarios-topo">
-
-    <button
-      type="button"
-      onclick="voltarHorarios()"
-      class="btn-seta-horario"
-    >
-      ‹
-    </button>
-
-    <div class="horarios-modal"></div>
-
-    <button
-      type="button"
-      onclick="avancarHorarios()"
-      class="btn-seta-horario"
-    >
-      ›
-    </button>
-
-  </div>
-
-  <div class="resumo-modal">
-    <p><strong>Nome:</strong> <span id="resumoNome">-</span></p>
-    <p><strong>Telefone:</strong> <span id="resumoTelefone">-</span></p>
-     <p><strong>Procedimento:</strong> <span id="resumoProcedimento">-</span></p>
-     <p><strong>Duração:</strong> <span id="resumoDuracao">-</span></p>
-     <p><strong>Valor:</strong> <span id="resumoValor">-</span></p>
-  </div>
-
-  <p id="statusAgendamento" class="status-agendamento"></p>
-
-  <button
-    type="button"
-    class="btn-confirmar-horario"
-    onclick="confirmarAgendamento()"
-  >
-    CONFIRMAR AGENDAMENTO
-  </button>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script> 
 
@@ -964,9 +963,7 @@ horarioSelecionado = "";
     });
   });
 }
-</script>
 
-<script>
   window.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
 
@@ -987,10 +984,7 @@ horarioSelecionado = "";
     }, 100);
   }
 });
-</script>
 
-
-<script>
 const telefoneInput =
 document.getElementById("telefone");
 
