@@ -203,19 +203,18 @@
 <script>
 
 function formatarDuracao(minutos) {
+  console.log("chamada para formatar duração total");
+  const horas = Math.floor(minutos / 60);
+  const minutosRestantes = minutos % 60;
 
-const horas = Math.floor(minutos / 60);
-const minutosRestantes = minutos % 60;
-
-if (horas > 0 && minutosRestantes > 0) {
-    return `${horas}h ${minutosRestantes}min`;
-}
-
-if (horas > 0) {
-    return `${horas}h`;
-}
-
-return `${minutosRestantes}min`;
+  if (horas > 0 && minutosRestantes > 0) {
+      return `${horas}h ${minutosRestantes}min`;
+      console.log("hora formatada");
+  }
+  if (horas > 0) {
+      return `${horas}h`;
+  }
+  return `${minutosRestantes}min`;
 }
 
 
@@ -370,6 +369,8 @@ procedimentosSelecionados.forEach((proc,index)=>{
     `;
 
 });
+
+
 
 if(procedimentosSelecionados.length){
 
@@ -601,6 +602,9 @@ if (telefoneNumeros.length !== 11) {
       minutos += procedimentosInfo[p].duracao;
       valor += procedimentosInfo[p].valor;
   });
+
+  document.getElementById("duracaoTotal").innerHTML =
+    formatarDuracao(minutos);
 
   document.getElementById("resumoDuracao").innerHTML =
   formatarDuracao(minutos);
