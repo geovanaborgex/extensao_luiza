@@ -119,18 +119,18 @@
     padding:13px 25px;
     border-radius:10px;
     cursor:pointer;
-    font-weight:600;
+    font-weight:500;
     transition:.25s;
   }
 
-  #btnGerar{
+  .tabela button{
     background:#6B6E55;
     color:#fff;
     border:none;
     padding:13px 25px;
-    border-radius:10px;
+    border-radius:30px;
     cursor:pointer;
-    font-weight:600;
+    font-weight:300;
     transition:.25s;
   }
   
@@ -203,7 +203,7 @@
   
   .titulo-tabela{
     display:flex;
-    justify-content:space-between;
+    justify-content:center;
     align-items:center;
     margin-bottom:20px;
   }
