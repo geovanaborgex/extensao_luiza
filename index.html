@@ -200,6 +200,7 @@
         <li><a href="agendar.html">Agendamento</a></li>
         <li><a href="#historia">História</a></li>
         <li><a href="cosmeticos.html">A'Lu Cosméticos</a></li>
+      <li><a onclick="abrirModalSenha() ; return false;"><img src="images/logoadm.png" class="footer-adm"></a></li>
       </ul>
     </div>
 
@@ -287,6 +288,19 @@ setInterval(autoSlide, 1500);
   <i class="fa-solid fa-arrow-up"></i>
 </button>
 
+<div class="modal-senha" id="modalSenha">
+  <div class="modal-senha-box">
+    <button class="fechar-modal-senha" onclick="fecharModalSenha()">×</button>
+
+    <div class="icone-senha">🔐</div>
+
+    <h2>Acesso Administrativo</h2>
+    <input type="password" id="senhaAdmin" placeholder="Digite sua senha" autocomplete="off">
+    <button class="btn-entrar-admin" onclick="entrarAdmin()">
+      ENTRAR
+    </button>
+  </div>
+</div>
 
 
 <script>
@@ -310,6 +324,55 @@ function voltarAoTopo() {
   });
 }
 </script>
+
+<script>
+  function abrirModalSenha(){
+    const modal = document.getElementById("modalSenha");
+  
+    modal.classList.add("aberto");
+  
+    setTimeout(() => {
+      document.getElementById("senhaAdmin").focus();
+    }, 200);
+  }
+  
+  function fecharModalSenha(){
+    document.getElementById("modalSenha").classList.remove("aberto");
+    document.getElementById("senhaAdmin").value = "";
+  }
+  
+  function entrarAdmin(){
+  
+    const senha = document.getElementById("senhaAdmin").value;
+  
+    if(senha === "estetica99"){
+  
+      window.location.href = "admin/dashboard.html";
+  
+    }else{
+  
+      Swal.fire({
+        icon:"error",
+        title:"Senha incorreta",
+        text:"A senha informada não está correta.",
+        confirmButtonColor:"#6B6E55"
+      });
+  
+    }
+  }
+  
+  document.getElementById("senhaAdmin").addEventListener("keydown", function(e){
+  
+    if(e.key === "Enter"){
+      entrarAdmin();
+    }
+  
+    if(e.key === "Escape"){
+      fecharModalSenha();
+    }
+  
+  });
+  </script>
 
 </body>
 </html>
