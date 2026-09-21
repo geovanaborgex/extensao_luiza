@@ -119,17 +119,15 @@ if($acao == "listar"){
         $summary =
             (string)$evento->getSummary();
 
+            $tipo = "agendamento";
+
+            if(strpos($summary, "BLOQUEIO -") === 0){
+                $tipo = "bloqueio";
+            }
 
 
         $descricao =
             (string)$evento->getDescription();
-
-
-
-        /*
-          Formato:
-          Serviço - Cliente
-        */
 
 
         $procedimento=$summary;
@@ -222,6 +220,7 @@ if($acao == "listar"){
 
             "horarioFim"=>$fim->format('H:i'),
 
+            "tipo" => $tipo,
 
             "duracaoMinutos"=>
                 (int)(
@@ -517,6 +516,210 @@ if($acao=="cancelar"){
 
 }
 
+/*
+====================================================
+OCUPAR HORÁRIO / CRIAR BLOQUEIO
+====================================================
+*/
+
+if($acao == "ocupar"){
+
+    if($_SERVER["REQUEST_METHOD"] != "POST"){
+
+        echo json_encode([
+            "status" => "erro",
+            "mensagem" => "Método inválido"
+        ]);
+
+        exit;
+    }
+
+    $data = $_POST['data'] ?? '';
+    $horaInicio = $_POST['hora_inicio'] ?? '';
+    $horaFim = $_POST['hora_fim'] ?? '';
+    $motivo = trim($_POST['motivo'] ?? '');
+
+    if(!$data || !$horaInicio || !$horaFim){
+
+        echo json_encode([
+            "status" => "erro",
+            "mensagem" => "Data, horário inicial e horário final são obrigatórios."
+        ]);
+
+        exit;
+    }
+
+    if(!$motivo){
+        $motivo = "Horário bloqueado";
+    }
+
+    try{
+
+        $inicio = new DateTime(
+            "$data $horaInicio",
+            new DateTimeZone('America/Sao_Paulo')
+        );
+
+        $fim = new DateTime(
+            "$data $horaFim",
+            new DateTimeZone('America/Sao_Paulo')
+        );
+
+    }catch(Exception $e){
+
+        echo json_encode([
+            "status" => "erro",
+            "mensagem" => "Data ou horário inválido."
+        ]);
+
+        exit;
+    }
+
+    if($fim <= $inicio){
+
+        echo json_encode([
+            "status" => "erro",
+            "mensagem" => "O horário final deve ser maior que o horário inicial."
+        ]);
+
+        exit;
+    }
+
+    /*
+    ================================================
+    VERIFICA SE JÁ EXISTE CONFLITO
+    ================================================
+    */
+
+    $optParams = [
+
+        'timeMin' => $inicio->format(DateTime::RFC3339),
+
+        'timeMax' => $fim->format(DateTime::RFC3339),
+
+        'singleEvents' => true,
+
+        'orderBy' => 'startTime'
+
+    ];
+
+    try{
+
+        $eventos = $service->events->listEvents(
+            $calendarId,
+            $optParams
+        );
+
+    }catch(Exception $e){
+
+        echo json_encode([
+            "status" => "erro",
+            "mensagem" => "Erro ao verificar agenda: ".$e->getMessage()
+        ]);
+
+        exit;
+    }
+
+    foreach($eventos->getItems() as $evento){
+
+        $inicioEvento = $evento->getStart()->getDateTime();
+        $fimEvento = $evento->getEnd()->getDateTime();
+
+        if(!$inicioEvento || !$fimEvento){
+            continue;
+        }
+
+        $inicioExistente = new DateTime($inicioEvento);
+        $fimExistente = new DateTime($fimEvento);
+
+        /*
+        Se houver qualquer sobreposição,
+        não permite criar o bloqueio.
+        */
+
+        if(
+            $inicio < $fimExistente &&
+            $fim > $inicioExistente
+        ){
+
+            echo json_encode([
+                "status" => "erro",
+                "mensagem" => "Esse horário já está ocupado na agenda."
+            ]);
+
+            exit;
+        }
+    }
+
+    /*
+    ================================================
+    CRIA EVENTO NO GOOGLE CALENDAR
+    ================================================
+    */
+
+    $evento = new Google_Service_Calendar_Event([
+
+        'summary' => 'BLOQUEIO - '.$motivo,
+
+        'description' =>
+            "Tipo: Bloqueio de horário\n".
+            "Motivo: ".$motivo,
+
+        'start' => [
+
+            'dateTime' =>
+                $inicio->format(DateTime::RFC3339),
+
+            'timeZone' =>
+                'America/Sao_Paulo'
+
+        ],
+
+        'end' => [
+
+            'dateTime' =>
+                $fim->format(DateTime::RFC3339),
+
+            'timeZone' =>
+                'America/Sao_Paulo'
+
+        ]
+
+    ]);
+
+    try{
+
+        $novoEvento =
+            $service->events->insert(
+                $calendarId,
+                $evento
+            );
+
+        echo json_encode([
+
+            "status" => "sucesso",
+
+            "mensagem" => "Horário bloqueado com sucesso.",
+
+            "id" => $novoEvento->getId()
+
+        ]);
+
+    }catch(Exception $e){
+
+        echo json_encode([
+
+            "status" => "erro",
+
+            "mensagem" =>
+                "Erro ao criar bloqueio: ".$e->getMessage()
+
+        ]);
+
+    }
+
+    exit;
+}
 
 
 echo json_encode([
