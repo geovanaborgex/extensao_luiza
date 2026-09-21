@@ -797,7 +797,7 @@ if($acao == "criar_almoco"){
 
     // A recorrência termina em 31/12/2026
     $evento = new Google_Service_Calendar_Event([
-        'summary' => 'BLOQUEAR - Almoço',
+        'summary' => 'BLOQUEIO - Almoço',
 
         'description' =>
             "Tipo: Bloqueio de horário\n".
@@ -828,6 +828,62 @@ if($acao == "criar_almoco"){
         echo json_encode([
             "status" => "sucesso",
             "mensagem" => "Almoço criado de segunda a sexta, das 10:30 às 13:30, até 31/12/2026.",
+            "id" => $eventoCriado->getId()
+        ]);
+
+    } catch(Exception $e) {
+
+        echo json_encode([
+            "status" => "erro",
+            "mensagem" => $e->getMessage()
+        ]);
+    }
+
+    exit;
+}
+
+if($acao == "criar_pilates"){
+
+    header('Content-Type: application/json; charset=utf-8');
+
+    $timezone = new DateTimeZone('America/Sao_Paulo');
+
+    // Primeira ocorrência: terça-feira 22/09/2026
+    $inicio = new DateTime('2026-09-22 08:00:00', $timezone);
+    $fim = new DateTime('2026-09-22 09:00:00', $timezone);
+
+    $evento = new Google_Service_Calendar_Event([
+        'summary' => 'BLOQUEAR - Pilates',
+
+        'description' =>
+            "Tipo: Bloqueio de horário\n".
+            "Motivo: Pilates",
+
+        'start' => [
+            'dateTime' => $inicio->format(DateTime::RFC3339),
+            'timeZone' => 'America/Sao_Paulo'
+        ],
+
+        'end' => [
+            'dateTime' => $fim->format(DateTime::RFC3339),
+            'timeZone' => 'America/Sao_Paulo'
+        ],
+
+        'recurrence' => [
+            'RRULE:FREQ=WEEKLY;BYDAY=TU,TH;UNTIL=20261231T235959Z'
+        ]
+    ]);
+
+    try {
+
+        $eventoCriado = $service->events->insert(
+            $calendarId,
+            $evento
+        );
+
+        echo json_encode([
+            "status" => "sucesso",
+            "mensagem" => "Pilates criado às terças e quintas, das 08:00 às 09:00, até 31/12/2026.",
             "id" => $eventoCriado->getId()
         ]);
 
