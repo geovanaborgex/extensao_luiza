@@ -89,6 +89,12 @@ if($acao == "listar"){
 
     foreach($eventos->getItems() as $evento){
 
+        $summary = trim((string)$evento->getSummary());
+
+        // Ignora bloqueios
+        if(stripos($summary, 'BLOQUEIO') === 0){
+            continue;
+        }
 
         $start =
             $evento->getStart()->getDateTime();
@@ -113,17 +119,6 @@ if($acao == "listar"){
 
         $fim =
             new DateTime($end);
-
-
-
-        $summary =
-            (string)$evento->getSummary();
-
-            $tipo = "agendamento";
-
-            if(strpos($summary, "BLOQUEIO -") === 0){
-                $tipo = "bloqueio";
-            }
 
 
         $descricao =
