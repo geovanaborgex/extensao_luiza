@@ -89,21 +89,11 @@ if($acao == "listar"){
 
     foreach($eventos->getItems() as $evento){
 
-        $summary = trim((string)$evento->getSummary());
+        
 
-        // Ignora bloqueios
-        if(stripos($summary, 'BLOQUEIO') === 0){
-            continue;
-        }
+        $start =$evento->getStart()->getDateTime();
 
-        $start =
-            $evento->getStart()->getDateTime();
-
-
-        $end =
-            $evento->getEnd()->getDateTime();
-
-
+        $end =$evento->getEnd()->getDateTime();
 
         // ignora evento sem horário
 
@@ -111,15 +101,18 @@ if($acao == "listar"){
             continue;
         }
 
-
-
         $inicio =
             new DateTime($start);
-
 
         $fim =
             new DateTime($end);
 
+            $summary = trim((string)$evento->getSummary());
+
+        // Ignora bloqueios
+        if(stripos($summary, 'BLOQUEIO') === 0){
+            continue;
+        }
 
         $descricao =
             (string)$evento->getDescription();
