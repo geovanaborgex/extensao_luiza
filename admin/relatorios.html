@@ -164,32 +164,35 @@
         </section>
 
         <!-- RELATORIO -->
-    
         <section class="tabela">
 
             <div class="titulo-tabela">
                 <h2>Agendamentos</h2>
-                <div>
-                </div>
+                <div></div>
             </div>
         
-            <div class="tabela-scroll">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Hora</th>
-                            <th>Cliente</th>
-                            <th>Procedimento</th>
-                            <th>Valor</th>
-                        </tr>
-                    </thead>
+            <!-- CABEÇALHO FIXO -->
+            <table class="tabela-cabecalho">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Hora</th>
+                        <th>Cliente</th>
+                        <th>Procedimento</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+            </table>
         
+            <!-- SOMENTE OS AGENDAMENTOS ROLAM -->
+            <div class="tabela-scroll">
+                <table class="tabela-corpo">
                     <tbody id="corpoTabela">
                     </tbody>
                 </table>
             </div>
         
+            <!-- BOTÃO FIXO -->
             <div class="titulo-tabela">
                 <button id="btnPDF">
                     <i class="fa-solid fa-file-pdf"></i>

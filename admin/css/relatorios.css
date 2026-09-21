@@ -191,7 +191,6 @@
   }
   
   /* TABELA */
-  
   .tabela{
     background:#fff;
     border-radius:18px;
@@ -199,64 +198,132 @@
     margin-top:30px;
     box-shadow:0 8px 25px rgba(0,0,0,.06);
     overflow:hidden;
-  }
-  
-  .titulo-tabela{
+}
+
+.titulo-tabela{
     display:flex;
     justify-content:center;
     align-items:center;
     margin-bottom:20px;
-  }
-  
-  .titulo-tabela h2{
+}
+
+.titulo-tabela h2{
     font-size:22px;
     font-weight:600;
     color:#333;
-  }
-  
-  .tabela table{
+}
+
+/* =========================
+   TABELA
+========================= */
+
+.tabela-cabecalho,
+.tabela-corpo{
     width:100%;
     border-collapse:separate;
     border-spacing:0;
-  }
-  
-  .tabela thead{
+    table-layout:fixed;
+}
+
+/* Cabeçalho */
+
+.tabela-cabecalho thead{
     background:#f7f2ff;
-  }
-  
-  .tabela th{
+}
+
+.tabela-cabecalho th{
     padding:16px 20px;
     text-align:left;
     font-size:14px;
     font-weight:600;
     color:#555;
     border-bottom:1px solid #eee;
-  }
-  
-  .tabela td{
+}
+
+/* Corpo */
+
+.tabela-corpo td{
     padding:16px 20px;
     font-size:14px;
     color:#666;
     border-bottom:1px solid #f0f0f0;
-  }
-  
-  .tabela tbody tr:hover{
+}
+
+.tabela-corpo tbody tr:hover{
     background:#faf7ff;
-  }
-  
-  .tabela tbody tr:last-child td{
+}
+
+.tabela-corpo tbody tr:last-child td{
     border-bottom:none;
-  }
-  
-  .tabela td:first-child{
+}
+
+.tabela-corpo td:first-child{
     font-weight:500;
     color:#444;
-  }
-  
-  .tabela td:last-child{
+}
+
+.tabela-corpo td:last-child{
     font-weight:600;
     color:#444;
-  }
+}
+
+/* =========================
+   LARGURA DAS COLUNAS
+========================= */
+
+.tabela-cabecalho th:nth-child(1),
+.tabela-corpo td:nth-child(1){
+    width:12%;
+}
+
+.tabela-cabecalho th:nth-child(2),
+.tabela-corpo td:nth-child(2){
+    width:12%;
+}
+
+.tabela-cabecalho th:nth-child(3),
+.tabela-corpo td:nth-child(3){
+    width:24%;
+}
+
+.tabela-cabecalho th:nth-child(4),
+.tabela-corpo td:nth-child(4){
+    width:32%;
+}
+
+.tabela-cabecalho th:nth-child(5),
+.tabela-corpo td:nth-child(5){
+    width:20%;
+}
+
+/* =========================
+   ÁREA QUE ROLA
+========================= */
+
+.tabela-scroll{
+    max-height:400px;
+    overflow-y:auto;
+    overflow-x:hidden;
+}
+
+/* =========================
+   BOTÃO PDF
+========================= */
+
+.tabela button{
+    background:#6B6E55;
+    color:#fff;
+    border:none;
+    padding:13px 25px;
+    border-radius:30px;
+    cursor:pointer;
+    font-weight:300;
+    transition:.25s;
+}
+
+.tabela button:hover{
+    background:#575945;
+}
 
   #dataInicial,
 #dataFinal {
@@ -383,20 +450,26 @@
   
     .tabela{
       padding:18px 12px;
-      overflow-x:auto;
-    }
-  
-    .tabela table{
+      overflow:hidden;
+  }
+
+  .tabela-cabecalho,
+  .tabela-corpo{
       min-width:650px;
-    }
-  
-    .titulo-tabela{
+  }
+
+  .tabela-scroll{
+      overflow-x:auto;
+      overflow-y:auto;
+  }
+
+  .titulo-tabela{
       align-items:flex-start;
-    }
-  
-    .titulo-tabela h2{
+  }
+
+  .titulo-tabela h2{
       font-size:19px;
-    }
+  }
   }
   
   /* CELULAR PEQUENO */
@@ -414,16 +487,3 @@
       padding:18px;
     }
   }
-
-  .tabela-scroll {
-    max-height: 400px;
-    overflow-y: auto;
-    overflow-x: auto;
-}
-
-/* Cabeçalho fica parado enquanto a tabela rola */
-.tabela-scroll thead th {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-}
