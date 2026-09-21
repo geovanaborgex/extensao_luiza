@@ -1570,25 +1570,75 @@ async function salvarBloqueio(){
 
     const confirmacao =
         await Swal.fire({
-
             icon: "question",
-
             title: "Ocupar horários?",
-
-            text:
-                `Serão bloqueados ${datas.length} dia(s), das ${horaInicio} às ${horaFim}.`,
-
+            text: `Serão bloqueados ${datas.length} dia(s), das ${horaInicio} às ${horaFim}.`,
             showCancelButton: true,
-
-            confirmButtonText:
-                "Sim, bloquear",
-
-            cancelButtonText:
-                "Cancelar",
-
-            confirmButtonColor:
-                "#6B6E55"
-
+            confirmButtonText: "Sim, bloquear",
+            cancelButtonText: "Cancelar",
+            confirmButtonColor: "#6B6E55",
+            cancelButtonColor: "#999",
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        }).then((result) => {
+        
+            if (!result.isConfirmed) {
+                return;
+            }
+        
+            // AQUI continua o fetch
+            const form = new FormData();
+        
+            form.append("datas", JSON.stringify(datas));
+            form.append("hora_inicio", horaInicio);
+            form.append("hora_fim", horaFim);
+            form.append("motivo", motivo || "Horário bloqueado");
+        
+            fetch("dashboard.php?acao=ocupar", {
+                method: "POST",
+                body: form
+            })
+            .then(response => response.json())
+            .then(data => {
+        
+                if (data.status === "sucesso") {
+        
+                    Swal.fire({
+                        icon: "success",
+                        title: "Horários bloqueados!",
+                        text: data.mensagem,
+                        confirmButtonColor: "#6B6E55"
+                    }).then(() => {
+        
+                        closeModal();
+                        loadAppointments();
+        
+                    });
+        
+                } else {
+        
+                    Swal.fire({
+                        icon: "error",
+                        title: "Erro",
+                        text: data.mensagem || "Não foi possível bloquear os horários.",
+                        confirmButtonColor: "#6B6E55"
+                    });
+        
+                }
+        
+            })
+            .catch(error => {
+        
+                console.error(error);
+        
+                Swal.fire({
+                    icon: "error",
+                    title: "Erro",
+                    text: "Ocorreu um erro ao tentar bloquear os horários.",
+                    confirmButtonColor: "#6B6E55"
+                });
+        
+            });
         });
 
 
