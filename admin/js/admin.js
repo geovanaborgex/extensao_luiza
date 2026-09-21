@@ -975,70 +975,111 @@ document.querySelectorAll(".sidebar a").forEach(link=>{
 
 function abrirModalBloqueio(){
 
-    const hoje = new Date().toISOString().slice(0, 10);
-
     document.getElementById("conteudoModal").innerHTML = `
 
         <h3>
-            Ocupar horário
+            Ocupar horários
         </h3>
 
         <div class="meta">
-            Bloqueie um período para impedir novos agendamentos.
+            Bloqueie um ou vários dias no mesmo horário.
         </div>
 
 
         <label>
-            Data inicial
-        </label>
-
-        <input
-            type="date"
-            id="bloqueioDataInicio"
-            value="${hoje}"
-        >
-
-
-        <label>
-            Data final
-        </label>
-
-        <input
-            type="date"
-            id="bloqueioDataFim"
-            value="${hoje}"
-        >
-
-
-        <label>
-            Horário inicial
-        </label>
-
-        <input
-            type="time"
-            id="bloqueioInicio"
-        >
-
-
-        <label>
-            Horário final
-        </label>
-
-        <input
-            type="time"
-            id="bloqueioFim"
-        >
-
-
-        <label>
-            Motivo
+            Motivo do bloqueio
         </label>
 
         <input
             type="text"
             id="bloqueioMotivo"
-            placeholder="Ex.: Compromisso pessoal"
+            placeholder="Ex.: Férias, compromisso, médico..."
         >
+
+
+        <div style="
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:12px;
+        ">
+
+            <div>
+
+                <label>
+                    Horário inicial
+                </label>
+
+                <input
+                    type="time"
+                    id="bloqueioInicio"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label>
+                    Horário final
+                </label>
+
+                <input
+                    type="time"
+                    id="bloqueioFim"
+                >
+
+            </div>
+
+        </div>
+
+
+        <label style="margin-top:18px;">
+            Dias do compromisso
+        </label>
+
+
+        <div class="tipo-bloqueio">
+
+            <label class="opcao-tipo">
+
+                <input
+                    type="radio"
+                    name="tipoDias"
+                    value="intervalo"
+                    checked
+                    onchange="alterarTipoDias()"
+                >
+
+                <span>
+                    Intervalo de dias
+                </span>
+
+            </label>
+
+
+            <label class="opcao-tipo">
+
+                <input
+                    type="radio"
+                    name="tipoDias"
+                    value="especificos"
+                    onchange="alterarTipoDias()"
+                >
+
+                <span>
+                    Dias específicos
+                </span>
+
+            </label>
+
+        </div>
+
+
+        <div id="areaDiasBloqueio">
+
+            <!-- preenchido pelo JS -->
+
+        </div>
 
 
         <div class="modal-actions">
@@ -1049,7 +1090,7 @@ function abrirModalBloqueio(){
 
                 <i class="fa-solid fa-lock"></i>
 
-                Ocupar horário
+                Ocupar horários
 
             </button>
 
@@ -1070,7 +1111,11 @@ function abrirModalBloqueio(){
     document
         .getElementById("overlay")
         .classList.add("open");
+
+
+    alterarTipoDias();
 }
+
 async function salvarBloqueio(){
 
     const dataInicio =
