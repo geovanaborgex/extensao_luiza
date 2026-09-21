@@ -12,8 +12,7 @@ LISTAR AGENDAMENTOS
 ====================================================
 */
 
-if($acao == "listar"){
-
+if ($acao == "listar") {
 
     if (isset($_GET['inicio']) && isset($_GET['fim'])) {
 
@@ -22,24 +21,17 @@ if($acao == "listar"){
 
     } else {
 
-
         $hoje = new DateTime('today');
 
         $diaSemana = (int)$hoje->format('N');
 
+        $inicioPeriodo = (clone $hoje)
+            ->modify('-' . ($diaSemana - 1) . ' days');
 
-        $inicioPeriodo =
-            (clone $hoje)
-            ->modify('-'.($diaSemana - 1).' days');
-
-
-        $fimPeriodo =
-            (clone $inicioPeriodo)
+        $fimPeriodo = (clone $inicioPeriodo)
             ->modify('+6 days')
-            ->setTime(23,59,59);
-
+            ->setTime(23, 59, 59);
     }
-
 
 
     $optParams = [
@@ -48,215 +40,258 @@ if($acao == "listar"){
 
         'timeMax' => $fimPeriodo->format(DateTime::RFC3339),
 
-        'singleEvents'=>true,
+        'singleEvents' => true,
 
-        'orderBy'=>'startTime'
+        'orderBy' => 'startTime'
 
     ];
 
 
-
     try {
 
+        $eventos = $service->events->listEvents(
+            $calendarId,
+            $optParams
+        );
 
-        $eventos =
-            $service->events->listEvents(
-                $calendarId,
-                $optParams
-            );
-
-
-    } catch(Exception $e){
-
+    } catch (Exception $e) {
 
         echo json_encode([
-
-            "status"=>"erro",
-
-            "mensagem"=>"Erro ao buscar agenda: ".$e->getMessage()
-
+            "status" => "erro",
+            "mensagem" => "Erro ao buscar agenda: " . $e->getMessage()
         ]);
 
         exit;
-
     }
 
 
-
-    $lista=[];
-
+    $lista = [];
 
 
-    foreach($eventos->getItems() as $evento){
+    foreach ($eventos->getItems() as $evento) {
 
-        
+        /*
+         * =====================================================
+         * VERIFICA O TÍTULO DO EVENTO
+         * =====================================================
+         */
 
-        $start =$evento->getStart()->getDateTime();
+        $summary = trim((string)$evento->getSummary());
 
-        $end =$evento->getEnd()->getDateTime();
 
-        // ignora evento sem horário
+        /*
+         * Se o evento começar com "BLOQUEAR",
+         * ele NÃO será enviado para o listar.
+         *
+         * Exemplos:
+         *
+         * BLOQUEAR
+         * BLOQUEAR - Almoço
+         * BLOQUEAR - Pilates
+         * BLOQUEAR - Médico
+         * BLOQUEAR - Compromisso
+         * BLOQUEAR - qualquer coisa
+         */
 
-        if(!$start || !$end){
+        if (stripos($summary, 'BLOQUEAR') === 0) {
             continue;
         }
 
-        $inicio =
-            new DateTime($start);
 
-        $fim =
-            new DateTime($end);
+        /*
+         * =====================================================
+         * INÍCIO E FIM DO EVENTO
+         * =====================================================
+         */
 
-            $summary = trim((string)$evento->getSummary());
+        $start = $evento->getStart()->getDateTime();
 
-        // Ignora bloqueios
-        if(stripos($summary, 'BLOQUEIO') === 0){
+        $end = $evento->getEnd()->getDateTime();
+
+
+        // Ignora eventos sem horário
+        if (!$start || !$end) {
             continue;
         }
 
-        $descricao =
-            (string)$evento->getDescription();
+
+        $inicio = new DateTime($start);
+
+        $fim = new DateTime($end);
 
 
-        $procedimento=$summary;
+        /*
+         * =====================================================
+         * DESCRIÇÃO
+         * =====================================================
+         */
 
-        $nome="";
+        $descricao = (string)$evento->getDescription();
 
 
+        /*
+         * =====================================================
+         * PROCEDIMENTO E NOME
+         * =====================================================
+         */
 
-        if(strpos($summary,' - ')!==false){
+        $procedimento = $summary;
+
+        $nome = "";
 
 
-            [$procedimento,$nome] =
-                explode(' - ',$summary,2);
+        if (strpos($summary, ' - ') !== false) {
 
+            [$procedimento, $nome] = explode(
+                ' - ',
+                $summary,
+                2
+            );
         }
 
-        $telefone="";
-        $servico="";
+
+        /*
+         * =====================================================
+         * DADOS
+         * =====================================================
+         */
+
+        $telefone = "";
+
+        $servico = "";
+
         $valor = 0;
+
         $status = "Confirmado";
 
-        if(preg_match(
+
+        /*
+         * TELEFONE
+         */
+
+        if (preg_match(
             '/Telefone:\s*(.+)/u',
             $descricao,
             $m
-        )){
+        )) {
 
-            $telefone=trim($m[1]);
-
+            $telefone = trim($m[1]);
         }
 
 
+        /*
+         * SERVIÇO
+         */
 
-        if(preg_match(
+        if (preg_match(
             '/Serviço:\s*(.+)/u',
             $descricao,
             $m
-        )){
+        )) {
 
-            $servico=trim($m[1]);
-
+            $servico = trim($m[1]);
         }
 
-        if(preg_match(
+
+        /*
+         * VALOR
+         */
+
+        if (preg_match(
             '/Valor Total:\s*R\$\s*([0-9\.,]+)/i',
             $descricao,
             $m
-        )){
-        
+        )) {
+
             $valorTexto = trim($m[1]);
-        
-        
-            // remove ponto de milhar
+
+            // Remove ponto de milhar
             $valorTexto = str_replace(".", "", $valorTexto);
-        
-        
-            // troca virgula decimal
+
+            // Troca vírgula decimal por ponto
             $valorTexto = str_replace(",", ".", $valorTexto);
-        
-        
+
             $valor = floatval($valorTexto);
-        
         }
 
 
-        if(preg_match(
+        /*
+         * CLIENTE
+         */
+
+        if (preg_match(
             '/Cliente:\s*(.+)/u',
             $descricao,
             $m
-        )){
+        )) {
 
-            if(trim($m[1])!=""){
+            if (trim($m[1]) != "") {
 
-                $nome=trim($m[1]);
-
+                $nome = trim($m[1]);
             }
-
         }
 
 
+        /*
+         * =====================================================
+         * ADICIONA NA LISTA
+         * =====================================================
+         */
 
+        $lista[] = [
 
-        $lista[]=[
+            "id" => $evento->getId(),
 
-            "id"=>$evento->getId(),
+            "data" => $inicio->format('Y-m-d'),
 
-            "data"=>$inicio->format('Y-m-d'),
+            "horario" => $inicio->format('H:i'),
 
-            "horario"=>$inicio->format('H:i'),
+            "horarioFim" => $fim->format('H:i'),
 
-            "horarioFim"=>$fim->format('H:i'),
-
-            "tipo" => $tipo,
-
-            "duracaoMinutos"=>
+            "duracaoMinutos" =>
                 (int)(
-                    ($fim->getTimestamp()
-                    -
-                    $inicio->getTimestamp())
-                    /
-                    60
+                    (
+                        $fim->getTimestamp()
+                        -
+                        $inicio->getTimestamp()
+                    ) / 60
                 ),
 
+            "nome" =>
+                $nome != ''
+                ? $nome
+                : '(sem nome)',
 
-            "nome"=>
-                $nome!=''
-                ?
-                $nome
-                :
-                '(sem nome)',
+            "telefone" => $telefone,
 
-
-            "telefone"=>$telefone,
-
-
-            "servico"=>
+            "servico" =>
                 $servico
-                ?:
-                trim($procedimento),
+                ? $servico
+                : trim($procedimento),
 
             "valor" => $valor,
-            
-            "procedimento"=>
+
+            "procedimento" =>
                 trim($procedimento)
 
         ];
-
     }
 
 
+    /*
+     * =========================================================
+     * RETORNO JSON
+     * =========================================================
+     */
+
+    header('Content-Type: application/json; charset=utf-8');
 
     echo json_encode([
-
-        "status"=>"sucesso",
-
-        "agendamentos"=>$lista
-
+        "status" => "sucesso",
+        "agendamentos" => $lista
     ]);
 
     exit;
-
 }
 /*
 ====================================================
