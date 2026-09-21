@@ -1567,15 +1567,13 @@ async function salvarBloqueio() {
 
             await Swal.fire({
                 icon: "success",
-                title: "Bloqueado!",
+                title: "Bloqueado com sucesso!",
                 text: data.mensagem,
                 confirmButtonColor: "#6B6E55"
             });
-
+        
             closeModal();
-
-            loadAppointments();
-
+    
         }
 
         else if(data.status === "conflito"){
