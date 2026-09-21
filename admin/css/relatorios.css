@@ -414,3 +414,17 @@
       padding:18px;
     }
   }
+
+  .tabela-scroll {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+/* Cabeçalho fica parado enquanto a tabela rola */
+.tabela-scroll thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #6B6E55;
+}
