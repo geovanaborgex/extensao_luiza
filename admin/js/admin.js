@@ -1360,168 +1360,68 @@ function atualizarListaDiasBloqueio(){
         }).join("");
 }
 
-async function salvarBloqueio(){
+async function salvarBloqueio() {
 
-    const motivo =
-        document
-            .getElementById("bloqueioMotivo")
-            .value
-            .trim();
+    const motivo = document.getElementById("bloqueioMotivo").value.trim();
+    const horaInicio = document.getElementById("bloqueioInicio").value;
+    const horaFim = document.getElementById("bloqueioFim").value;
 
-
-    const horaInicio =
-        document
-            .getElementById("bloqueioInicio")
-            .value;
-
-
-    const horaFim =
-        document
-            .getElementById("bloqueioFim")
-            .value;
-
-
-    const tipo =
-        document
-            .querySelector(
-                'input[name="tipoDias"]:checked'
-            )
-            .value;
-
-
-    if(!horaInicio || !horaFim){
-
-        Swal.fire({
-
-            icon: "warning",
-
-            title: "Preencha os horários",
-
-            text:
-                "Informe o horário inicial e o horário final.",
-
-            confirmButtonColor: "#6B6E55"
-
-        });
-
-        return;
-    }
-
-
-    if(horaFim <= horaInicio){
-
-        Swal.fire({
-
-            icon: "warning",
-
-            title: "Horário inválido",
-
-            text:
-                "O horário final deve ser maior que o inicial.",
-
-            confirmButtonColor: "#6B6E55"
-
-        });
-
-        return;
-    }
-
+    const tipo = document.querySelector(
+        'input[name="tipoDias"]:checked'
+    ).value;
 
     let datas = [];
 
-
-    /*
-    ==============================================
-    INTERVALO
-    ==============================================
-    */
-
+    // INTERVALO
     if(tipo === "intervalo"){
 
-        const dataInicio =
-            document
-                .getElementById("bloqueioDataInicio")
-                .value;
+        const dataInicio = document.getElementById(
+            "bloqueioDataInicio"
+        ).value;
 
-
-        const dataFim =
-            document
-                .getElementById("bloqueioDataFim")
-                .value;
-
+        const dataFim = document.getElementById(
+            "bloqueioDataFim"
+        ).value;
 
         if(!dataInicio || !dataFim){
 
-            Swal.fire({
-
+            await Swal.fire({
                 icon: "warning",
-
-                title: "Selecione o período",
-
-                text:
-                    "Informe o dia inicial e o dia final.",
-
+                title: "Datas obrigatórias",
+                text: "Informe a data inicial e a data final.",
                 confirmButtonColor: "#6B6E55"
-
             });
 
             return;
         }
 
+        if(dataInicio > dataFim){
 
-        if(dataFim < dataInicio){
-
-            Swal.fire({
-
+            await Swal.fire({
                 icon: "warning",
-
-                title: "Período inválido",
-
-                text:
-                    "O dia final deve ser posterior ao dia inicial.",
-
+                title: "Intervalo inválido",
+                text: "A data final deve ser igual ou posterior à data inicial.",
                 confirmButtonColor: "#6B6E55"
-
             });
 
             return;
         }
 
-
-        /*
-         * Gera todos os dias entre as duas datas
-         */
-
-        let atual =
-            new Date(dataInicio + "T00:00:00");
-
-
-        const final =
-            new Date(dataFim + "T00:00:00");
-
+        let atual = new Date(dataInicio + "T00:00:00");
+        const final = new Date(dataFim + "T00:00:00");
 
         while(atual <= final){
 
-            const ano =
-                atual.getFullYear();
+            const ano = atual.getFullYear();
+            const mes = String(
+                atual.getMonth() + 1
+            ).padStart(2, "0");
 
+            const dia = String(
+                atual.getDate()
+            ).padStart(2, "0");
 
-            const mes =
-                String(
-                    atual.getMonth() + 1
-                ).padStart(2, "0");
-
-
-            const dia =
-                String(
-                    atual.getDate()
-                ).padStart(2, "0");
-
-
-            datas.push(
-                `${ano}-${mes}-${dia}`
-            );
-
+            datas.push(`${ano}-${mes}-${dia}`);
 
             atual.setDate(
                 atual.getDate() + 1
@@ -1530,237 +1430,185 @@ async function salvarBloqueio(){
 
     }
 
+    // DIAS ESPECÍFICOS
+    else {
 
-    /*
-    ==============================================
-    DIAS ESPECÍFICOS
-    ==============================================
-    */
+        datas = [...diasBloqueio];
 
-    else{
+        if(datas.length === 0){
 
-        if(diasBloqueio.length === 0){
-
-            Swal.fire({
-
+            await Swal.fire({
                 icon: "warning",
-
                 title: "Nenhum dia selecionado",
-
-                text:
-                    "Adicione pelo menos um dia para bloquear.",
-
+                text: "Adicione pelo menos um dia para bloquear.",
                 confirmButtonColor: "#6B6E55"
-
             });
 
             return;
         }
-
-
-        datas = [...diasBloqueio];
     }
 
+    // HORÁRIOS
+    if(!horaInicio || !horaFim){
 
-    /*
-    ==============================================
-    CONFIRMA
-    ==============================================
-    */
-
-    const confirmacao =
         await Swal.fire({
-            icon: "question",
-            title: "Ocupar horários?",
-            text: `Serão bloqueados ${datas.length} dia(s), das ${horaInicio} às ${horaFim}.`,
-            showCancelButton: true,
-            confirmButtonText: "Sim, bloquear",
-            cancelButtonText: "Cancelar",
-            confirmButtonColor: "#6B6E55",
-            cancelButtonColor: "#999",
-            allowOutsideClick: false,
-            allowEscapeKey: false
-        }).then((result) => {
-        
-            if (!result.isConfirmed) {
-                return;
-            }
-        
-            // AQUI continua o fetch
-            const form = new FormData();
-        
-            form.append("datas", JSON.stringify(datas));
-            form.append("hora_inicio", horaInicio);
-            form.append("hora_fim", horaFim);
-            form.append("motivo", motivo || "Horário bloqueado");
-        
-            fetch("dashboard.php?acao=ocupar", {
-                method: "POST",
-                body: form
-            })
-            .then(response => response.json())
-            .then(data => {
-        
-                if (data.status === "sucesso") {
-        
-                    Swal.fire({
-                        icon: "success",
-                        title: "Horários bloqueados!",
-                        text: data.mensagem,
-                        confirmButtonColor: "#6B6E55"
-                    }).then(() => {
-        
-                        closeModal();
-                        loadAppointments();
-        
-                    });
-        
-                } else {
-        
-                    Swal.fire({
-                        icon: "error",
-                        title: "Erro",
-                        text: data.mensagem || "Não foi possível bloquear os horários.",
-                        confirmButtonColor: "#6B6E55"
-                    });
-        
-                }
-        
-            })
-            .catch(error => {
-        
-                console.error(error);
-        
-                Swal.fire({
-                    icon: "error",
-                    title: "Erro",
-                    text: "Ocorreu um erro ao tentar bloquear os horários.",
-                    confirmButtonColor: "#6B6E55"
-                });
-        
-            });
+            icon: "warning",
+            title: "Horários obrigatórios",
+            text: "Informe o horário inicial e o horário final.",
+            confirmButtonColor: "#6B6E55"
         });
 
-
-    if(!confirmacao.isConfirmed){
         return;
     }
 
+    if(horaInicio >= horaFim){
 
-    /*
-    ==============================================
-    ENVIA PARA O PHP
-    ==============================================
-    */
+        await Swal.fire({
+            icon: "warning",
+            title: "Horário inválido",
+            text: "O horário final deve ser maior que o horário inicial.",
+            confirmButtonColor: "#6B6E55"
+        });
 
-    const form =
-        new FormData();
+        return;
+    }
 
+    // CONFIRMAÇÃO
+    const resultado = await Swal.fire({
+
+        icon: "question",
+
+        title: "Ocupar horários?",
+
+        text:
+            `Serão bloqueados ${datas.length} dia(s), ` +
+            `das ${horaInicio} às ${horaFim}.`,
+
+        showCancelButton: true,
+
+        confirmButtonText: "Sim, bloquear",
+
+        cancelButtonText: "Cancelar",
+
+        confirmButtonColor: "#6B6E55",
+
+        cancelButtonColor: "#999",
+
+        allowOutsideClick: false,
+
+        allowEscapeKey: false
+    });
+
+    if(!resultado.isConfirmed){
+        return;
+    }
+
+    // ENVIA PARA O PHP
+    const form = new FormData();
 
     form.append(
         "datas",
         JSON.stringify(datas)
     );
 
-
     form.append(
         "hora_inicio",
         horaInicio
     );
-
 
     form.append(
         "hora_fim",
         horaFim
     );
 
-
     form.append(
         "motivo",
         motivo || "Horário bloqueado"
     );
 
+    try {
 
-    try{
+        const response = await fetch(
+            "dashboard.php?acao=ocupar",
+            {
+                method: "POST",
+                body: form
+            }
+        );
 
-        const response =
-            await fetch(
-                "dashboard.php?acao=ocupar",
-                {
-                    method: "POST",
-                    body: form
-                }
+        const texto = await response.text();
+
+        console.log("Resposta PHP:", texto);
+
+        let data;
+
+        try {
+
+            data = JSON.parse(texto);
+
+        } catch(e) {
+
+            console.error(
+                "Resposta não é JSON:",
+                texto
             );
 
-
-        const result =
-            await response.json();
-
-
-        if(result.status !== "sucesso"){
-
-            Swal.fire({
-
+            await Swal.fire({
                 icon: "error",
-
-                title:
-                    "Não foi possível ocupar",
-
-                text:
-                    result.mensagem,
-
-                confirmButtonColor:
-                    "#6B6E55"
-
+                title: "Erro no servidor",
+                text: "O PHP retornou uma resposta inválida.",
+                confirmButtonColor: "#6B6E55"
             });
 
             return;
         }
 
+        if(data.status === "sucesso"){
 
-        await Swal.fire({
+            await Swal.fire({
+                icon: "success",
+                title: "Bloqueado!",
+                text: data.mensagem,
+                confirmButtonColor: "#6B6E55"
+            });
 
-            icon: "success",
+            closeModal();
 
-            title:
-                "Horários ocupados!",
+            loadAppointments();
 
-            text:
-                result.mensagem,
+        }
 
-            confirmButtonColor:
-                "#6B6E55"
+        else if(data.status === "conflito"){
 
-        });
+            await Swal.fire({
+                icon: "warning",
+                title: "Horário já ocupado",
+                text: data.mensagem,
+                confirmButtonColor: "#6B6E55"
+            });
 
+        }
 
-        diasBloqueio = [];
+        else {
 
+            await Swal.fire({
+                icon: "error",
+                title: "Não foi possível bloquear",
+                text: data.mensagem || "Erro desconhecido.",
+                confirmButtonColor: "#6B6E55"
+            });
 
-        closeModal();
+        }
 
-
-        loadAppointments();
-
-
-    }catch(error){
+    } catch(error){
 
         console.error(error);
 
-
-        Swal.fire({
-
+        await Swal.fire({
             icon: "error",
-
             title: "Erro",
-
-            text:
-                "Não foi possível comunicar com o servidor.",
-
-            confirmButtonColor:
-                "#6B6E55"
-
+            text: "Não foi possível conectar ao servidor.",
+            confirmButtonColor: "#6B6E55"
         });
-
     }
-}
+}s

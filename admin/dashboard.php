@@ -546,315 +546,241 @@ OCUPAR HORÁRIO / CRIAR BLOQUEIO
 */
 if($acao == "ocupar"){
 
-    if($_SERVER["REQUEST_METHOD"] != "POST"){
+    header('Content-Type: application/json; charset=utf-8');
 
+    if($_SERVER['REQUEST_METHOD'] !== 'POST'){
         echo json_encode([
             "status" => "erro",
-            "mensagem" => "Método inválido"
+            "mensagem" => "Método inválido."
         ]);
-
         exit;
     }
 
-    $dataInicio = $_POST['data_inicio'] ?? '';
-    $dataFim = $_POST['data_fim'] ?? '';
-
-    $horaInicio = $_POST['hora_inicio'] ?? '';
-    $horaFim = $_POST['hora_fim'] ?? '';
-
+    $datasJson = $_POST['datas'] ?? '';
+    $horaInicio = trim($_POST['hora_inicio'] ?? '');
+    $horaFim = trim($_POST['hora_fim'] ?? '');
     $motivo = trim($_POST['motivo'] ?? '');
 
-
-    if(!$dataInicio || !$dataFim || !$horaInicio || !$horaFim){
-
+    if($datasJson === '' || $horaInicio === '' || $horaFim === ''){
         echo json_encode([
             "status" => "erro",
-            "mensagem" => "Data inicial, data final, horário inicial e horário final são obrigatórios."
+            "mensagem" => "Dias, horário inicial e horário final são obrigatórios."
         ]);
-
         exit;
     }
 
+    $datas = json_decode($datasJson, true);
 
-    if(!$motivo){
+    if(!is_array($datas) || count($datas) === 0){
+        echo json_encode([
+            "status" => "erro",
+            "mensagem" => "Nenhum dia foi selecionado."
+        ]);
+        exit;
+    }
+
+    if($motivo === ''){
         $motivo = "Horário bloqueado";
     }
 
-
-    /*
-    ==================================================
-    VALIDA DATAS
-    ==================================================
-    */
-
-    try{
-
-        $periodoInicio = new DateTime(
-            $dataInicio . ' 00:00:00',
-            new DateTimeZone('America/Sao_Paulo')
-        );
-
-        $periodoFim = new DateTime(
-            $dataFim . ' 00:00:00',
-            new DateTimeZone('America/Sao_Paulo')
-        );
-
-    }catch(Exception $e){
+    // Validação dos horários
+    if(!preg_match('/^\d{2}:\d{2}$/', $horaInicio) ||
+       !preg_match('/^\d{2}:\d{2}$/', $horaFim)){
 
         echo json_encode([
             "status" => "erro",
-            "mensagem" => "Data inválida."
+            "mensagem" => "Horário inválido."
         ]);
-
         exit;
     }
 
-
-    if($periodoFim < $periodoInicio){
-
-        echo json_encode([
-            "status" => "erro",
-            "mensagem" => "A data final deve ser igual ou posterior à data inicial."
-        ]);
-
-        exit;
-    }
-
-
-    /*
-    ==================================================
-    VALIDA HORÁRIOS
-    ==================================================
-    */
-
-    if($horaFim <= $horaInicio){
-
+    if($horaInicio >= $horaFim){
         echo json_encode([
             "status" => "erro",
             "mensagem" => "O horário final deve ser maior que o horário inicial."
         ]);
-
         exit;
     }
 
+    $timezone = new DateTimeZone('America/Sao_Paulo');
 
     /*
-    ==================================================
-    PRIMEIRO:
-    VERIFICA TODOS OS DIAS ANTES DE CRIAR QUALQUER
-    BLOQUEIO
-    ==================================================
-    */
+     * PRIMEIRO:
+     * verificamos todos os dias para evitar criar alguns
+     * bloqueios e depois descobrir um conflito.
+     */
 
-    $dias = [];
+    $conflitos = [];
 
-    $dataAtual = clone $periodoInicio;
+    foreach($datas as $data){
 
+        $dataObj = DateTime::createFromFormat(
+            'Y-m-d',
+            $data,
+            $timezone
+        );
 
-    while($dataAtual <= $periodoFim){
-
-        $dataString = $dataAtual->format('Y-m-d');
-
+        if(!$dataObj || $dataObj->format('Y-m-d') !== $data){
+            echo json_encode([
+                "status" => "erro",
+                "mensagem" => "Data inválida: ".$data
+            ]);
+            exit;
+        }
 
         $inicio = new DateTime(
-            "$dataString $horaInicio",
-            new DateTimeZone('America/Sao_Paulo')
+            $data.' '.$horaInicio.':00',
+            $timezone
         );
 
         $fim = new DateTime(
-            "$dataString $horaFim",
-            new DateTimeZone('America/Sao_Paulo')
+            $data.' '.$horaFim.':00',
+            $timezone
         );
 
-
+        /*
+         * Busca eventos existentes nesse período.
+         */
         $optParams = [
-
             'timeMin' => $inicio->format(DateTime::RFC3339),
-
             'timeMax' => $fim->format(DateTime::RFC3339),
-
             'singleEvents' => true,
-
             'orderBy' => 'startTime'
-
         ];
 
-
-        try{
+        try {
 
             $eventos = $service->events->listEvents(
                 $calendarId,
                 $optParams
             );
 
-        }catch(Exception $e){
+        } catch(Exception $e){
 
             echo json_encode([
                 "status" => "erro",
-                "mensagem" => "Erro ao verificar a agenda: " . $e->getMessage()
+                "mensagem" => "Erro ao verificar agenda: ".$e->getMessage()
             ]);
-
             exit;
         }
 
-
-        /*
-        ==============================================
-        VERIFICA CONFLITO
-        ==============================================
-        */
-
         foreach($eventos->getItems() as $evento){
 
-            $inicioEvento = $evento->getStart()->getDateTime();
-            $fimEvento = $evento->getEnd()->getDateTime();
+            $eventStart = $evento->getStart()->getDateTime();
+            $eventEnd = $evento->getEnd()->getDateTime();
 
-
-            if(!$inicioEvento || !$fimEvento){
+            if(!$eventStart || !$eventEnd){
                 continue;
             }
 
+            $eventoInicio = new DateTime($eventStart);
+            $eventoFim = new DateTime($eventEnd);
 
-            $inicioExistente = new DateTime($inicioEvento);
-            $fimExistente = new DateTime($fimEvento);
-
-
+            /*
+             * Verifica sobreposição de horários.
+             */
             if(
-                $inicio < $fimExistente &&
-                $fim > $inicioExistente
+                $inicio < $eventoFim &&
+                $fim > $eventoInicio
             ){
 
-                echo json_encode([
+                $conflitos[] = [
+                    "data" => $data,
+                    "evento" => $evento->getSummary() ?: "Evento sem título"
+                ];
 
-                    "status" => "erro",
-
-                    "mensagem" =>
-                        "Já existe um agendamento ou bloqueio no dia " .
-                        $dataAtual->format('d/m/Y') .
-                        " entre " .
-                        $horaInicio .
-                        " e " .
-                        $horaFim .
-                        "."
-
-                ]);
-
-                exit;
             }
         }
-
-
-        /*
-        ==============================================
-        GUARDA O DIA PARA CRIAR DEPOIS
-        ==============================================
-        */
-
-        $dias[] = [
-            "inicio" => $inicio,
-            "fim" => $fim
-        ];
-
-
-        $dataAtual->modify('+1 day');
     }
-
 
     /*
-    ==================================================
-    SEGUNDO:
-    CRIA OS BLOQUEIOS
-    ==================================================
-    */
+     * Se encontrou algum conflito, não cria nenhum bloqueio.
+     */
+    if(count($conflitos) > 0){
 
-    $ids = [];
+        $mensagem = "Existem horários ocupados:\n\n";
 
+        foreach($conflitos as $conflito){
 
-    try{
+            $dataFormatada = DateTime::createFromFormat(
+                'Y-m-d',
+                $conflito['data']
+            )->format('d/m/Y');
 
-        foreach($dias as $dia){
-
-            $inicio = $dia["inicio"];
-            $fim = $dia["fim"];
-
-
-            $evento = new Google_Service_Calendar_Event([
-
-                'summary' => 'BLOQUEAR - ' . $motivo,
-
-                'description' =>
-                    "Tipo: Bloqueio de horário\n" .
-                    "Motivo: " . $motivo,
-
-                'start' => [
-
-                    'dateTime' =>
-                        $inicio->format(DateTime::RFC3339),
-
-                    'timeZone' =>
-                        'America/Sao_Paulo'
-
-                ],
-
-                'end' => [
-
-                    'dateTime' =>
-                        $fim->format(DateTime::RFC3339),
-
-                    'timeZone' =>
-                        'America/Sao_Paulo'
-
-                ]
-
-            ]);
-
-
-            $novoEvento =
-                $service->events->insert(
-                    $calendarId,
-                    $evento
-                );
-
-
-            $ids[] = $novoEvento->getId();
+            $mensagem .= $dataFormatada.
+                         " - ".
+                         $conflito['evento'].
+                         "\n";
         }
 
-
-        /*
-        ==============================================
-        RETORNO
-        ==============================================
-        */
-
-        $quantidade = count($ids);
-
-
         echo json_encode([
-
-            "status" => "sucesso",
-
-            "mensagem" =>
-                $quantidade == 1
-                ? "Horário bloqueado com sucesso."
-                : $quantidade . " dias bloqueados com sucesso.",
-
-            "ids" => $ids
-
+            "status" => "conflito",
+            "mensagem" => $mensagem
         ]);
-
-    }catch(Exception $e){
-
-        echo json_encode([
-
-            "status" => "erro",
-
-            "mensagem" =>
-                "Erro ao criar bloqueio: " .
-                $e->getMessage()
-
-        ]);
+        exit;
     }
 
+    /*
+     * AGORA SIM:
+     * cria os bloqueios em todos os dias.
+     */
+
+    $criados = 0;
+
+    foreach($datas as $data){
+
+        $inicio = new DateTime(
+            $data.' '.$horaInicio.':00',
+            $timezone
+        );
+
+        $fim = new DateTime(
+            $data.' '.$horaFim.':00',
+            $timezone
+        );
+
+        $evento = new Google_Service_Calendar_Event([
+            'summary' => 'BLOQUEAR - '.$motivo,
+
+            'description' =>
+                "Tipo: Bloqueio de horário\n".
+                "Motivo: ".$motivo,
+
+            'start' => [
+                'dateTime' => $inicio->format(DateTime::RFC3339),
+                'timeZone' => 'America/Sao_Paulo'
+            ],
+
+            'end' => [
+                'dateTime' => $fim->format(DateTime::RFC3339),
+                'timeZone' => 'America/Sao_Paulo'
+            ]
+        ]);
+
+        try {
+
+            $service->events->insert(
+                $calendarId,
+                $evento
+            );
+
+            $criados++;
+
+        } catch(Exception $e){
+
+            echo json_encode([
+                "status" => "erro",
+                "mensagem" => "Erro ao criar bloqueio: ".$e->getMessage()
+            ]);
+            exit;
+        }
+    }
+
+    echo json_encode([
+        "status" => "sucesso",
+        "mensagem" => $criados." horário(s) bloqueado(s) com sucesso.",
+        "quantidade" => $criados
+    ]);
 
     exit;
 }
