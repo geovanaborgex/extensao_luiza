@@ -1115,45 +1115,290 @@ function abrirModalBloqueio(){
 
     alterarTipoDias();
 }
+let diasBloqueio = [];
+
+function alterarTipoDias(){
+
+    const tipo =
+        document.querySelector(
+            'input[name="tipoDias"]:checked'
+        ).value;
+
+
+    const area =
+        document.getElementById("areaDiasBloqueio");
+
+
+    if(tipo === "intervalo"){
+
+        area.innerHTML = `
+
+            <div style="
+                display:grid;
+                grid-template-columns:1fr 1fr;
+                gap:12px;
+            ">
+
+                <div>
+
+                    <label>
+                        Dia inicial
+                    </label>
+
+                    <input
+                        type="date"
+                        id="bloqueioDataInicio"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Dia final
+                    </label>
+
+                    <input
+                        type="date"
+                        id="bloqueioDataFim"
+                    >
+
+                </div>
+
+            </div>
+
+        `;
+
+    }else{
+
+        area.innerHTML = `
+
+            <label>
+                Escolha uma data
+            </label>
+
+            <div style="
+                display:flex;
+                gap:8px;
+            ">
+
+                <input
+                    type="date"
+                    id="bloqueioDataEspecifica"
+                >
+
+                <button
+                    type="button"
+                    class="btn btn-ghost"
+                    onclick="adicionarDiaBloqueio()">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Adicionar
+
+                </button>
+
+            </div>
+
+
+            <div style="
+                margin-top:15px;
+            ">
+
+                <div class="meta">
+                    Dias selecionados
+                </div>
+
+                <div
+                    id="listaDiasBloqueio"
+                    style="margin-top:8px;"
+                >
+
+                    <div class="meta">
+                        Nenhum dia selecionado.
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+    }
+}
+
+function adicionarDiaBloqueio(){
+
+    const input =
+        document.getElementById(
+            "bloqueioDataEspecifica"
+        );
+
+
+    const data = input.value;
+
+
+    if(!data){
+
+        Swal.fire({
+
+            icon: "warning",
+
+            title: "Escolha uma data",
+
+            text: "Selecione o dia que deseja bloquear.",
+
+            confirmButtonColor: "#6B6E55"
+
+        });
+
+        return;
+    }
+
+
+    if(diasBloqueio.includes(data)){
+
+        Swal.fire({
+
+            icon: "info",
+
+            title: "Data já adicionada",
+
+            text: "Esse dia já está na lista.",
+
+            confirmButtonColor: "#6B6E55"
+
+        });
+
+        return;
+    }
+
+
+    diasBloqueio.push(data);
+
+
+    diasBloqueio.sort();
+
+
+    input.value = "";
+
+
+    atualizarListaDiasBloqueio();
+}
+
+function atualizarListaDiasBloqueio(){
+
+    const lista =
+        document.getElementById(
+            "listaDiasBloqueio"
+        );
+
+
+    if(!lista){
+        return;
+    }
+
+
+    if(diasBloqueio.length === 0){
+
+        lista.innerHTML = `
+            <div class="meta">
+                Nenhum dia selecionado.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    lista.innerHTML =
+        diasBloqueio.map((data, index) => {
+
+            const partes = data.split("-");
+
+            const dataFormatada =
+                `${partes[2]}/${partes[1]}/${partes[0]}`;
+
+
+            return `
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    padding:8px 10px;
+                    margin-bottom:6px;
+                    border-radius:8px;
+                    background:#f5f5f5;
+                ">
+
+                    <span>
+                        ${dataFormatada}
+                    </span>
+
+
+                    <button
+                        type="button"
+                        onclick="removerDiaBloqueio(${index})"
+                        style="
+                            border:0;
+                            background:transparent;
+                            color:#b33;
+                            cursor:pointer;
+                            font-size:16px;
+                        "
+                        title="Remover dia">
+
+                        <i class="fa-solid fa-xmark"></i>
+
+                    </button>
+
+                </div>
+
+            `;
+
+        }).join("");
+}
 
 async function salvarBloqueio(){
 
-    const dataInicio =
-        document.getElementById("bloqueioDataInicio").value;
-
-
-    const dataFim =
-        document.getElementById("bloqueioDataFim").value;
+    const motivo =
+        document
+            .getElementById("bloqueioMotivo")
+            .value
+            .trim();
 
 
     const horaInicio =
-        document.getElementById("bloqueioInicio").value;
+        document
+            .getElementById("bloqueioInicio")
+            .value;
 
 
     const horaFim =
-        document.getElementById("bloqueioFim").value;
+        document
+            .getElementById("bloqueioFim")
+            .value;
 
 
-    const motivo =
-        document.getElementById("bloqueioMotivo").value.trim();
+    const tipo =
+        document
+            .querySelector(
+                'input[name="tipoDias"]:checked'
+            )
+            .value;
 
 
-    /*
-    ==============================================
-    VALIDA CAMPOS
-    ==============================================
-    */
-
-    if(!dataInicio || !dataFim || !horaInicio || !horaFim){
+    if(!horaInicio || !horaFim){
 
         Swal.fire({
 
             icon: "warning",
 
-            title: "Preencha os campos",
+            title: "Preencha os horários",
 
             text:
-                "Informe as datas e os horários do bloqueio.",
+                "Informe o horário inicial e o horário final.",
 
             confirmButtonColor: "#6B6E55"
 
@@ -1162,37 +1407,6 @@ async function salvarBloqueio(){
         return;
     }
 
-
-    /*
-    ==============================================
-    VALIDA PERÍODO
-    ==============================================
-    */
-
-    if(dataFim < dataInicio){
-
-        Swal.fire({
-
-            icon: "warning",
-
-            title: "Período inválido",
-
-            text:
-                "A data final deve ser igual ou posterior à data inicial.",
-
-            confirmButtonColor: "#6B6E55"
-
-        });
-
-        return;
-    }
-
-
-    /*
-    ==============================================
-    VALIDA HORÁRIO
-    ==============================================
-    */
 
     if(horaFim <= horaInicio){
 
@@ -1203,7 +1417,7 @@ async function salvarBloqueio(){
             title: "Horário inválido",
 
             text:
-                "O horário final deve ser maior que o horário inicial.",
+                "O horário final deve ser maior que o inicial.",
 
             confirmButtonColor: "#6B6E55"
 
@@ -1213,35 +1427,169 @@ async function salvarBloqueio(){
     }
 
 
+    let datas = [];
+
+
     /*
     ==============================================
-    CONFIRMAÇÃO
+    INTERVALO
     ==============================================
     */
 
-    let textoPeriodo = dataInicio === dataFim
-        ? "no dia selecionado"
-        : "durante o período selecionado";
+    if(tipo === "intervalo"){
+
+        const dataInicio =
+            document
+                .getElementById("bloqueioDataInicio")
+                .value;
 
 
-    const confirmacao = await Swal.fire({
+        const dataFim =
+            document
+                .getElementById("bloqueioDataFim")
+                .value;
 
-        icon: "question",
 
-        title: "Bloquear horário?",
+        if(!dataInicio || !dataFim){
 
-        text:
-            `O horário das ${horaInicio} às ${horaFim} será bloqueado ${textoPeriodo}.`,
+            Swal.fire({
 
-        showCancelButton: true,
+                icon: "warning",
 
-        confirmButtonText: "Sim, bloquear",
+                title: "Selecione o período",
 
-        cancelButtonText: "Cancelar",
+                text:
+                    "Informe o dia inicial e o dia final.",
 
-        confirmButtonColor: "#6B6E55"
+                confirmButtonColor: "#6B6E55"
 
-    });
+            });
+
+            return;
+        }
+
+
+        if(dataFim < dataInicio){
+
+            Swal.fire({
+
+                icon: "warning",
+
+                title: "Período inválido",
+
+                text:
+                    "O dia final deve ser posterior ao dia inicial.",
+
+                confirmButtonColor: "#6B6E55"
+
+            });
+
+            return;
+        }
+
+
+        /*
+         * Gera todos os dias entre as duas datas
+         */
+
+        let atual =
+            new Date(dataInicio + "T00:00:00");
+
+
+        const final =
+            new Date(dataFim + "T00:00:00");
+
+
+        while(atual <= final){
+
+            const ano =
+                atual.getFullYear();
+
+
+            const mes =
+                String(
+                    atual.getMonth() + 1
+                ).padStart(2, "0");
+
+
+            const dia =
+                String(
+                    atual.getDate()
+                ).padStart(2, "0");
+
+
+            datas.push(
+                `${ano}-${mes}-${dia}`
+            );
+
+
+            atual.setDate(
+                atual.getDate() + 1
+            );
+        }
+
+    }
+
+
+    /*
+    ==============================================
+    DIAS ESPECÍFICOS
+    ==============================================
+    */
+
+    else{
+
+        if(diasBloqueio.length === 0){
+
+            Swal.fire({
+
+                icon: "warning",
+
+                title: "Nenhum dia selecionado",
+
+                text:
+                    "Adicione pelo menos um dia para bloquear.",
+
+                confirmButtonColor: "#6B6E55"
+
+            });
+
+            return;
+        }
+
+
+        datas = [...diasBloqueio];
+    }
+
+
+    /*
+    ==============================================
+    CONFIRMA
+    ==============================================
+    */
+
+    const confirmacao =
+        await Swal.fire({
+
+            icon: "question",
+
+            title: "Ocupar horários?",
+
+            text:
+                `Serão bloqueados ${datas.length} dia(s), das ${horaInicio} às ${horaFim}.`,
+
+            showCancelButton: true,
+
+            confirmButtonText:
+                "Sim, bloquear",
+
+            cancelButtonText:
+                "Cancelar",
+
+            confirmButtonColor:
+                "#6B6E55"
+
+        });
 
 
     if(!confirmacao.isConfirmed){
@@ -1255,18 +1603,13 @@ async function salvarBloqueio(){
     ==============================================
     */
 
-    const form = new FormData();
+    const form =
+        new FormData();
 
 
     form.append(
-        "data_inicio",
-        dataInicio
-    );
-
-
-    form.append(
-        "data_fim",
-        dataFim
+        "datas",
+        JSON.stringify(datas)
     );
 
 
@@ -1290,16 +1633,18 @@ async function salvarBloqueio(){
 
     try{
 
-        const response = await fetch(
-            "dashboard.php?acao=ocupar",
-            {
-                method: "POST",
-                body: form
-            }
-        );
+        const response =
+            await fetch(
+                "dashboard.php?acao=ocupar",
+                {
+                    method: "POST",
+                    body: form
+                }
+            );
 
 
-        const result = await response.json();
+        const result =
+            await response.json();
 
 
         if(result.status !== "sucesso"){
@@ -1308,11 +1653,14 @@ async function salvarBloqueio(){
 
                 icon: "error",
 
-                title: "Não foi possível ocupar",
+                title:
+                    "Não foi possível ocupar",
 
-                text: result.mensagem,
+                text:
+                    result.mensagem,
 
-                confirmButtonColor: "#6B6E55"
+                confirmButtonColor:
+                    "#6B6E55"
 
             });
 
@@ -1324,13 +1672,19 @@ async function salvarBloqueio(){
 
             icon: "success",
 
-            title: "Horário ocupado!",
+            title:
+                "Horários ocupados!",
 
-            text: result.mensagem,
+            text:
+                result.mensagem,
 
-            confirmButtonColor: "#6B6E55"
+            confirmButtonColor:
+                "#6B6E55"
 
         });
+
+
+        diasBloqueio = [];
 
 
         closeModal();
@@ -1353,10 +1707,10 @@ async function salvarBloqueio(){
             text:
                 "Não foi possível comunicar com o servidor.",
 
-            confirmButtonColor: "#6B6E55"
+            confirmButtonColor:
+                "#6B6E55"
 
         });
 
     }
-
 }
