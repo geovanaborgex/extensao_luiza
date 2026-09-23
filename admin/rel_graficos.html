@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gráficos e Resultados</title>
+
+
+    <!-- FONTES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- MENU -->
+    <link rel="stylesheet" href="css/menu.css" >
+
+
+    <!-- CSS DESTA PÁGINA -->
+    <link rel="stylesheet" href="css/rel_grafico.css">
+
+
+    <!-- CHART.JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+
+<body>
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      
+      <div class="menu-overlay" id="menuOverlay"></div>
+
+<!-- =====================================================
+     MENU LATERAL
+===================================================== -->
+
+<nav class="menu-lateral">
+
+    <a href="dashboard.html">
+
+        <i class="fa-solid fa-house"></i>
+
+        <span>Dashboard</span>
+
+    </a>
+
+
+    <a href="rel_agenda.html">
+
+        <i class="fa-solid fa-chart-column"></i>
+
+        <span>Relatorio de Agendamentos</span>
+
+    </a>
+
+
+    <a href="rel_graficos.html" class="ativo">
+
+        <i class="fa-solid fa-chart-column"></i>
+
+        <span>Graficos e resultados</span>
+
+    </a>
+
+
+    <a href="index.html">
+
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+
+        <span>Sair</span>
+
+    </a>
+
+</nav>
+
+
+
+<!-- =====================================================
+     CONTEÚDO
+===================================================== -->
+
+<main class="conteudo">
+
+
+    <!-- CABEÇALHO -->
+
+    <div class="cabecalho">
+
+        <div>
+
+            <h1>Gráficos e resultados</h1>
+
+            <p>
+                Acompanhe o desempenho do salão ao longo do ano.
+            </p>
+
+        </div>
+
+
+        <div class="seletor-ano">
+
+            <label for="ano">Ano</label>
+
+            <select id="ano">
+
+                <option value="2026">2026</option>
+
+                <option value="2025">2025</option>
+
+                <option value="2024">2024</option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         CARDS PRINCIPAIS
+    ================================================= -->
+
+    <div class="cards-principais">
+
+
+        <!-- CARRO CHEFE -->
+
+        <div class="card destaque">
+
+            <div class="icone-card">
+                🏆
+            </div>
+
+
+            <div class="card-info">
+
+                <span>Atendimento carro-chefe</span>
+
+                <h2>Escova</h2>
+
+                <p>
+                    <strong>300</strong>
+                    atendimentos no ano
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- TOTAL ATENDIMENTOS -->
+
+        <div class="card">
+
+            <div class="icone-card">
+                📅
+            </div>
+
+
+            <div class="card-info">
+
+                <span>Total de atendimentos</span>
+
+                <h2>2.845</h2>
+
+                <p>
+                    Atendimentos realizados
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- FATURAMENTO -->
+
+        <div class="card">
+
+            <div class="icone-card">
+                💰
+            </div>
+
+
+            <div class="card-info">
+
+                <span>Faturamento anual</span>
+
+                <h2>R$ 128.500</h2>
+
+                <p>
+                    Valor total faturado
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- CLIENTES -->
+
+        <div class="card">
+
+            <div class="icone-card">
+                👥
+            </div>
+
+
+            <div class="card-info">
+
+                <span>Clientes atendidos</span>
+
+                <h2>487</h2>
+
+                <p>
+                    Clientes diferentes
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         DESTAQUES DO ANO
+    ================================================= -->
+
+    <section class="destaques">
+
+
+        <div class="titulo-secao">
+
+            <div>
+
+                <h2>Destaques de 2026</h2>
+
+                <p>
+                    Os principais números do salão neste ano.
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="grid-destaques">
+
+
+            <div class="mini-destaque">
+
+                <span class="mini-icone">
+                    🏆
+                </span>
+
+                <div>
+
+                    <small>
+                        Procedimento campeão
+                    </small>
+
+                    <strong>
+                        Escova
+                    </strong>
+
+                    <p>
+                        300 atendimentos
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="mini-destaque">
+
+                <span class="mini-icone">
+                    📈
+                </span>
+
+                <div>
+
+                    <small>
+                        Mês com mais atendimentos
+                    </small>
+
+                    <strong>
+                        Dezembro
+                    </strong>
+
+                    <p>
+                        330 atendimentos
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="mini-destaque">
+
+                <span class="mini-icone">
+                    💰
+                </span>
+
+                <div>
+
+                    <small>
+                        Maior faturamento
+                    </small>
+
+                    <strong>
+                        Dezembro
+                    </strong>
+
+                    <p>
+                        R$ 14.800
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="mini-destaque">
+
+                <span class="mini-icone">
+                    👑
+                </span>
+
+                <div>
+
+                    <small>
+                        Cliente mais frequente
+                    </small>
+
+                    <strong>
+                        Geovana
+                    </strong>
+
+                    <p>
+                        28 atendimentos
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="mini-destaque">
+
+                <span class="mini-icone">
+                    📅
+                </span>
+
+                <div>
+
+                    <small>
+                        Dia mais movimentado
+                    </small>
+
+                    <strong>
+                        Sábado
+                    </strong>
+
+                    <p>
+                        210 atendimentos
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         GRÁFICOS
+    ================================================= -->
+
+    <div class="grid-graficos">
+
+
+        <!-- ATENDIMENTOS -->
+
+        <section class="grafico-card">
+
+            <div class="grafico-titulo">
+
+                <div>
+
+                    <h2>
+                        Atendimentos por mês
+                    </h2>
+
+                    <p>
+                        Quantidade de atendimentos realizados em 2026.
+                    </p>
+
+                </div>
+
+
+                <span class="icone-grafico">
+                    📊
+                </span>
+
+            </div>
+
+
+            <div class="grafico-container">
+
+                <canvas id="graficoAtendimentos"></canvas>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- FATURAMENTO -->
+
+        <section class="grafico-card">
+
+            <div class="grafico-titulo">
+
+                <div>
+
+                    <h2>
+                        Faturamento por mês
+                    </h2>
+
+                    <p>
+                        Evolução do faturamento ao longo do ano.
+                    </p>
+
+                </div>
+
+
+                <span class="icone-grafico">
+                    💰
+                </span>
+
+            </div>
+
+
+            <div class="grafico-container">
+
+                <canvas id="graficoFaturamento"></canvas>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+
+    <!-- =================================================
+         PROCEDIMENTOS + CLIENTES
+    ================================================= -->
+
+    <div class="grid-graficos">
+
+
+        <!-- PROCEDIMENTOS -->
+
+        <section class="grafico-card">
+
+            <div class="grafico-titulo">
+
+                <div>
+
+                    <h2>
+                        Procedimentos mais realizados
+                    </h2>
+
+                    <p>
+                        Ranking dos serviços realizados no ano.
+                    </p>
+
+                </div>
+
+
+                <span class="icone-grafico">
+                    🏆
+                </span>
+
+            </div>
+
+
+            <div class="grafico-container grafico-horizontal">
+
+                <canvas id="graficoProcedimentos"></canvas>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- CLIENTES -->
+
+        <section class="grafico-card">
+
+            <div class="grafico-titulo">
+
+                <div>
+
+                    <h2>
+                        Clientes mais frequentes
+                    </h2>
+
+                    <p>
+                        Clientes com maior número de atendimentos.
+                    </p>
+
+                </div>
+
+
+                <span class="icone-grafico">
+                    👥
+                </span>
+
+            </div>
+
+
+            <div class="grafico-container grafico-horizontal">
+
+                <canvas id="graficoClientes"></canvas>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+
+    <!-- =================================================
+         DIAS + HORÁRIOS
+    ================================================= -->
+
+    <div class="grid-graficos">
+
+
+        <!-- DIAS -->
+
+        <section class="grafico-card">
+
+            <div class="grafico-titulo">
+
+                <div>
+
+                    <h2>
+                        Atendimentos por dia da semana
+                    </h2>
+
+                    <p>
+                        Veja quais dias possuem maior movimento.
+                    </p>
+
+                </div>
+
+
+                <span class="icone-grafico">
+                    📅
+                </span>
+
+            </div>
+
+
+            <div class="grafico-container">
+
+                <canvas id="graficoDias"></canvas>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- HORÁRIOS -->
+
+        <section class="grafico-card">
+
+            <div class="grafico-titulo">
+
+                <div>
+
+                    <h2>
+                        Horários mais procurados
+                    </h2>
+
+                    <p>
+                        Quantidade de atendimentos por horário.
+                    </p>
+
+                </div>
+
+
+                <span class="icone-grafico">
+                    ⏰
+                </span>
+
+            </div>
+
+
+            <div class="grafico-container">
+
+                <canvas id="graficoHorarios"></canvas>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+</main>
+
+
+
+<script src="js/rel_grafico.js"></script>
+
+</body>
+
+</html>
+
