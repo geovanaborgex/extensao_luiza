@@ -17,37 +17,23 @@
 /* ==========================================
    GERAL
 ========================================== */
-
 * {
     box-sizing: border-box;
 }
 
-
 body {
     margin: 0;
-
     font-family: 'Poppins', sans-serif;
-
-    background: var(--bg);
-
-    color: var(--texto);
-
-    overflow-x: hidden;
+    background: #f5f6f8;
+    color: #333;
 }
 
-
-/* ==========================================
-   CONTEÚDO
-========================================== */
+/* CONTEÚDO DA PÁGINA */
 
 .conteudo {
-
     margin-left: 260px;
-
     width: calc(100% - 260px);
-
     min-height: 100vh;
-
     padding: 40px;
 }
 

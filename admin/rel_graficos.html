@@ -23,13 +23,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- MENU -->
-    <link rel="stylesheet" href="css/menu.css" >
-
-
     <!-- CSS DESTA PÁGINA -->
-    <link rel="stylesheet" href="css/rel_grafico.css">
-
+    <link rel="stylesheet" href="css/rel_graficos.css">
+    <link rel="stylesheet" href="css/menu.css">
 
     <!-- CHART.JS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -38,37 +34,48 @@
 
 
 <body>
+    
     <button class="menu-toggle" id="menuToggle">
         <i class="fa-solid fa-bars"></i>
       </button>
       
       <div class="menu-overlay" id="menuOverlay"></div>
+      
+  <!-- MENU LATERAL -->
 
-<!-- =====================================================
-     MENU LATERAL
-===================================================== -->
+<aside class="sidebar">
 
-<nav class="menu-lateral">
+  <!-- Logo -->
 
-    <a href="dashboard.html">
+  <div class="logo">
 
-        <i class="fa-solid fa-house"></i>
+      <h2>Luiza</h2>
 
-        <span>Dashboard</span>
+      <span>Painel Administrativo</span>
 
-    </a>
-
-
-    <a href="rel_agenda.html">
-
-        <i class="fa-solid fa-chart-column"></i>
-
-        <span>Relatorio de Agendamentos</span>
-
-    </a>
+  </div>
 
 
-    <a href="rel_graficos.html" class="ativo">
+  <!-- Menu -->
+
+  <nav>
+
+      <a href="dashboard.html">
+
+          <i class="fa-solid fa-house"></i>
+
+          <span>Dashboard</span>
+
+      </a>
+
+      <a href="rel_agenda.html">
+
+          <i class="fa-solid fa-chart-column"></i>
+
+          <span>Relatorio de Agendamentos</span>
+
+      </a>
+      <a href="rel_graficos.html" class="ativo">
 
         <i class="fa-solid fa-chart-column"></i>
 
@@ -76,18 +83,17 @@
 
     </a>
 
+      <a href="../index.html">
 
-    <a href="index.html">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
 
-        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span>Sair</span>
 
-        <span>Sair</span>
+      </a>
 
-    </a>
+  </nav>
 
-</nav>
-
-
+</aside>
 
 <!-- =====================================================
      CONTEÚDO
