@@ -1,14 +1,60 @@
+/* ============================================================
+   PARTE 1
 
+   Nesta parte teremos:
+
+   1 - Variáveis
+   2 - Funções auxiliares
+   3 - Buscar agendamentos no PHP
+   4 - Mostrar o resumo da página
+
+============================================================ */
+
+
+/* ============================================================
+   VARIÁVEIS
+============================================================ */
+
+// Data de hoje
 var hoje = new Date();
 
+// Guarda todos os agendamentos vindos do PHP
 var agendamentos = [];
+
+// Guarda o ID do atendimento selecionado
 var idSelecionado = "";
+
+
+/* ============================================================
+   TRANSFORMAR DATA PARA YYYY-MM-DD
+
+   Exemplo:
+
+   29/07/2026   vira   2026-07-29
+
+============================================================ */
 
 function formatarDataISO(data){
 
     return data.toISOString().substring(0,10);
 
 }
+
+
+/* ============================================================
+   ADICIONAR DIAS EM UMA DATA
+
+   Exemplo
+
+   hoje = 29/07
+
+   adicionarDias(hoje,3)
+
+   retorna
+
+   01/08
+
+============================================================ */
 
 function adicionarDias(data, quantidadeDias){
 
@@ -22,6 +68,18 @@ function adicionarDias(data, quantidadeDias){
 
 }
 
+
+/* ============================================================
+   CONVERTER HORÁRIO PARA MINUTOS
+
+   08:30
+
+   vira
+
+   510 minutos
+
+============================================================ */
+
 function horarioParaMinutos(horario){
 
     var partes = horario.split(":");
@@ -34,12 +92,23 @@ function horarioParaMinutos(horario){
 
 }
 
+
+
+/* ============================================================
+   BUSCAR AGENDAMENTOS
+
+   Faz uma requisição para
+
+   dashboard.php?acao=listar
+
+============================================================ */
+
 async function buscarAgendamentos(){
 
     try{
 
         var resposta = await fetch(
-            "dashboard.php?acao=listar"
+            "api/dashboard.php?acao=listar"
         );
 
         var dados = await resposta.json();
@@ -112,6 +181,15 @@ async function buscarAgendamentos(){
     }
 
 }
+
+
+
+/* ============================================================
+   MOSTRAR RESUMO
+
+   Atualiza os 3 cards do topo
+
+============================================================ */
 
 function mostrarResumo(){
 
@@ -340,6 +418,19 @@ function mostrarResumo(){
 
 }
 
+/* ============================================================
+   PARTE 2
+
+   5 - Agenda de Hoje
+   6 - Agenda da Semana
+
+============================================================ */
+
+
+/* ============================================================
+   MOSTRAR AGENDA DE HOJE
+============================================================ */
+
 function mostrarAgendaHoje(){
 
     var dataHoje = formatarDataISO(hoje);
@@ -430,6 +521,11 @@ function mostrarAgendaHoje(){
 
 }
 
+
+
+/* ============================================================
+   MOSTRAR AGENDA DA SEMANA
+============================================================ */
 
 function mostrarAgendaSemana(){
 
@@ -568,6 +664,23 @@ function mostrarAgendaSemana(){
 
 }
 
+
+/* ============================================================
+   PARTE 3
+
+   7 - Modal
+   8 - Remarcar
+   9 - Cancelar
+   10 - Toast
+   11 - Inicialização
+
+============================================================ */
+
+
+/* ============================================================
+   ABRIR MODAL
+============================================================ */
+
 function abrirModal(id){
 
     idSelecionado = id;
@@ -642,6 +755,11 @@ function abrirModal(id){
 
 }
 
+
+/* ============================================================
+   FECHAR MODAL
+============================================================ */
+
 function fecharModal(){
 
     document.getElementById("overlay").classList.remove("open");
@@ -649,6 +767,11 @@ function fecharModal(){
     idSelecionado = "";
 
 }
+
+
+/* ============================================================
+   REMARCAR AGENDAMENTO
+============================================================ */
 
 async function remarcarAgendamento(){
 
@@ -672,7 +795,7 @@ async function remarcarAgendamento(){
 
         var resposta = await fetch(
 
-            "dashboard.php?acao=remarcar",
+            "api/dashboard.php?acao=remarcar",
 
             {
 
@@ -710,6 +833,10 @@ async function remarcarAgendamento(){
 }
 
 
+/* ============================================================
+   CANCELAR AGENDAMENTO
+============================================================ */
+
 async function cancelarAgendamento(){
 
     if(!confirm("Deseja realmente cancelar este atendimento?")){
@@ -728,7 +855,7 @@ async function cancelarAgendamento(){
 
         var resposta = await fetch(
 
-            "dashboard.php?acao=cancelar",
+            "api/dashboard.php?acao=cancelar",
 
             {
 
@@ -765,6 +892,11 @@ async function cancelarAgendamento(){
 
 }
 
+
+/* ============================================================
+   TOAST
+============================================================ */
+
 function showToast(mensagem){
 
     var toast =
@@ -784,11 +916,20 @@ function showToast(mensagem){
 }
 
 
+/* ============================================================
+   BOTÃO X
+============================================================ */
+
 document.getElementById("btnFecharModal").onclick = function(){
 
     fecharModal();
 
 };
+
+
+/* ============================================================
+   FECHAR AO CLICAR FORA
+============================================================ */
 
 document.getElementById("overlay").onclick = function(evento){
 
@@ -800,7 +941,16 @@ document.getElementById("overlay").onclick = function(evento){
 
 };
 
+
+/* ============================================================
+   INICIAR O PAINEL
+============================================================ */
+
 buscarAgendamentos();
+
+/* ============================================================
+   ABRIR MENU TOGGLE
+============================================================ */
 
 const menuToggle=document.getElementById("menuToggle");
 const sidebar=document.querySelector(".sidebar");
@@ -1379,7 +1529,7 @@ async function salvarBloqueio() {
     try {
 
         const response = await fetch(
-            "dashboard.php?acao=ocupar",
+            "api/dashboard.php?acao=ocupar",
             {
                 method: "POST",
                 body: form
