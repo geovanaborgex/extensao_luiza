@@ -140,7 +140,7 @@ async function buscarAgendamentos(inicio = "", fim = ""){
 
     try{
 
-        let url = "/api/dashboard.php?acao=listar";
+        let url = "/admin/api/dashboard.php?acao=listar";
 
         if(inicio !== "" && fim !== ""){
 

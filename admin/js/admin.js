@@ -99,7 +99,7 @@ function horarioParaMinutos(horario){
 
    Faz uma requisição para
 
-   dashboard.php?acao=listar
+   /api/dashboard.php?acao=listar
 
 ============================================================ */
 
@@ -108,7 +108,7 @@ async function buscarAgendamentos(){
     try{
 
         var resposta = await fetch(
-            "api/dashboard.php?acao=listar"
+            "/admin/api/dashboard.php?acao=listar"
         );
 
         var dados = await resposta.json();
@@ -795,7 +795,7 @@ async function remarcarAgendamento(){
 
         var resposta = await fetch(
 
-            "api/dashboard.php?acao=remarcar",
+            "/admin/api/dashboard.php?acao=remarcar",
 
             {
 
@@ -855,7 +855,7 @@ async function cancelarAgendamento(){
 
         var resposta = await fetch(
 
-            "api/dashboard.php?acao=cancelar",
+            "/admin/api/dashboard.php?acao=cancelar",
 
             {
 
@@ -1529,7 +1529,7 @@ async function salvarBloqueio() {
     try {
 
         const response = await fetch(
-            "api/dashboard.php?acao=ocupar",
+            "/admin/api/dashboard.php?acao=ocupar",
             {
                 method: "POST",
                 body: form
