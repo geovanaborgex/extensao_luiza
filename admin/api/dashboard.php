@@ -1,7 +1,7 @@
 <?php
 
 header('Content-Type: application/json; charset=utf-8');
-require '../google_calendar.php';
+require '../../google_calendar.php';
 date_default_timezone_set('America/Sao_Paulo');
 $calendarId = 'luizagues99@gmail.com';
 $acao = $_GET['acao'] ?? '';
