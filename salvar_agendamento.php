@@ -1,9 +1,6 @@
 <?php
-
 header('Content-Type: application/json; charset=utf-8');
-
 require 'google_calendar.php';
-
 date_default_timezone_set('America/Sao_Paulo');
 
 
@@ -11,9 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $nome = $_POST["nome"] ?? "";
     $telefone = $_POST["telefone"] ?? "";
-
     $procedimentos = $_POST["procedimentos"] ?? [];
-
     $data = $_POST["data"] ?? "";
     $horario = $_POST["horario"] ?? "";
 
@@ -96,29 +91,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Horário inicial
-
     $inicio = new DateTime("$data $horario");
 
     // Horário final baseado na soma dos procedimentos
-
     $fim = clone $inicio;
-
     $fim->modify("+{$duracao} minutes");
-
     $calendarId = 'luizagues99@gmail.com';
 
     // Busca conflitos no Google Agenda
-
     $optParams = [
-
         'timeMin' => $inicio->format(DateTime::RFC3339),
-
         'timeMax' => $fim->format(DateTime::RFC3339),
-
         'singleEvents' => true,
-
         'orderBy' => 'startTime'
-
     ];
 
 
@@ -128,12 +113,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     );
 
     if(count($eventos->getItems()) > 0){
-
-
         echo json_encode([
-
             "status"=>"erro",
-
             "mensagem"=>"Esse horário já está ocupado."
         ]);
         exit;
@@ -152,34 +133,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
         'summary' => $listaProcedimentos." - ".$nome,
-
-
         'description' =>
-
         "Cliente: ".$nome."
-
         Telefone: ".$telefone."
-
         Procedimentos: ".$listaProcedimentos."
-
         Valor Total: R$ " . number_format($valorTotal, 2, ",", ".") . "
-
         Tempo Total: ".$duracao." minutos",
 
         'start'=>[
-
             'dateTime'=>$inicio->format(DateTime::RFC3339),
-
             'timeZone'=>'America/Sao_Paulo'
 
         ],
 
 
-
         'end'=>[
-
             'dateTime'=>$fim->format(DateTime::RFC3339),
-
             'timeZone'=>'America/Sao_Paulo'
 
         ]
@@ -194,23 +163,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     );
 
     echo json_encode([
-
         "status" => "sucesso",
-
         "duracao" => $duracao,
-
         "valor" => $valorTotal
-
     ]);
 
 }catch(Exception $e){
 
     echo json_encode([
-
         "status"=>"erro",
-
         "mensagem"=>$e->getMessage()
-
     ]);
 
 }
