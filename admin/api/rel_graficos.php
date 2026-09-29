@@ -1,7 +1,6 @@
 <?php
 
 header('Content-Type: application/json; charset=utf-8');
-
 require '../../google_calendar.php';
 
 date_default_timezone_set('America/Sao_Paulo');

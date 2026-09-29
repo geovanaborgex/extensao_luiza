@@ -473,3 +473,44 @@ body{
         height: 270px;
     }
 }
+
+        .abas-container {
+            display: flex;
+            gap: 20px;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 24px;
+        }
+
+        .aba-btn {
+            background: none;
+            border: none;
+            padding: 12px 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #6B6E55;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .aba-btn.ativo {
+            color: #6B6E55; /* Tom esverdeado/azulado combinando com o tema */
+        }
+
+        .aba-btn.ativo::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #6B6E55;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.ativo {
+            display: block;
+        }
