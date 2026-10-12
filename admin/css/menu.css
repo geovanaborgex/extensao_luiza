@@ -131,3 +131,30 @@
       padding:15px 17px;
     }
   }
+
+  
+/* PADRONIZAÇÃO DA LOGO DO MENU EM TODAS AS TELAS */
+.sidebar .logo {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    margin-bottom: 50px;
+}
+
+.sidebar .logo h2 {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 30px !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+}
+
+.sidebar .logo span {
+    display: block;
+    margin-top: 0 !important;
+    padding: 0 !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+}
