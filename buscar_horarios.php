@@ -1,226 +1,187 @@
+
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 header('Content-Type: application/json; charset=utf-8');
-require_once 'google_calendar.php';
 date_default_timezone_set('America/Sao_Paulo');
 
-/* DADOS RECEBIDOS */
-$data = $_POST["data"] ?? "";
-$procedimentos = $_POST["procedimentos"] ?? "";
+require_once __DIR__ . '/procedimentos_service.php';
 
-/* VALIDA DADOS */
-if (empty($data) || empty($procedimentos)) {
-    echo json_encode([
-        "status" => "erro",
-        "mensagem" => "Data ou procedimento não informado."
-    ]);
+function responderHorarios(array $dados, int $codigo = 200): void
+{
+    http_response_code($codigo);
+    echo json_encode($dados, JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-/* VERIFICA GOOGLE SERVICE */
+$data = trim($_POST['data'] ?? '');
+$procedimentosRecebidos = $_POST['procedimentos'] ?? '';
 
-if (!isset($service)) {
-    echo json_encode([
-        "status" => "erro",
-        "mensagem" => "Google Calendar service não iniciado."
-    ]);
-
-    exit;
+if ($data === '' || $procedimentosRecebidos === '') {
+    responderHorarios([
+        'status' => 'erro',
+        'mensagem' => 'Data ou procedimento não informado.'
+    ], 400);
 }
 
-/* DURAÇÕES */
+try {
+    $dataObj = DateTime::createFromFormat('!Y-m-d', $data);
 
-$duracoes = [
-
-    "Maquiagem Profissional" => 60,
-    "Maquiagem Express" => 30,
-    "Escova" => 30,
-    "Chapa" => 40,
-    "Corte" => 30,
-    "Hidratação + Escova" => 70,
-    "Cachos/Ondas" => 30,
-    "Penteado" => 30,
-    "Tintura com Tinta Profissional" => 90,
-    "Tintura com Tinta da Cliente" => 30,
-    "Nanopigmentação" => 120,
-    "Design com Henna" => 40,
-    "Design Simples" => 30,
-    "Brow Lamination" => 75,
-    "Lash Lifting" => 60,
-    "Limpeza de Pele" => 60,
-    "Spa dos Pés" => 60
-
-];
-
-/* SOMA A DURAÇÃO DOS PROCEDIMENTOS */
-
-$listaProcedimentos = array_map('trim', explode(",", $procedimentos));
-$duracao = 0;
-
-foreach ($listaProcedimentos as $proc) {
-    if (!isset($duracoes[$proc])) {
-        echo json_encode([
-            "status" => "erro",
-            "mensagem" => "Procedimento não encontrado.",
-            "procedimento_recebido" => $proc
-        ]);
-        exit;
+    if (!$dataObj || $dataObj->format('Y-m-d') !== $data) {
+        responderHorarios([
+            'status' => 'erro',
+            'mensagem' => 'Data inválida.'
+        ], 400);
     }
-    $duracao += $duracoes[$proc];
-}
-/* DATA */
-try {
 
-    $dataObj = new DateTime($data);
-} catch (Exception $e) {
-    echo json_encode([
-        "status" => "erro",
-        "mensagem" => "Data inválida.",
-        "erro" => $e->getMessage()
-    ]);
-    exit;
-}
-$diaSemana = (int)$dataObj->format('w');
+    // O JavaScript envia os nomes separados por vírgula.
+    $nomes = array_values(array_filter(
+        array_map('trim', explode(',', $procedimentosRecebidos)),
+        fn($nome) => $nome !== ''
+    ));
 
-/* EXPEDIENTE */
-$expediente = [
-    1 => ["15:00", "19:00"],
-    2 => ["09:00", "19:00"],
-    3 => ["08:00", "19:00"],
-    4 => ["09:00", "19:00"],
-    5 => ["08:00", "19:00"],
-    6 => ["07:00", "17:00"]
-];
+    if (count($nomes) === 0) {
+        responderHorarios([
+            'status' => 'erro',
+            'mensagem' => 'Selecione pelo menos um procedimento.'
+        ], 400);
+    }
 
-/* DOMINGO */
+    $itens = buscarProcedimentosAtivos($nomes);
+    $duracao = array_sum(array_column($itens, 'duracao'));
 
-if ($diaSemana === 0 || !isset($expediente[$diaSemana])) {
-    echo json_encode([
-        "status" => "sucesso",
-        "horarios" => []
-    ]);
+    $diaSemana = (int)$dataObj->format('w');
 
-    exit;
-}
+    $expediente = [
+        1 => ['15:00', '19:00'],
+        2 => ['09:00', '19:00'],
+        3 => ['08:00', '19:00'],
+        4 => ['09:00', '19:00'],
+        5 => ['08:00', '19:00'],
+        6 => ['07:00', '17:00']
+    ];
 
-/* HORÁRIO EXPEDIENTE */
-$inicioExpediente = new DateTime(
-    "$data " . $expediente[$diaSemana][0]
-);
+    if ($diaSemana === 0 || !isset($expediente[$diaSemana])) {
+        responderHorarios([
+            'status' => 'sucesso',
+            'horarios' => []
+        ]);
+    }
 
-$fimExpediente = new DateTime(
-    "$data " . $expediente[$diaSemana][1]
-);
-
-/* CALENDÁRIO */
-
-$calendarId = 'luizagues99@gmail.com';
-
-$optParams = [
-
-    'timeMin' => $inicioExpediente->format(DateTime::RFC3339),
-    'timeMax' => $fimExpediente->format(DateTime::RFC3339),
-    'singleEvents' => true,
-    'orderBy' => 'startTime'
-];
-
-/* BUSCA EVENTOS */
-
-try {
-
-    $eventos = $service->events->listEvents(
-        $calendarId,
-        $optParams
+    $inicioExpediente = new DateTime(
+        "$data " . $expediente[$diaSemana][0]
     );
 
-} catch (Exception $e) {
+    $fimExpediente = new DateTime(
+        "$data " . $expediente[$diaSemana][1]
+    );
 
-    die($e->getMessage());
+    $agora = new DateTime(
+        'now',
+        new DateTimeZone('America/Sao_Paulo')
+    );
 
-}
+    $dataHoje = $agora->format('Y-m-d');
 
-/* EVENTOS OCUPADOS */
-
-$ocupados = [];
-
-foreach ($eventos->getItems() as $evento) {
-    $inicioEvento = $evento->getStart()->getDateTime();
-    $fimEvento = $evento->getEnd()->getDateTime();
-    if ($inicioEvento && $fimEvento) {
-        $ocupados[] = [
-            "inicio" => (
-                new DateTime($inicioEvento)
-            )->setTimezone(
-                new DateTimeZone('America/Sao_Paulo')
-            ),
-
-            "fim" => (
-                new DateTime($fimEvento)
-            )->setTimezone(
-                new DateTimeZone('America/Sao_Paulo')
-            )
-
-        ];
+    if ($data < $dataHoje) {
+        responderHorarios([
+            'status' => 'sucesso',
+            'horarios' => []
+        ]);
     }
-}
 
-/* GERA HORÁRIOS */
+    $calendarId = 'luizagues99@gmail.com';
 
-$horariosDisponiveis = [];
-$horarioTeste = clone $inicioExpediente;
-$agora = new DateTime("now", new DateTimeZone("America/Sao_Paulo"));
-$dataHoje = $agora->format("Y-m-d");
+    global $service;
 
-if ($data === $dataHoje && $horarioTeste < $agora) {
-    $horarioTeste = clone $agora;
-    $hora = (int)$horarioTeste->format("H");
-    $minuto = (int)$horarioTeste->format("i");
+    $eventos = $service->events->listEvents($calendarId, [
+        'timeMin' => $inicioExpediente->format(DateTime::RFC3339),
+        'timeMax' => $fimExpediente->format(DateTime::RFC3339),
+        'singleEvents' => true,
+        'orderBy' => 'startTime'
+    ]);
 
-    if ($minuto == 0) {
-        // Mantém a hora cheia
-        $horarioTeste->setTime($hora, 0);
+    $ocupados = [];
 
-    } elseif ($minuto <= 30) {
-        // Arredonda para :30
-        $horarioTeste->setTime($hora, 30);
+    foreach ($eventos->getItems() as $evento) {
+        $inicioEvento = $evento->getStart()->getDateTime();
+        $fimEvento = $evento->getEnd()->getDateTime();
 
-    } else {
-        // Vai para a próxima hora cheia
-        $horarioTeste->modify("+1 hour");
-        $horarioTeste->setTime((int)$horarioTeste->format("H"), 0);
-    }
-}
-
-while ($horarioTeste < $fimExpediente) {
-    $inicioNovo = clone $horarioTeste;
-    $fimNovo = clone $inicioNovo;
-    $fimNovo->modify("+$duracao minutes");
-    if ($fimNovo > $fimExpediente) {
-        break;
-    }
-    $temConflito = false;
-    foreach ($ocupados as $ocupado) {
-        if (
-            $inicioNovo < $ocupado["fim"] &&
-            $fimNovo > $ocupado["inicio"]
-        ) {
-            $temConflito = true;
-            break;
+        if ($inicioEvento && $fimEvento) {
+            $ocupados[] = [
+                'inicio' => new DateTime($inicioEvento),
+                'fim' => new DateTime($fimEvento)
+            ];
         }
     }
 
-    if (!$temConflito) {
-        $horariosDisponiveis[] =
-            $inicioNovo->format("H:i");
+    $horarioTeste = clone $inicioExpediente;
+
+    if ($data === $dataHoje && $horarioTeste < $agora) {
+        $horarioTeste = clone $agora;
+
+        $minuto = (int)$horarioTeste->format('i');
+
+        if ($minuto === 0) {
+            $horarioTeste->setTime(
+                (int)$horarioTeste->format('H'), 0
+            );
+        } elseif ($minuto <= 30) {
+            $horarioTeste->setTime(
+                (int)$horarioTeste->format('H'), 30
+            );
+        } else {
+            $horarioTeste->modify('+1 hour');
+            $horarioTeste->setTime(
+                (int)$horarioTeste->format('H'), 0
+            );
+        }
     }
 
-    $horarioTeste->modify("+30 minutes");
+    $disponiveis = [];
+
+    while ($horarioTeste < $fimExpediente) {
+        $inicioNovo = clone $horarioTeste;
+        $fimNovo = clone $inicioNovo;
+        $fimNovo->modify("+{$duracao} minutes");
+
+        if ($fimNovo > $fimExpediente) {
+            break;
+        }
+
+        $temConflito = false;
+
+        foreach ($ocupados as $ocupado) {
+            if (
+                $inicioNovo < $ocupado['fim'] &&
+                $fimNovo > $ocupado['inicio']
+            ) {
+                $temConflito = true;
+                break;
+            }
+        }
+
+        if (!$temConflito) {
+            $disponiveis[] = $inicioNovo->format('H:i');
+        }
+
+        $horarioTeste->modify('+30 minutes');
+    }
+
+    responderHorarios([
+        'status' => 'sucesso',
+        'horarios' => $disponiveis
+    ]);
+
+} catch (InvalidArgumentException $e) {
+    responderHorarios([
+        'status' => 'erro',
+        'mensagem' => $e->getMessage()
+    ], 400);
+
+} catch (Throwable $e) {
+    error_log('Erro ao buscar horários: ' . $e->getMessage());
+
+    responderHorarios([
+        'status' => 'erro',
+        'mensagem' => 'Não foi possível consultar os horários. Tente novamente.'
+    ], 500);
 }
-
-/* RETORNO */
-echo json_encode([
-    "status" => "sucesso",
-    "horarios" => $horariosDisponiveis
-
-]);

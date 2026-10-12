@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Procedimentos | Painel Administrativo</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/gerenciamento.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+
+<button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">
+    <i class="fa-solid fa-bars"></i>
+</button>
+
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<aside class="sidebar">
+    <div class="logo">
+        <h2>Luiza</h2>
+        <span>Painel Administrativo</span>
+    </div>
+
+    <nav>
+        <a href="dashboard.html">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="rel_agenda.html">
+            <i class="fa-solid fa-calendar-check"></i>
+            <span>Relatório de Agendamentos</span>
+        </a>
+
+        <a href="rel_graficos.html">
+            <i class="fa-solid fa-chart-column"></i>
+            <span>Gráficos e resultados</span>
+        </a>
+
+        <a href="procedimentos.html" class="ativo">
+            <i class="fa-solid fa-spa"></i>
+            <span>Procedimentos</span>
+        </a>
+
+        <a href="../index.html">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            <span>Sair</span>
+        </a>
+    </nav>
+</aside>
+
+<main class="wrap procedimentos-wrap">
+
+    <header class="top">
+        <div>
+            <h1>Gerenciar Procedimentos</h1>
+            <p class="subtitulo">
+                Cadastre e organize os serviços oferecidos pelo salão.
+            </p>
+        </div>
+
+        <div class="top-actions">
+            <span class="date" id="dataAtual"></span>
+        </div>
+    </header>
+
+    <section class="resumo-procedimentos">
+        <div class="card">
+            <i class="fa-solid fa-spa"></i>
+            <div class="label">Total de procedimentos</div>
+            <div class="big" id="totalProcedimentos">0</div>
+            <div class="sub">Serviços cadastrados</div>
+        </div>
+
+        <div class="card">
+            <i class="fa-solid fa-tags"></i>
+            <div class="label">Categorias</div>
+            <div class="big" id="totalCategorias">0</div>
+            <div class="sub">Tipos de serviços</div>
+        </div>
+    </section>
+
+    <section class="painel-secao">
+        <div class="section-head">
+            <div>
+                <h2 id="tituloFormulario">Novo procedimento</h2>
+                <p class="descricao-secao">
+                    Preencha as informações do serviço.
+                </p>
+            </div>
+        </div>
+
+        <form id="formProcedimento">
+            <input type="hidden" id="procedimentoId">
+
+            <div class="form-grid">
+                <div class="campo">
+                    <label for="nome">Nome do procedimento *</label>
+                    <input
+                        type="text"
+                        id="nome"
+                        maxlength="100"
+                        placeholder="Ex.: Escova"
+                        required>
+                </div>
+
+                <div class="campo">
+                    <label for="categoria">Categoria *</label>
+                    <input
+                        type="text"
+                        id="categoria"
+                        maxlength="60"
+                        placeholder="Ex.: Cabelo"
+                        list="categoriasExistentes"
+                        required>
+                    <datalist id="categoriasExistentes"></datalist>
+                </div>
+
+                <div class="campo">
+                    <label for="preco">Preço (R$) *</label>
+                    <input
+                        type="number"
+                        id="preco"
+                        min="0"
+                        max="999999"
+                        step="0.01"
+                        placeholder="0,00"
+                        required>
+                </div>
+
+                <div class="campo">
+                    <label for="duracao">Duração (minutos) *</label>
+                    <input
+                        type="number"
+                        id="duracao"
+                        min="1"
+                        max="1440"
+                        step="1"
+                        placeholder="Ex.: 60"
+                        required>
+                </div>
+            </div>
+
+            <div class="form-acoes">
+                <button type="submit" class="btn btn-primary" id="btnSalvar">
+                    <i class="fa-solid fa-plus"></i>
+                    Salvar procedimento
+                </button>
+
+                <button type="button" class="btn btn-ghost"
+                        id="btnCancelar" hidden>
+                    Cancelar edição
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section class="painel-secao">
+        <div class="section-head lista-head">
+            <div>
+                <h2>Procedimentos cadastrados</h2>
+                <p class="descricao-secao">
+                    Consulte, edite ou remova os serviços.
+                </p>
+            </div>
+
+            <span class="count" id="contadorLista">0 serviços</span>
+        </div>
+
+        <div class="filtros">
+            <div class="busca">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="search" id="pesquisa"
+                       placeholder="Pesquisar procedimento...">
+            </div>
+
+            <select id="filtroCategoria" aria-label="Filtrar por categoria">
+                <option value="">Todas as categorias</option>
+            </select>
+        </div>
+
+        <div id="mensagemCarregamento" class="mensagem-lista">
+            Carregando procedimentos...
+        </div>
+
+        <div id="listaProcedimentos" class="lista-procedimentos"></div>
+
+        <div id="listaVazia" class="lista-vazia" hidden>
+            <i class="fa-solid fa-spa"></i>
+            <h3>Nenhum procedimento encontrado</h3>
+            <p>Cadastre um serviço ou altere os filtros da pesquisa.</p>
+        </div>
+    </section>
+
+</main>
+
+<script src="js/procedimentos.js"></script>
+<script>
+    // Menu responsivo do painel
+    const toggle = document.getElementById("menuToggle");
+    const sidebar = document.querySelector(".sidebar");
+    const overlay = document.getElementById("menuOverlay");
+
+    function fecharMenu() {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("active");
+    }
+
+    toggle.addEventListener("click", () => {
+        sidebar.classList.toggle("open");
+        overlay.classList.toggle("active");
+    });
+
+    overlay.addEventListener("click", fecharMenu);
+
+    document.getElementById("dataAtual").textContent =
+        new Date().toLocaleDateString("pt-BR", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric"
+        });
+</script>
+
+</body>
+</html>

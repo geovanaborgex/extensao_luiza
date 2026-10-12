@@ -1,0 +1,288 @@
+
+.procedimentos-wrap {
+    padding-bottom: 30px;
+}
+
+.subtitulo,
+.descricao-secao {
+    color: var(--texto2);
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+.resumo-procedimentos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    margin-bottom: 30px;
+}
+
+.painel-secao {
+    background: #fff;
+    border-radius: 18px;
+    padding: 28px;
+    margin-top: 30px;
+    box-shadow: var(--shadow);
+}
+
+.painel-secao .section-head {
+    margin-bottom: 24px;
+}
+
+.painel-secao .section-head h2 {
+    font-size: 21px;
+    color: var(--verde);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.campo label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+}
+
+.campo input,
+.filtros input,
+.filtros select {
+    width: 100%;
+    min-width: 0;
+    padding: 13px 15px;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    background: #fff;
+    color: var(--texto);
+    font-size: 14px;
+    outline: none;
+    transition: border .2s, box-shadow .2s;
+}
+
+.campo input:focus,
+.filtros input:focus,
+.filtros select:focus {
+    border-color: var(--verde);
+    box-shadow: 0 0 0 3px rgba(107, 110, 85, .10);
+}
+
+.form-acoes {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 25px;
+}
+
+.form-acoes [hidden] {
+    display: none !important;
+}
+
+.filtros {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 240px;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.busca {
+    position: relative;
+}
+
+.busca > i {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: var(--texto2);
+}
+
+.filtros .busca input {
+    padding-left: 43px;
+}
+
+.lista-procedimentos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.procedimento-card {
+    border: 1px solid var(--borda);
+    border-radius: 16px;
+    padding: 22px;
+    transition: .2s;
+    min-width: 0;
+}
+
+.procedimento-card:hover {
+    border-color: var(--dourado);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.procedimento-topo {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.procedimento-icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 13px;
+    background: #f4f1e9;
+    color: var(--verde);
+    font-size: 19px;
+}
+
+.procedimento-card h3 {
+    color: var(--verde);
+    font-size: 17px;
+    overflow-wrap: anywhere;
+}
+
+.categoria-tag {
+    display: inline-block;
+    background: #f4f1e9;
+    color: #6b6e55;
+    border-radius: 20px;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 7px;
+}
+
+.procedimento-dados {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 22px;
+    padding-top: 17px;
+    border-top: 1px solid var(--borda);
+}
+
+.dado-label {
+    display: block;
+    color: var(--texto2);
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.dado-valor {
+    color: var(--verde);
+    font-weight: 700;
+    font-size: 17px;
+}
+
+.procedimento-acoes {
+    display: flex;
+    gap: 9px;
+    margin-top: 20px;
+}
+
+.btn-acao {
+    flex: 1;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    padding: 10px;
+    background: #fff;
+    color: var(--verde);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.btn-acao:hover {
+    background: #f4f1e9;
+}
+
+.btn-acao.excluir {
+    color: var(--danger);
+}
+
+.btn-acao.excluir:hover {
+    background: #fff1f1;
+    border-color: #edcccc;
+}
+
+.mensagem-lista,
+.lista-vazia {
+    text-align: center;
+    padding: 35px 15px;
+    color: var(--texto2);
+}
+
+.lista-vazia i {
+    font-size: 38px;
+    color: var(--dourado);
+    margin-bottom: 15px;
+}
+
+.lista-vazia h3 {
+    color: var(--verde);
+    margin-bottom: 8px;
+}
+
+.lista-vazia p {
+    font-size: 14px;
+}
+
+@media (max-width: 1100px) {
+    .lista-procedimentos {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 800px) {
+    .resumo-procedimentos,
+    .form-grid,
+    .filtros {
+        grid-template-columns: 1fr;
+    }
+
+    .painel-secao {
+        padding: 20px;
+    }
+
+    .lista-head {
+        flex-direction: column;
+    }
+
+    .form-acoes {
+        flex-direction: column;
+    }
+
+    .form-acoes .btn {
+        width: 100%;
+    }
+
+    .procedimentos-wrap {
+        margin-left: auto;
+        width: calc(100% - 30px);
+    }
+}
+
+@media (max-width: 400px) {
+    .painel-secao {
+        padding: 15px;
+    }
+
+    .procedimento-card {
+        padding: 16px;
+    }
+}

@@ -1,182 +1,156 @@
+
 <?php
 header('Content-Type: application/json; charset=utf-8');
-require 'google_calendar.php';
 date_default_timezone_set('America/Sao_Paulo');
 
+require_once __DIR__ . '/procedimentos_service.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+function responder(array $dados, int $codigo = 200): void
+{
+    http_response_code($codigo);
+    echo json_encode($dados, JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
-    $nome = $_POST["nome"] ?? "";
-    $telefone = $_POST["telefone"] ?? "";
-    $procedimentos = $_POST["procedimentos"] ?? [];
-    $data = $_POST["data"] ?? "";
-    $horario = $_POST["horario"] ?? "";
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    responder([
+        'status' => 'erro',
+        'mensagem' => 'Método não permitido.'
+    ], 405);
+}
 
-    $valores = [
-        "Maquiagem Profissional" => 120,
-        "Maquiagem Express" => 80,
-        "Corte" => 40,
-        "Hidratação + Escova" => 85,
-        "Escova" => 45,
-        "Chapa" => 40,
-        "Cachos/Ondas" => 30,
-        "Penteado" => 80,
-        "Tintura com Tinta Profissional" => 65,
-        "Tintura com Tinta da Cliente" => 30,
-        "Nanopigmentação" => 400,
-        "Design com Henna" => 50,
-        "Design Simples" => 40,
-        "Brow Lamination" => 85,
-        "Lash Lifting" => 60,
-        "Limpeza de Pele" => 120,
-        "Spa dos Pés" => 70
-    ];
+$nome = trim($_POST['nome'] ?? '');
+$telefone = trim($_POST['telefone'] ?? '');
+$procedimentos = $_POST['procedimentos'] ?? [];
+$data = trim($_POST['data'] ?? '');
+$horario = trim($_POST['horario'] ?? '');
 
-    $duracoes = [
+if (
+    $nome === '' ||
+    $telefone === '' ||
+    $data === '' ||
+    $horario === '' ||
+    !is_array($procedimentos) ||
+    count($procedimentos) === 0
+) {
+    responder([
+        'status' => 'erro',
+        'mensagem' => 'Preencha todos os dados do agendamento.'
+    ], 400);
+}
 
-        "Maquiagem Profissional" => 60,
-        "Spa dos Pés" => 60,
-        "Limpeza de Pele" => 60,
-        "Tintura com Tinta Profissional" => 90,
-        "Chapa" => 40,
-        "Cachos/Ondas" => 30,
-        "Escova" => 30,
-        "Penteado" => 30,
-        "Nanopigmentação" => 120,
-        "Design com Henna" => 40,
-        "Brow Lamination" => 75,
-        "Lash Lifting" => 60,
-        "Design Simples" => 30,
-        "Maquiagem Express" => 30,
-        "Tintura com Tinta da Cliente" => 30,
-        "Corte" => 30,
-        "Hidratação + Escova" => 70
-    ];
+try {
+    $dataObj = DateTime::createFromFormat('!Y-m-d', $data);
+    $inicio = DateTime::createFromFormat(
+        '!Y-m-d H:i',
+        "$data $horario",
+        new DateTimeZone('America/Sao_Paulo')
+    );
 
-    if(
-        empty($nome) ||
-        empty($telefone) ||
-        empty($data) ||
-        empty($horario) ||
-        empty($procedimentos)
-    ){
-        echo json_encode([
-            "status"=>"erro",
-            "mensagem"=>"Dados incompletos."
-        ]);
-        exit;
+    if (
+        !$dataObj ||
+        $dataObj->format('Y-m-d') !== $data ||
+        !$inicio ||
+        $inicio->format('Y-m-d H:i') !== "$data $horario"
+    ) {
+        responder([
+            'status' => 'erro',
+            'mensagem' => 'Data ou horário inválido.'
+        ], 400);
     }
 
-    // Calcula duração total dos procedimentos
+    $agora = new DateTime('now', new DateTimeZone('America/Sao_Paulo'));
+
+    if ($inicio <= $agora) {
+        responder([
+            'status' => 'erro',
+            'mensagem' => 'Escolha um horário futuro.'
+        ], 400);
+    }
+
+    $itens = buscarProcedimentosAtivos($procedimentos);
+
     $duracao = 0;
     $valorTotal = 0;
-    
-    foreach($procedimentos as $proc){
-    
-        $proc = trim($proc);
-    
-        if(!isset($duracoes[$proc]) || !isset($valores[$proc])){
-    
-            echo json_encode([
-                "status"=>"erro",
-                "mensagem"=>"Procedimento inválido: ".$proc
-            ]);
-            exit;
-    
-        }
-    
-        $duracao += $duracoes[$proc];
-        $valorTotal += $valores[$proc];
-    
+
+    foreach ($itens as $item) {
+        $duracao += $item['duracao'];
+        $valorTotal += $item['valor'];
     }
 
-    // Horário inicial
-    $inicio = new DateTime("$data $horario");
-
-    // Horário final baseado na soma dos procedimentos
     $fim = clone $inicio;
     $fim->modify("+{$duracao} minutes");
+
+    global $service;
+
     $calendarId = 'luizagues99@gmail.com';
 
-    // Busca conflitos no Google Agenda
-    $optParams = [
+    // Verifica conflitos novamente antes de criar o evento.
+    $eventos = $service->events->listEvents($calendarId, [
         'timeMin' => $inicio->format(DateTime::RFC3339),
         'timeMax' => $fim->format(DateTime::RFC3339),
         'singleEvents' => true,
         'orderBy' => 'startTime'
-    ];
+    ]);
 
+    foreach ($eventos->getItems() as $eventoExistente) {
+        $inicioExistente = $eventoExistente->getStart()->getDateTime();
+        $fimExistente = $eventoExistente->getEnd()->getDateTime();
 
-    $eventos = $service->events->listEvents(
-        $calendarId,
-        $optParams
-    );
+        if (!$inicioExistente || !$fimExistente) {
+            continue;
+        }
 
-    if(count($eventos->getItems()) > 0){
-        echo json_encode([
-            "status"=>"erro",
-            "mensagem"=>"Esse horário já está ocupado."
-        ]);
-        exit;
+        $inicioExistente = new DateTime($inicioExistente);
+        $fimExistente = new DateTime($fimExistente);
 
+        if ($inicio < $fimExistente && $fim > $inicioExistente) {
+            responder([
+                'status' => 'erro',
+                'mensagem' => 'Esse horário já está ocupado.'
+            ], 409);
+        }
     }
 
-    // Junta os procedimentos para mostrar no calendário
-
-    $listaProcedimentos = implode(" + ", $procedimentos);
-
-
-
-    // Cria evento
+    $lista = implode(' + ', array_column($itens, 'procedimento'));
 
     $evento = new Google_Service_Calendar_Event([
-
-
-        'summary' => $listaProcedimentos." - ".$nome,
+        'summary' => $lista . ' - ' . $nome,
         'description' =>
-        "Cliente: ".$nome."
-        Telefone: ".$telefone."
-        Procedimentos: ".$listaProcedimentos."
-        Valor Total: R$ " . number_format($valorTotal, 2, ",", ".") . "
-        Tempo Total: ".$duracao." minutos",
-
-        'start'=>[
-            'dateTime'=>$inicio->format(DateTime::RFC3339),
-            'timeZone'=>'America/Sao_Paulo'
-
+            "Cliente: $nome\n" .
+            "Telefone: $telefone\n" .
+            "Procedimentos: $lista\n" .
+            'Valor Total: R$ ' . number_format($valorTotal, 2, ',', '.') . "\n" .
+            "Tempo Total: $duracao minutos",
+        'start' => [
+            'dateTime' => $inicio->format(DateTime::RFC3339),
+            'timeZone' => 'America/Sao_Paulo'
         ],
-
-
-        'end'=>[
-            'dateTime'=>$fim->format(DateTime::RFC3339),
-            'timeZone'=>'America/Sao_Paulo'
-
+        'end' => [
+            'dateTime' => $fim->format(DateTime::RFC3339),
+            'timeZone' => 'America/Sao_Paulo'
         ]
     ]);
 
+    $service->events->insert($calendarId, $evento);
 
-   try{
-
-    $service->events->insert(
-        $calendarId,
-        $evento
-    );
-
-    echo json_encode([
-        "status" => "sucesso",
-        "duracao" => $duracao,
-        "valor" => $valorTotal
+    responder([
+        'status' => 'sucesso',
+        'duracao' => $duracao,
+        'valor' => $valorTotal
     ]);
 
-}catch(Exception $e){
+} catch (InvalidArgumentException $e) {
+    responder([
+        'status' => 'erro',
+        'mensagem' => $e->getMessage()
+    ], 400);
 
-    echo json_encode([
-        "status"=>"erro",
-        "mensagem"=>$e->getMessage()
-    ]);
+} catch (Throwable $e) {
+    error_log('Erro ao salvar agendamento: ' . $e->getMessage());
 
+    responder([
+        'status' => 'erro',
+        'mensagem' => 'Não foi possível consultar os procedimentos ou salvar o agendamento. Tente novamente.'
+    ], 500);
 }
-
-}
-
-?>

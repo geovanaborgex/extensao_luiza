@@ -20,7 +20,8 @@ putenv('GOOGLE_APPLICATION_CREDENTIALS=' . $tempCredentialsFile);
 $client = new Google_Client();
 $client->useApplicationDefaultCredentials();
 $client->setScopes([
-    Google_Service_Calendar::CALENDAR
+    Google_Service_Calendar::CALENDAR,
+    Google_Service_Sheets::SPREADSHEETS
 ]);
 
 $service = new Google_Service_Calendar($client);
