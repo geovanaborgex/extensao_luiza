@@ -418,12 +418,12 @@ async function alterarStatusProcedimento(id) {
         icon: "warning",
         title: novoStatus ? "Ativar procedimento?" : "Inativar procedimento?",
         text: novoStatus
-            ? `Deseja ativar "${p.nome}" novamente?`
-            : `Deseja inativar "${p.nome}"? Ele deixará de ficar disponível para novos agendamentos, desde que a agenda filtre os procedimentos inativos.`,
+            ? `Deseja ativar "${p.nome}" novamente?  Ele voltará ficar disponível para novos agendamentos.`
+            : `Deseja inativar "${p.nome}"? Ele ficará indisponível para novos agendamentos.`,
         showCancelButton: true,
         confirmButtonText: novoStatus ? "Sim, ativar" : "Sim, inativar",
-        cancelButtonText: "Cancelar",
-        confirmButtonColor: novoStatus ? "#6B6E55" : "#C25A5A"
+        cancelButtonText: "Não, cancelar",
+        confirmButtonColor: novoStatus ? "#7ed77b" : "#e93e3e"
     });
 
     if (!confirmacao.isConfirmed) return;
