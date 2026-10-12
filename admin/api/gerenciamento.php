@@ -1,3 +1,4 @@
+
 <?php
 
 header('Content-Type: application/json; charset=utf-8');
@@ -17,13 +18,62 @@ function dadosRequisicao(): array
     return is_array($json) ? array_merge($_POST, $json) : $_POST;
 }
 
+/**
+ * Aceita os nomes do JavaScript e os nomes da planilha.
+ */
+function normalizarProcedimento(array $dados, array $atuais = []): array
+{
+    $servico = trim((string)(
+        $dados['categoria'] ?? $dados['servico'] ?? $atuais['servico'] ?? ''
+    ));
+
+    $nome = trim((string)(
+        $dados['nome'] ?? $dados['procedimento'] ?? $atuais['procedimento'] ?? ''
+    ));
+
+    $valor = $dados['preco'] ?? $dados['valor'] ?? $atuais['valor'] ?? null;
+    $duracao = $dados['duracao'] ?? $atuais['duracao'] ?? null;
+
+    $ativo = filter_var(
+        $dados['ativo'] ?? $atuais['ativo'] ?? true,
+        FILTER_VALIDATE_BOOLEAN
+    );
+
+    if (
+        $servico === '' ||
+        $nome === '' ||
+        $valor === null ||
+        $valor === '' ||
+        !is_numeric($valor) ||
+        !is_numeric($duracao) ||
+        !is_finite((float)$valor) ||
+        (float)$valor <= 0 ||
+        (int)$duracao < 1 ||
+        (int)$duracao > 1440 ||
+        (float)$duracao !== (float)(int)$duracao
+    ) {
+        responderApi([
+            'sucesso' => false,
+            'mensagem' => 'Informe serviço, procedimento, valor maior que zero e duração inteira entre 1 e 1440 minutos.'
+        ], 400);
+    }
+
+    return [
+        'servico' => $servico,
+        'procedimento' => $nome,
+        'valor' => (float)$valor,
+        'duracao' => (int)$duracao,
+        'ativo' => $ativo
+    ];
+}
+
 function linhasPlanilha(): array
 {
     $sheets = servicoPlanilha();
 
     $resposta = $sheets->spreadsheets_values->get(
         PLANILHA_PROCEDIMENTOS_ID,
-        'Procedimentos!A2:F'
+        "'Procedimentos'!A2:F"
     );
 
     return $resposta->getValues() ?? [];
@@ -33,7 +83,6 @@ function linhaDoId(string $id, array $linhas): ?int
 {
     foreach ($linhas as $indice => $linha) {
         if ((string)($linha[0] ?? '') === $id) {
-            // Linha 1 é o cabeçalho; dados começam na linha 2.
             return $indice + 2;
         }
     }
@@ -51,7 +100,7 @@ function gravarLinha(int $linha, array $valores): void
 
     $sheets->spreadsheets_values->update(
         PLANILHA_PROCEDIMENTOS_ID,
-        "Procedimentos!A{$linha}:F{$linha}",
+        "'Procedimentos'!A{$linha}:F{$linha}",
         $corpo,
         ['valueInputOption' => 'USER_ENTERED']
     );
@@ -63,43 +112,28 @@ try {
     $sheets = servicoPlanilha();
 
     if ($metodo === 'GET') {
-    $procedimentos = listarProcedimentosPlanilha();
+        $procedimentos = listarProcedimentosPlanilha();
 
-    if (($_GET['ativos'] ?? '') === '1') {
-        $procedimentos = array_values(array_filter(
-            $procedimentos,
-            fn($item) => $item['ativo'] === true
-        ));
-    }
-
-    responderApi([
-        'sucesso' => true,
-        'procedimentos' => $procedimentos
-    ]);
-}
-
-    if ($metodo === 'POST') {
-        $servico = trim((string)($dados['servico'] ?? ''));
-        $nome = trim((string)($dados['procedimento'] ?? ''));
-        $valor = $dados['valor'] ?? null;
-        $duracao = $dados['duracao'] ?? null;
-        $ativo = filter_var(
-            $dados['ativo'] ?? true,
-            FILTER_VALIDATE_BOOLEAN
-        );
-
-        if (
-            $servico === '' || $nome === '' ||
-            !is_numeric($valor) || !is_numeric($duracao) ||
-            (float)$valor < 0 || (int)$duracao <= 0
-        ) {
-            responderApi([
-                'sucesso' => false,
-                'mensagem' => 'Informe categoria, nome, valor válido e duração maior que zero.'
-            ], 400);
+        if (($_GET['ativos'] ?? '') === '1') {
+            $procedimentos = array_values(array_filter(
+                $procedimentos,
+                fn($item) => filter_var(
+                    $item['ativo'] ?? false,
+                    FILTER_VALIDATE_BOOLEAN
+                )
+            ));
         }
 
+        responderApi([
+            'sucesso' => true,
+            'procedimentos' => $procedimentos
+        ]);
+    }
+
+    if ($metodo === 'POST') {
+        $novo = normalizarProcedimento($dados);
         $linhas = linhasPlanilha();
+
         $maiorId = 0;
 
         foreach ($linhas as $linha) {
@@ -111,17 +145,17 @@ try {
         $corpo = new Google_Service_Sheets_ValueRange([
             'values' => [[
                 $novoId,
-                $servico,
-                $nome,
-                (float)$valor,
-                (int)$duracao,
-                $ativo ? 'TRUE' : 'FALSE'
+                $novo['servico'],
+                $novo['procedimento'],
+                $novo['valor'],
+                $novo['duracao'],
+                $novo['ativo'] ? 'TRUE' : 'FALSE'
             ]]
         ]);
 
         $sheets->spreadsheets_values->append(
             PLANILHA_PROCEDIMENTOS_ID,
-            'Procedimentos!A:F',
+            "'Procedimentos'!A:F",
             $corpo,
             [
                 'valueInputOption' => 'USER_ENTERED',
@@ -158,45 +192,42 @@ try {
 
         $linhaAtual = $linhas[$linhaPlanilha - 2];
 
-        $valores = [
-            $id,
-            (string)($linhaAtual[1] ?? ''),
-            (string)($linhaAtual[2] ?? ''),
-            (float)str_replace(',', '.', (string)($linhaAtual[3] ?? '0')),
-            (int)($linhaAtual[4] ?? 0),
-            strtoupper((string)($linhaAtual[5] ?? 'TRUE'))
+        $atuais = [
+            'servico' => (string)($linhaAtual[1] ?? ''),
+            'procedimento' => (string)($linhaAtual[2] ?? ''),
+            'valor' => str_replace(
+                ',',
+                '.',
+                (string)($linhaAtual[3] ?? '0')
+            ),
+            'duracao' => (string)($linhaAtual[4] ?? '0'),
+            'ativo' => filter_var(
+                $linhaAtual[5] ?? true,
+                FILTER_VALIDATE_BOOLEAN
+            )
         ];
 
         if ($metodo === 'DELETE') {
-            $valores[5] = 'FALSE';
-        } else {
-            $servico = trim((string)($dados['servico'] ?? $valores[1]));
-            $nome = trim((string)($dados['procedimento'] ?? $valores[2]));
-            $valor = $dados['valor'] ?? $valores[3];
-            $duracao = $dados['duracao'] ?? $valores[4];
-            $ativo = filter_var(
-                $dados['ativo'] ?? true,
-                FILTER_VALIDATE_BOOLEAN
-            );
-
-            if (
-                $servico === '' || $nome === '' ||
-                !is_numeric($valor) || !is_numeric($duracao) ||
-                (float)$valor < 0 || (int)$duracao <= 0
-            ) {
-                responderApi([
-                    'sucesso' => false,
-                    'mensagem' => 'Dados inválidos para edição.'
-                ], 400);
-            }
+            $atuais['ativo'] = false;
 
             $valores = [
                 $id,
-                $servico,
-                $nome,
-                (float)$valor,
-                (int)$duracao,
-                $ativo ? 'TRUE' : 'FALSE'
+                $atuais['servico'],
+                $atuais['procedimento'],
+                (float)$atuais['valor'],
+                (int)$atuais['duracao'],
+                'FALSE'
+            ];
+        } else {
+            $novo = normalizarProcedimento($dados, $atuais);
+
+            $valores = [
+                $id,
+                $novo['servico'],
+                $novo['procedimento'],
+                $novo['valor'],
+                $novo['duracao'],
+                $novo['ativo'] ? 'TRUE' : 'FALSE'
             ];
         }
 
@@ -223,12 +254,8 @@ try {
         ':' . $e->getLine()
     );
 
-    http_response_code(500);
-
-    echo json_encode([
+    responderApi([
         'sucesso' => false,
         'mensagem' => 'Falha ao acessar a planilha. Consulte os logs do servidor.'
-    ], JSON_UNESCAPED_UNICODE);
-
-    exit;
+    ], 500);
 }

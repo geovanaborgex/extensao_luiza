@@ -1,3 +1,4 @@
+
 const API_URL = "/admin/api/gerenciamento.php";
 
 let procedimentos = [];
@@ -22,19 +23,35 @@ const dinheiro = valor =>
         currency: "BRL"
     });
 
+function ativoBooleano(valor) {
+    return valor === true ||
+        String(valor).trim().toLowerCase() === "true" ||
+        String(valor).trim() === "1";
+}
+
 async function requisicao(url, opcoes = {}) {
     const resposta = await fetch(url, {
         ...opcoes,
         headers: {
-            ...(opcoes.body ? { "Content-Type": "application/json" } : {}),
+            ...(opcoes.body
+                ? { "Content-Type": "application/json" }
+                : {}),
             ...opcoes.headers
         }
     });
 
-    const dados = await resposta.json();
+    let dados;
+
+    try {
+        dados = await resposta.json();
+    } catch {
+        throw new Error("O servidor retornou uma resposta inválida.");
+    }
 
     if (!resposta.ok || dados.sucesso === false) {
-        throw new Error(dados.mensagem || "Não foi possível concluir a operação.");
+        throw new Error(
+            dados.mensagem || "Não foi possível concluir a operação."
+        );
     }
 
     return dados;
@@ -43,23 +60,22 @@ async function requisicao(url, opcoes = {}) {
 async function carregarProcedimentos() {
     mensagemCarregamento.hidden = false;
     mensagemCarregamento.textContent = "Carregando procedimentos...";
-    lista.innerHTML = "";
+    lista.replaceChildren();
     listaVazia.hidden = true;
 
     try {
         const dados = await requisicao(API_URL);
 
-       procedimentos = Array.isArray(dados.procedimentos)
-    ? dados.procedimentos.map(p => ({
-        id: p.id,
-        nome: p.procedimento ?? "",
-        categoria: p.servico ?? "",
-        preco: Number(p.valor ?? 0),
-        duracao: Number(p.duracao ?? 0),
-        ativo: p.ativo === true ||
-               String(p.ativo).toLowerCase() === "true"
-    }))
-    : [];
+        procedimentos = Array.isArray(dados.procedimentos)
+            ? dados.procedimentos.map(p => ({
+                id: p.id,
+                nome: String(p.procedimento ?? p.nome ?? ""),
+                categoria: String(p.servico ?? p.categoria ?? ""),
+                preco: Number(p.valor ?? p.preco ?? 0),
+                duracao: Number(p.duracao ?? 0),
+                ativo: ativoBooleano(p.ativo)
+            }))
+            : [];
 
         atualizarResumo();
         atualizarCategorias();
@@ -83,10 +99,10 @@ function atualizarResumo() {
         procedimentos.length;
 
     const categorias = new Set(
-    procedimentos
-        .map(p => p.categoria.trim().toLowerCase())
-        .filter(Boolean)
-);
+        procedimentos
+            .map(p => p.categoria.trim().toLowerCase())
+            .filter(Boolean)
+    );
 
     document.getElementById("totalCategorias").textContent =
         categorias.size;
@@ -97,31 +113,43 @@ function atualizarCategorias() {
     const datalist = document.getElementById("categoriasExistentes");
     const selecionada = filtro.value;
 
-    const categorias = [...new Set(
-        procedimentos.map(p => p.categoria.trim())
-            .filter(Boolean)
-    )].sort((a, b) => a.localeCompare(b, "pt-BR"));
+    const categorias = [
+        ...new Set(
+            procedimentos
+                .map(p => p.categoria.trim())
+                .filter(Boolean)
+        )
+    ].sort((a, b) => a.localeCompare(b, "pt-BR"));
 
-    filtro.replaceChildren(new Option("Todas as categorias", ""));
+    filtro.replaceChildren(
+        new Option("Todos os serviços", "")
+    );
 
-    categorias.forEach(categoria => {
-        filtro.add(new Option(categoria, categoria));
+    categorias.forEach(servico => {
+        filtro.add(new Option(servico, servico));
     });
 
-    filtro.value = categorias.includes(selecionada) ? selecionada : "";
+    filtro.value = categorias.includes(selecionada)
+        ? selecionada
+        : "";
 
     datalist.replaceChildren();
 
-    categorias.forEach(categoria => {
-        datalist.appendChild(new Option(categoria, categoria));
+    categorias.forEach(servico => {
+        datalist.appendChild(new Option(servico, servico));
     });
 }
 
 function criarElemento(tag, classe, texto) {
     const elemento = document.createElement(tag);
 
-    if (classe) elemento.className = classe;
-    if (texto !== undefined) elemento.textContent = texto;
+    if (classe) {
+        elemento.className = classe;
+    }
+
+    if (texto !== undefined) {
+        elemento.textContent = texto;
+    }
 
     return elemento;
 }
@@ -146,7 +174,9 @@ function renderizarProcedimentos() {
     lista.replaceChildren();
 
     document.getElementById("contadorLista").textContent =
-        `${filtrados.length} ${filtrados.length === 1 ? "serviço" : "serviços"}`;
+        `${filtrados.length} ${
+            filtrados.length === 1 ? "serviço" : "serviços"
+        }`;
 
     listaVazia.hidden = filtrados.length !== 0;
 
@@ -170,7 +200,7 @@ function renderizarProcedimentos() {
 
         const preco = criarElemento("div");
         preco.append(
-            criarElemento("span", "dado-label", "Preço"),
+            criarElemento("span", "dado-label", "Valor"),
             criarElemento("strong", "dado-valor", dinheiro(p.preco))
         );
 
@@ -181,6 +211,12 @@ function renderizarProcedimentos() {
         );
 
         dados.append(preco, duracao);
+
+        const status = criarElemento(
+            "span",
+            p.ativo ? "status-ativo" : "status-inativo",
+            p.ativo ? "Ativo" : "Inativo"
+        );
 
         const acoes = criarElemento("div", "procedimento-acoes");
 
@@ -195,7 +231,7 @@ function renderizarProcedimentos() {
         excluir.addEventListener("click", () => excluirProcedimento(p.id));
 
         acoes.append(editar, excluir);
-        card.append(topo, dados, acoes);
+        card.append(topo, dados, status, acoes);
         lista.appendChild(card);
     });
 }
@@ -209,24 +245,29 @@ form.addEventListener("submit", async evento => {
         nome: campoNome.value.trim(),
         categoria: campoCategoria.value.trim(),
         preco: Number(campoPreco.value),
-        duracao: Number(campoDuracao.value)
+        duracao: Number(campoDuracao.value),
+        ativo: campoAtivo.value === "true"
     };
 
     if (
         !procedimento.nome ||
         !procedimento.categoria ||
-        campoPreco.value === "" ||
-        campoDuracao.value === "" ||
+        campoPreco.value.trim() === "" ||
+        campoDuracao.value.trim() === "" ||
         !Number.isFinite(procedimento.preco) ||
-        procedimento.preco < 0 ||
+        procedimento.preco <= 0 ||
         !Number.isInteger(procedimento.duracao) ||
-        procedimento.duracao < 1
+        procedimento.duracao < 1 ||
+        !["true", "false"].includes(campoAtivo.value)
     ) {
         await Swal.fire({
             icon: "warning",
             title: "Confira os campos",
-            text: "Informe nome, categoria, preço válido e duração em minutos."
+            text:
+                "Informe o serviço, o nome do procedimento, " +
+                "um valor maior que zero e uma duração válida."
         });
+
         return;
     }
 
@@ -235,12 +276,15 @@ form.addEventListener("submit", async evento => {
     try {
         const resultado = await requisicao(API_URL, {
             method: id ? "PUT" : "POST",
-            body: JSON.stringify(id ? { id: Number(id), ...procedimento } : procedimento)
+            body: JSON.stringify(
+                id
+                    ? { id: Number(id), ...procedimento }
+                    : procedimento
+            )
         });
 
         await carregarProcedimentos();
         limparFormulario();
-        campoAtivo.value = "true";
 
         await Swal.fire({
             icon: "success",
@@ -261,7 +305,9 @@ form.addEventListener("submit", async evento => {
 });
 
 function editarProcedimento(id) {
-    const p = procedimentos.find(item => String(item.id) === String(id));
+    const p = procedimentos.find(
+        item => String(item.id) === String(id)
+    );
 
     if (!p) return;
 
@@ -270,20 +316,28 @@ function editarProcedimento(id) {
     campoCategoria.value = p.categoria;
     campoPreco.value = Number(p.preco).toFixed(2);
     campoDuracao.value = p.duracao;
+    campoAtivo.value = p.ativo ? "true" : "false";
 
     document.getElementById("tituloFormulario").textContent =
         "Editar procedimento";
 
-    btnSalvar.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Salvar alterações';
+    btnSalvar.innerHTML =
+        '<i class="fa-solid fa-floppy-disk"></i> Salvar alterações';
+
     btnCancelar.hidden = false;
 
-    form.scrollIntoView({ behavior: "smooth", block: "start" });
+    form.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
     campoNome.focus();
 }
 
 function limparFormulario() {
     form.reset();
     campoId.value = "";
+    campoAtivo.value = "true";
 
     document.getElementById("tituloFormulario").textContent =
         "Novo procedimento";
@@ -297,7 +351,9 @@ function limparFormulario() {
 btnCancelar.addEventListener("click", limparFormulario);
 
 async function excluirProcedimento(id) {
-    const p = procedimentos.find(item => String(item.id) === String(id));
+    const p = procedimentos.find(
+        item => String(item.id) === String(id)
+    );
 
     if (!p) return;
 
