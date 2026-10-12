@@ -30,27 +30,26 @@ function ativoBooleano(valor) {
 }
 
 async function requisicao(url, opcoes = {}) {
-    const resposta = await fetch(url, {
-        ...opcoes,
-        headers: {
-            ...(opcoes.body
-                ? { "Content-Type": "application/json" }
-                : {}),
-            ...opcoes.headers
-        }
-    });
+    const resposta = await fetch(url, opcoes);
+    const texto = await resposta.text();
+
+    console.log("Status HTTP:", resposta.status);
+    console.log("Resposta bruta do servidor:", texto);
 
     let dados;
 
     try {
-        dados = await resposta.json();
-    } catch {
-        throw new Error("O servidor retornou uma resposta inválida.");
+        dados = JSON.parse(texto);
+    } catch (erro) {
+        console.error("O servidor não retornou JSON válido:", erro);
+        throw new Error(
+            "Resposta inválida do servidor. Confira o Console (F12)."
+        );
     }
 
     if (!resposta.ok || dados.sucesso === false) {
         throw new Error(
-            dados.mensagem || "Não foi possível concluir a operação."
+            dados.mensagem || `Erro HTTP ${resposta.status}`
         );
     }
 
