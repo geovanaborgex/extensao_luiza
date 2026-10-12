@@ -272,269 +272,250 @@
 </div>
 
 <!-- JS -->
+
 <script>
-
-
 let procedimentosSelecionados = [];
-
 const procedimentosInfo = {};
+let procedimentosPorServico = {};
+let carregamentoConcluido = false;
 
-procedimentosInfo["Maquiagem Profissional"] = {
-    valor: 120,
-    duracao: 60
-};
+const API_PROCEDIMENTOS =
+    "/admin/api/gerenciamento.php?ativos=1";
 
-procedimentosInfo["Maquiagem Express"] = {
-    valor: 80,
-    duracao: 30
-};
-
-procedimentosInfo["Corte"] = {
-    valor: 40,
-    duracao: 30
-};
-
-procedimentosInfo["Hidratação + Escova"] = {
-    valor: 85,
-    duracao: 70
-};
-
-procedimentosInfo["Escova"] = {
-    valor: 45,
-    duracao: 30
-};
-
-procedimentosInfo["Chapa"] = {
-    valor: 40,
-    duracao: 40
-};
-
-procedimentosInfo["Cachos/Ondas"] = {
-    valor: 30,
-    duracao: 30
-};
-
-procedimentosInfo["Penteado"] = {
-    valor: 80,
-    duracao: 30
-};
-
-procedimentosInfo["Tintura com Tinta Profissional"] = {
-    valor: 65,
-    duracao: 90
-};
-
-procedimentosInfo["Tintura com Tinta da Cliente"] = {
-    valor: 30,
-    duracao: 30
-};
-
-procedimentosInfo["Nanopigmentação"] = {
-    valor: 400,
-    duracao: 120
-};
-
-procedimentosInfo["Design com Henna"] = {
-    valor: 50,
-    duracao: 40
-};
-
-procedimentosInfo["Design Simples"] = {
-    valor: 40,
-    duracao: 30
-};
-
-procedimentosInfo["Brow Lamination"] = {
-    valor: 85,
-    duracao: 75
-};
-
-procedimentosInfo["Lash Lifting"] = {
-    valor: 60,
-    duracao: 60
-};
-
-procedimentosInfo["Limpeza de Pele"] = {
-    valor: 120,
-    duracao: 60
-};
-
-procedimentosInfo["Spa dos Pés"] = {
-    valor: 70,
-    duracao: 60
-};
-
-function adicionarProcedimento(){
-
-const nome =
-    document.getElementById("procedimento").value;
-
-if(nome=="") return;
-
-procedimentosSelecionados.push(nome);
-
-atualizarListaProcedimentos();
-
+function normalizarTexto(texto) {
+    return String(texto || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
 }
 
-
-function atualizarListaProcedimentos(){
-
-const lista =
-    document.getElementById("listaProcedimentos");
-
-lista.innerHTML="";
-
-let minutos=0;
-
-let valor=0;
-
-procedimentosSelecionados.forEach((proc,index)=>{
-
-    minutos += procedimentosInfo[proc].duracao;
-
-    valor += procedimentosInfo[proc].valor;
-
-    lista.innerHTML += `
-
-    <div class="procedimento-item">
-
-        <strong>${proc}</strong>
-
-        <span>
-
-        ${procedimentosInfo[proc].duracao} min
-
-        •
-
-        R$ ${procedimentosInfo[proc].valor.toFixed(2)}
-
-        </span>
-
-        <button
-
-        type="button"
-
-        onclick="removerProcedimento(${index})">
-
-        <i class="fa-solid fa-trash"></i>
-
-        </button>
-
-    </div>
-
-    `;
-
-});
-
-
-
-if(procedimentosSelecionados.length){
-
-    document
-    .getElementById("resumoProcedimentos")
-    .classList.remove("hidden");
-
-}else{
-
-    document
-    .getElementById("resumoProcedimentos")
-    .classList.add("hidden");
-
+function formatarMoeda(valor) {
+    return Number(valor).toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
 }
 
-document.getElementById("duracaoTotal").innerHTML =
-minutos+" minutos";
+async function carregarProcedimentos() {
+    const selectServico = document.getElementById("servico");
+    const selectProcedimento = document.getElementById("procedimento");
 
-document.getElementById("valorTotal").innerHTML =
-"R$ "+valor.toFixed(2);
+    selectServico.innerHTML =
+        '<option value="">Carregando serviços...</option>';
 
+    selectProcedimento.innerHTML =
+        '<option value="">Selecione um serviço primeiro</option>';
+
+    try {
+        const resposta = await fetch(API_PROCEDIMENTOS, {
+            cache: "no-store"
+        });
+
+        if (!resposta.ok) {
+            throw new Error("Erro HTTP " + resposta.status);
+        }
+
+        const dados = await resposta.json();
+
+        if (!dados.sucesso || !Array.isArray(dados.procedimentos)) {
+            throw new Error("A API não retornou uma lista válida.");
+        }
+
+        const lista = dados.procedimentos;
+
+        if (lista.length === 0) {
+            throw new Error("Não existem procedimentos ativos na planilha.");
+        }
+
+        // Limpa os dados anteriores
+        Object.keys(procedimentosInfo).forEach(nome => {
+            delete procedimentosInfo[nome];
+        });
+
+        procedimentosPorServico = {};
+
+        // Monta a lista a partir da planilha
+        lista.forEach(item => {
+            const servico = String(item.servico || "").trim();
+            const nome = String(item.procedimento || "").trim();
+            const valor = Number(
+                String(item.valor || "0").replace(",", ".")
+            );
+            const duracao = Number(item.duracao);
+
+            if (!servico || !nome ||
+                !Number.isFinite(valor) ||
+                !Number.isFinite(duracao)) {
+                return;
+            }
+
+            procedimentosInfo[nome] = {
+                valor,
+                duracao,
+                servico
+            };
+
+            if (!procedimentosPorServico[servico]) {
+                procedimentosPorServico[servico] = [];
+            }
+
+            procedimentosPorServico[servico].push(nome);
+        });
+
+        selectServico.innerHTML =
+            '<option value="">Selecione um serviço</option>';
+
+        Object.keys(procedimentosPorServico).forEach(servico => {
+            const opcao = document.createElement("option");
+            opcao.value = servico;
+            opcao.textContent = servico;
+            selectServico.appendChild(opcao);
+        });
+
+        carregamentoConcluido = true;
+
+        // Preserva a seleção vinda de um link do catálogo
+        const params = new URLSearchParams(window.location.search);
+        const servicoURL = params.get("servico");
+        const procedimentoURL = params.get("procedimento");
+
+        if (servicoURL) {
+            const opcaoServico = [...selectServico.options].find(opcao =>
+                normalizarTexto(opcao.value) === normalizarTexto(servicoURL)
+            );
+
+            if (opcaoServico) {
+                selectServico.value = opcaoServico.value;
+                mostrarProcedimentos();
+
+                if (procedimentoURL) {
+                    const opcaoProcedimento =
+                        [...selectProcedimento.options].find(opcao =>
+                            normalizarTexto(opcao.value) ===
+                            normalizarTexto(procedimentoURL)
+                        );
+
+                    if (opcaoProcedimento) {
+                        selectProcedimento.value =
+                            opcaoProcedimento.value;
+                    }
+                }
+            }
+        }
+
+    } catch (erro) {
+        console.error("Erro ao carregar procedimentos:", erro);
+
+        selectServico.innerHTML =
+            '<option value="">Erro ao carregar serviços</option>';
+
+        Swal.fire({
+            icon: "error",
+            title: "Não foi possível carregar os serviços",
+            text: "Verifique sua conexão e tente atualizar a página.",
+            confirmButtonColor: "#6B6E55"
+        });
+    }
 }
-
-
-function removerProcedimento(indice){
-procedimentosSelecionados.splice(indice,1);
-atualizarListaProcedimentos();
-}
-
 
 function mostrarProcedimentos() {
+    const servico = document.getElementById("servico").value;
+    const grupo = document.getElementById("procedimentos-group");
+    const select = document.getElementById("procedimento");
 
-const servico = document.getElementById("servico").value;
+    select.innerHTML = '<option value="">Selecione</option>';
 
-const grupo = document.getElementById("procedimentos-group");
+    if (!servico || !procedimentosPorServico[servico]) {
+        grupo.classList.add("hidden");
+        return;
+    }
 
-const procedimento = document.getElementById("procedimento");
+    grupo.classList.remove("hidden");
 
-procedimento.innerHTML = "";
-
-if (servico == "") {
-    grupo.classList.add("hidden");
-    return;
+    procedimentosPorServico[servico].forEach(nome => {
+        const opcao = document.createElement("option");
+        opcao.value = nome;
+        opcao.textContent = nome;
+        select.appendChild(opcao);
+    });
 }
 
-grupo.classList.remove("hidden");
+function adicionarProcedimento() {
+    const nome = document.getElementById("procedimento").value;
 
-if (servico == "sobrancelhas") {
+    if (!nome || !procedimentosInfo[nome]) return;
 
-    procedimento.innerHTML = `
-        <option value="">Selecione</option>
-        <option>Nanopigmentação</option>
-        <option>Design com Henna</option>
-        <option>Design Simples</option>
-        <option>Brow Lamination</option>
-    `;
+    if (procedimentosSelecionados.includes(nome)) {
+        Swal.fire({
+            icon: "info",
+            title: "Procedimento já adicionado",
+            text: "Esse procedimento já está na sua lista.",
+            confirmButtonColor: "#6B6E55"
+        });
+        return;
+    }
 
+    procedimentosSelecionados.push(nome);
+    atualizarListaProcedimentos();
 }
 
-if (servico == "cilios") {
+function atualizarListaProcedimentos() {
+    const lista = document.getElementById("listaProcedimentos");
+    lista.innerHTML = "";
 
-    procedimento.innerHTML = `
-        <option value="">Selecione</option>
-        <option>Lash Lifting</option>
-    `;
+    let minutos = 0;
+    let valor = 0;
 
+    procedimentosSelecionados.forEach((proc, index) => {
+        const info = procedimentosInfo[proc];
+
+        if (!info) return;
+
+        minutos += info.duracao;
+        valor += info.valor;
+
+        const item = document.createElement("div");
+        item.className = "procedimento-item";
+
+        const nome = document.createElement("strong");
+        nome.textContent = proc;
+
+        const detalhes = document.createElement("span");
+        detalhes.textContent =
+            `${info.duracao} min • R$ ${formatarMoeda(info.valor)}`;
+
+        const remover = document.createElement("button");
+        remover.type = "button";
+        remover.innerHTML = '<i class="fa-solid fa-trash"></i>';
+        remover.setAttribute("aria-label", "Remover " + proc);
+        remover.addEventListener("click", () => {
+            removerProcedimento(index);
+        });
+
+        item.append(nome, detalhes, remover);
+        lista.appendChild(item);
+    });
+
+    document.getElementById("resumoProcedimentos")
+        .classList.toggle("hidden", procedimentosSelecionados.length === 0);
+
+    document.getElementById("duracaoTotal").textContent =
+        formatarDuracao(minutos);
+
+    document.getElementById("valorTotal").textContent =
+        "R$ " + formatarMoeda(valor);
 }
 
-if (servico == "cabelos") {
-
-    procedimento.innerHTML = `
-        <option value="">Selecione</option>
-        <option>Corte</option>
-        <option>Hidratação + Escova</option>
-        <option>Escova</option>
-        <option>Chapa</option>
-        <option>Cachos/Ondas</option>
-        <option>Penteado</option>
-        <option>Tintura com Tinta Profissional</option>
-        <option>Tintura com Tinta da Cliente</option>
-    `;
-
+function removerProcedimento(indice) {
+    procedimentosSelecionados.splice(indice, 1);
+    atualizarListaProcedimentos();
 }
 
-if (servico == "cuidados") {
-
-    procedimento.innerHTML = `
-        <option value="">Selecione</option>
-        <option>Limpeza de Pele</option>
-        <option>Spa dos Pés</option>
-    `;
-
-}
-
-if (servico == "maquiagem") {
-
-    procedimento.innerHTML = `
-        <option value="">Selecione</option>
-        <option>Maquiagem Profissional</option>
-        <option>Maquiagem Express</option>
-    `;
-
-}
-
-}
-
+// Inicia o carregamento quando o HTML estiver pronto
+document.addEventListener("DOMContentLoaded", carregarProcedimentos);
 </script>
+
 
 <script> 
 
