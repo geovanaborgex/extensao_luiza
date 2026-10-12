@@ -216,10 +216,19 @@ try {
     ], 405);
 
 } catch (Throwable $e) {
-    error_log('Erro na API de procedimentos: ' . $e->getMessage());
+    error_log(
+        'Erro Google Sheets: ' .
+        $e->getMessage() .
+        ' em ' . $e->getFile() .
+        ':' . $e->getLine()
+    );
 
-    responderApi([
+    http_response_code(500);
+
+    echo json_encode([
         'sucesso' => false,
-        'mensagem' => 'Não foi possível acessar a planilha. Verifique a configuração do Google Sheets.'
-    ], 500);
+        'mensagem' => 'Falha ao acessar a planilha. Consulte os logs do servidor.'
+    ], JSON_UNESCAPED_UNICODE);
+
+    exit;
 }

@@ -1,4 +1,4 @@
-const API_URL = "/api/gerenciamento.php";
+const API_URL = "/admin/api/gerenciamento.php";
 
 let procedimentos = [];
 
