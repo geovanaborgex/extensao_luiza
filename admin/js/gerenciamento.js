@@ -48,9 +48,17 @@ async function carregarProcedimentos() {
     try {
         const dados = await requisicao(API_URL);
 
-        procedimentos = Array.isArray(dados.procedimentos)
-            ? dados.procedimentos
-            : [];
+       procedimentos = Array.isArray(dados.procedimentos)
+    ? dados.procedimentos.map(p => ({
+        id: p.id,
+        nome: p.procedimento ?? "",
+        categoria: p.servico ?? "",
+        preco: Number(p.valor ?? 0),
+        duracao: Number(p.duracao ?? 0),
+        ativo: p.ativo === true ||
+               String(p.ativo).toLowerCase() === "true"
+    }))
+    : [];
 
         atualizarResumo();
         atualizarCategorias();
@@ -74,8 +82,10 @@ function atualizarResumo() {
         procedimentos.length;
 
     const categorias = new Set(
-        procedimentos.map(p => p.categoria.trim().toLowerCase())
-    );
+    procedimentos
+        .map(p => p.categoria.trim().toLowerCase())
+        .filter(Boolean)
+);
 
     document.getElementById("totalCategorias").textContent =
         categorias.size;
