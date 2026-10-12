@@ -153,6 +153,7 @@ function criarElemento(tag, classe, texto) {
     return elemento;
 }
 
+
 function renderizarProcedimentos() {
     const pesquisa = document.getElementById("pesquisa")
         .value.trim().toLocaleLowerCase("pt-BR");
@@ -160,9 +161,8 @@ function renderizarProcedimentos() {
     const categoria = document.getElementById("filtroCategoria").value;
 
     const filtrados = procedimentos.filter(p => {
-        const correspondeNome = p.nome
-            .toLocaleLowerCase("pt-BR")
-            .includes(pesquisa);
+        const correspondeNome =
+            p.nome.toLocaleLowerCase("pt-BR").includes(pesquisa);
 
         const correspondeCategoria =
             !categoria || p.categoria === categoria;
@@ -179,61 +179,116 @@ function renderizarProcedimentos() {
 
     listaVazia.hidden = filtrados.length !== 0;
 
+    // Agrupa os procedimentos por categoria
+    const grupos = new Map();
+
     filtrados.forEach(p => {
-        const card = criarElemento("article", "procedimento-card");
+        const nomeCategoria = p.categoria.trim() || "Sem categoria";
 
-        const topo = criarElemento("div", "procedimento-topo");
-        const identificacao = criarElemento("div");
-        const icone = criarElemento("div", "procedimento-icone");
+        if (!grupos.has(nomeCategoria)) {
+            grupos.set(nomeCategoria, []);
+        }
 
-        icone.innerHTML = '<i class="fa-solid fa-spa"></i>';
-
-        identificacao.append(
-            criarElemento("h3", "", p.nome),
-            criarElemento("span", "categoria-tag", p.categoria)
-        );
-
-        topo.append(icone, identificacao);
-
-        const dados = criarElemento("div", "procedimento-dados");
-
-        const preco = criarElemento("div");
-        preco.append(
-            criarElemento("span", "dado-label", "Valor"),
-            criarElemento("strong", "dado-valor", dinheiro(p.preco))
-        );
-
-        const duracao = criarElemento("div");
-        duracao.append(
-            criarElemento("span", "dado-label", "Duração"),
-            criarElemento("strong", "dado-valor", `${p.duracao} min`)
-        );
-
-        dados.append(preco, duracao);
-
-        const status = criarElemento(
-            "span",
-            p.ativo ? "status-ativo" : "status-inativo",
-            p.ativo ? "Ativo" : "Inativo"
-        );
-
-        const acoes = criarElemento("div", "procedimento-acoes");
-
-        const editar = criarElemento("button", "btn-acao");
-        editar.type = "button";
-        editar.innerHTML = '<i class="fa-solid fa-pen"></i> Editar';
-        editar.addEventListener("click", () => editarProcedimento(p.id));
-
-        const excluir = criarElemento("button", "btn-acao excluir");
-        excluir.type = "button";
-        excluir.innerHTML = '<i class="fa-solid fa-trash"></i> Excluir';
-        excluir.addEventListener("click", () => excluirProcedimento(p.id));
-
-        acoes.append(editar, excluir);
-        card.append(topo, dados, status, acoes);
-        lista.appendChild(card);
+        grupos.get(nomeCategoria).push(p);
     });
+
+    [...grupos.entries()]
+        .sort(([a], [b]) => a.localeCompare(b, "pt-BR"))
+        .forEach(([nomeCategoria, itens]) => {
+            const grupo = criarElemento("div", "categoria-grupo");
+
+            const titulo = criarElemento("div", "categoria-titulo");
+            titulo.append(
+                criarElemento("span", "", nomeCategoria),
+                criarElemento(
+                    "span",
+                    "categoria-total",
+                    `${itens.length} ${itens.length === 1 ? "procedimento" : "procedimentos"}`
+                )
+            );
+
+            grupo.appendChild(titulo);
+
+            itens.forEach(p => {
+                const card = criarElemento(
+                    "article",
+                    `procedimento-card${p.ativo ? "" : " inativo"}`
+                );
+
+                const identificacao = criarElemento(
+                    "div",
+                    "procedimento-identificacao"
+                );
+
+                identificacao.appendChild(
+                    criarElemento("h3", "", p.nome)
+                );
+
+                const dados = criarElemento("div", "procedimento-dados");
+
+                const preco = criarElemento("div");
+                preco.append(
+                    criarElemento("span", "dado-label", "Valor"),
+                    criarElemento("strong", "dado-valor", dinheiro(p.preco))
+                );
+
+                const duracao = criarElemento("div");
+                duracao.append(
+                    criarElemento("span", "dado-label", "Duração"),
+                    criarElemento("strong", "dado-valor", `${p.duracao} min`)
+                );
+
+                dados.append(preco, duracao);
+
+                const status = criarElemento(
+                    "span",
+                    p.ativo ? "status-ativo" : "status-inativo",
+                    p.ativo ? "Ativo" : "Inativo"
+                );
+
+                const acoes = criarElemento("div", "procedimento-acoes");
+
+                const editar = criarElemento("button", "btn-acao");
+                editar.type = "button";
+                editar.title = "Editar procedimento";
+                editar.setAttribute("aria-label", `Editar ${p.nome}`);
+                editar.innerHTML = '<i class="fa-solid fa-pen"></i>';
+                editar.addEventListener("click", () => {
+                    editarProcedimento(p.id);
+                });
+
+                const alternarStatus = criarElemento(
+                    "button",
+                    p.ativo ? "btn-acao excluir" : "btn-acao"
+                );
+
+                alternarStatus.type = "button";
+                alternarStatus.title = p.ativo
+                    ? "Inativar procedimento"
+                    : "Ativar procedimento";
+
+                alternarStatus.setAttribute(
+                    "aria-label",
+                    `${p.ativo ? "Inativar" : "Ativar"} ${p.nome}`
+                );
+
+                alternarStatus.innerHTML = p.ativo
+                    ? '<i class="fa-solid fa-trash"></i>'
+                    : '<i class="fa-solid fa-rotate-left"></i>';
+
+                alternarStatus.addEventListener("click", () => {
+                    alterarStatusProcedimento(p.id);
+                });
+
+                acoes.append(editar, alternarStatus);
+                card.append(identificacao, dados, status, acoes);
+                grupo.appendChild(card);
+            });
+
+            lista.appendChild(grupo);
+        });
 }
+
 
 form.addEventListener("submit", async evento => {
     evento.preventDefault();
@@ -349,29 +404,41 @@ function limparFormulario() {
 
 btnCancelar.addEventListener("click", limparFormulario);
 
-async function excluirProcedimento(id) {
+
+async function alterarStatusProcedimento(id) {
     const p = procedimentos.find(
         item => String(item.id) === String(id)
     );
 
     if (!p) return;
 
+    const novoStatus = !p.ativo;
+
     const confirmacao = await Swal.fire({
         icon: "warning",
-        title: "Excluir procedimento?",
-        text: `Deseja excluir "${p.nome}" do catálogo?`,
+        title: novoStatus ? "Ativar procedimento?" : "Inativar procedimento?",
+        text: novoStatus
+            ? `Deseja ativar "${p.nome}" novamente?`
+            : `Deseja inativar "${p.nome}"? Ele deixará de ficar disponível para novos agendamentos, desde que a agenda filtre os procedimentos inativos.`,
         showCancelButton: true,
-        confirmButtonText: "Sim, excluir",
+        confirmButtonText: novoStatus ? "Sim, ativar" : "Sim, inativar",
         cancelButtonText: "Cancelar",
-        confirmButtonColor: "#C25A5A"
+        confirmButtonColor: novoStatus ? "#6B6E55" : "#C25A5A"
     });
 
     if (!confirmacao.isConfirmed) return;
 
     try {
         const resultado = await requisicao(API_URL, {
-            method: "DELETE",
-            body: JSON.stringify({ id: Number(id) })
+            method: "PUT",
+            body: JSON.stringify({
+                id: Number(p.id),
+                nome: p.nome,
+                categoria: p.categoria,
+                preco: p.preco,
+                duracao: p.duracao,
+                ativo: novoStatus
+            })
         });
 
         if (String(campoId.value) === String(id)) {
@@ -382,15 +449,18 @@ async function excluirProcedimento(id) {
 
         await Swal.fire({
             icon: "success",
-            title: "Procedimento excluído",
-            text: resultado.mensagem || "O procedimento foi removido.",
+            title: novoStatus ? "Procedimento ativado!" : "Procedimento inativado!",
+            text: resultado.mensagem ||
+                (novoStatus
+                    ? "O procedimento foi ativado."
+                    : "O procedimento foi inativado."),
             timer: 1600,
             showConfirmButton: false
         });
     } catch (erro) {
         await Swal.fire({
             icon: "error",
-            title: "Erro ao excluir",
+            title: "Não foi possível alterar o status",
             text: erro.message
         });
     }

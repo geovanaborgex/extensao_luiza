@@ -108,118 +108,201 @@
     padding-left: 43px;
 }
 
+
+/* LISTA COMPACTA DE PROCEDIMENTOS */
 .lista-procedimentos {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
-.procedimento-card {
-    border: 1px solid var(--borda);
-    border-radius: 16px;
-    padding: 22px;
-    transition: .2s;
+/* GRUPO DE CADA CATEGORIA */
+.categoria-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
     min-width: 0;
 }
 
-.procedimento-card:hover {
-    border-color: var(--dourado);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow);
-}
-
-.procedimento-topo {
+.categoria-titulo {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: 10px;
+    padding: 0 4px 5px;
+    color: var(--verde);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .7px;
 }
 
+.categoria-total {
+    color: var(--texto2);
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+/* LINHA DE CADA PROCEDIMENTO */
+.procedimento-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+    padding: 15px 17px;
+    background: #fff;
+    border: 1px solid var(--borda);
+    border-radius: 13px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, .035);
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.procedimento-card:hover {
+    border-color: rgba(201, 168, 106, .7);
+    box-shadow: 0 5px 16px rgba(0, 0, 0, .06);
+}
+
+/* ÍCONE DO PROCEDIMENTO */
 .procedimento-icone {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
     flex-shrink: 0;
-    border-radius: 13px;
+    width: 39px;
+    height: 39px;
+    border-radius: 11px;
     background: #f4f1e9;
     color: var(--verde);
-    font-size: 19px;
+    font-size: 16px;
+}
+
+/* NOME E CATEGORIA */
+.procedimento-identificacao {
+    flex: 1;
+    min-width: 0;
 }
 
 .procedimento-card h3 {
-    color: var(--verde);
-    font-size: 17px;
+    color: var(--texto);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
     overflow-wrap: anywhere;
 }
 
 .categoria-tag {
-    display: inline-block;
-    background: #f4f1e9;
-    color: #6b6e55;
-    border-radius: 20px;
-    padding: 5px 10px;
-    font-size: 11px;
-    font-weight: 600;
-    margin-top: 7px;
+    display: none;
 }
 
+/* VALOR E DURAÇÃO */
 .procedimento-dados {
     display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 22px;
-    padding-top: 17px;
-    border-top: 1px solid var(--borda);
+    align-items: center;
+    gap: 22px;
+    flex-shrink: 0;
+}
+
+.procedimento-dados > div {
+    min-width: 65px;
 }
 
 .dado-label {
     display: block;
+    margin-bottom: 3px;
     color: var(--texto2);
-    font-size: 12px;
-    margin-bottom: 5px;
+    font-size: 11px;
 }
 
 .dado-valor {
     color: var(--verde);
+    font-size: 13px;
     font-weight: 700;
-    font-size: 17px;
+    white-space: nowrap;
 }
 
+/* STATUS */
+.status-ativo,
+.status-inativo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.status-ativo {
+    color: #52744c;
+    background: #edf5e9;
+}
+
+.status-inativo {
+    color: #9b5555;
+    background: #fbeeee;
+}
+
+/* BOTÕES DE AÇÃO */
 .procedimento-acoes {
     display: flex;
-    gap: 9px;
-    margin-top: 20px;
+    align-items: center;
+    gap: 7px;
+    flex-shrink: 0;
+    margin: 0;
 }
 
 .btn-acao {
-    flex: 1;
-    border: 1px solid #e5e5e5;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid #e9e7df;
     border-radius: 10px;
-    padding: 10px;
-    background: #fff;
+    background: #f8f7f3;
     color: var(--verde);
     cursor: pointer;
     font-size: 13px;
-    font-weight: 600;
-    transition: .2s;
+    transition: background .2s, border-color .2s;
 }
 
 .btn-acao:hover {
-    background: #f4f1e9;
+    background: #eeeadd;
+    border-color: #d9d2bd;
 }
 
 .btn-acao.excluir {
-    color: var(--danger);
+    color: #b94b4b;
+    background: #fff5f5;
+    border-color: #f3e2e2;
 }
 
 .btn-acao.excluir:hover {
-    background: #fff1f1;
+    background: #fbe8e8;
     border-color: #edcccc;
 }
 
+.btn-acao:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* PROCEDIMENTO INATIVO */
+.procedimento-card.inativo {
+    background: #fafafa;
+    box-shadow: none;
+}
+
+.procedimento-card.inativo .procedimento-identificacao {
+    opacity: .7;
+}
+
+/* CARREGAMENTO E LISTA VAZIA */
 .mensagem-lista,
 .lista-vazia {
     text-align: center;
@@ -242,12 +325,18 @@
     font-size: 14px;
 }
 
+/* TABLETS */
 @media (max-width: 1100px) {
-    .lista-procedimentos {
-        grid-template-columns: 1fr;
+    .procedimento-card {
+        gap: 11px;
+    }
+
+    .procedimento-dados {
+        gap: 14px;
     }
 }
 
+/* CELULAR */
 @media (max-width: 800px) {
     .resumo-procedimentos,
     .form-grid,
@@ -261,6 +350,7 @@
 
     .lista-head {
         flex-direction: column;
+        align-items: flex-start;
     }
 
     .form-acoes {
@@ -273,16 +363,103 @@
 
     .procedimentos-wrap {
         margin-left: auto;
+        margin-right: auto;
         width: calc(100% - 30px);
     }
-}
 
-@media (max-width: 400px) {
-    .painel-secao {
-        padding: 15px;
+    .lista-procedimentos {
+        gap: 20px;
     }
 
     .procedimento-card {
-        padding: 16px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px 8px;
+        padding: 13px;
+        border-radius: 12px;
+    }
+
+    .procedimento-icone {
+        display: none;
+    }
+
+    .procedimento-identificacao {
+        grid-column: 1;
+        grid-row: 1;
+        align-self: center;
+    }
+
+    .procedimento-card h3 {
+        font-size: 13px;
+    }
+
+    .procedimento-dados {
+        grid-column: 1;
+        grid-row: 2;
+        justify-content: flex-start;
+        gap: 18px;
+        flex-wrap: wrap;
+    }
+
+    .procedimento-dados > div {
+        min-width: 0;
+    }
+
+    .dado-label {
+        font-size: 10px;
+    }
+
+    .dado-valor {
+        font-size: 12px;
+    }
+
+    .status-ativo,
+    .status-inativo {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+        align-self: start;
+        font-size: 10px;
+        padding: 4px 7px;
+    }
+
+    .procedimento-acoes {
+        grid-column: 2;
+        grid-row: 2;
+        justify-self: end;
+        align-self: end;
+        gap: 6px;
+    }
+
+    .btn-acao {
+        width: 33px;
+        height: 33px;
+        border-radius: 9px;
+    }
+}
+
+/* CELULARES PEQUENOS */
+@media (max-width: 400px) {
+    .painel-secao {
+        padding: 13px;
+    }
+
+    .procedimento-card {
+        padding: 11px;
+        gap: 9px 5px;
+    }
+
+    .procedimento-card h3 {
+        font-size: 12px;
+    }
+
+    .procedimento-dados {
+        gap: 12px;
+    }
+
+    .btn-acao {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
     }
 }
