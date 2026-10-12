@@ -103,69 +103,84 @@
             </div>
         </div>
 
-        <form id="formProcedimento">
-            <input type="hidden" id="procedimentoId">
+      
+<form id="formProcedimento">
+    <input type="hidden" id="procedimentoId">
 
-            <div class="form-grid">
-                <div class="campo">
-                    <label for="nome">Nome do procedimento *</label>
-                    <input
-                        type="text"
-                        id="nome"
-                        maxlength="100"
-                        placeholder="Ex.: Escova"
-                        required>
-                </div>
+    <div class="form-grid">
 
-                <div class="campo">
-                    <label for="categoria">Categoria *</label>
-                    <input
-                        type="text"
-                        id="categoria"
-                        maxlength="60"
-                        placeholder="Ex.: Cabelo"
-                        list="categoriasExistentes"
-                        required>
-                    <datalist id="categoriasExistentes"></datalist>
-                </div>
+        <div class="campo">
+            <label for="categoria">Serviço *</label>
+            <input
+                type="text"
+                id="categoria"
+                maxlength="60"
+                placeholder="Ex.: Cabelos"
+                list="categoriasExistentes"
+                required>
+            <datalist id="categoriasExistentes"></datalist>
+        </div>
 
-                <div class="campo">
-                    <label for="preco">Preço (R$) *</label>
-                    <input
-                        type="number"
-                        id="preco"
-                        min="0"
-                        max="999999"
-                        step="0.01"
-                        placeholder="0,00"
-                        required>
-                </div>
+        <div class="campo">
+            <label for="nome">Nome do procedimento *</label>
+            <input
+                type="text"
+                id="nome"
+                maxlength="100"
+                placeholder="Ex.: Escova"
+                required>
+        </div>
 
-                <div class="campo">
-                    <label for="duracao">Duração (minutos) *</label>
-                    <input
-                        type="number"
-                        id="duracao"
-                        min="1"
-                        max="1440"
-                        step="1"
-                        placeholder="Ex.: 60"
-                        required>
-                </div>
-            </div>
+        <div class="campo">
+            <label for="preco">Valor (R$) *</label>
+            <input
+                type="number"
+                id="preco"
+                min="0"
+                max="999999"
+                step="0.01"
+                placeholder="Ex.: 40,00"
+                required>
+        </div>
 
-            <div class="form-acoes">
-                <button type="submit" class="btn btn-primary" id="btnSalvar">
-                    <i class="fa-solid fa-plus"></i>
-                    Salvar procedimento
-                </button>
+        <div class="campo">
+            <label for="duracao">Duração (minutos) *</label>
+            <input
+                type="number"
+                id="duracao"
+                min="1"
+                max="1440"
+                step="1"
+                placeholder="Ex.: 30"
+                required>
+        </div>
 
-                <button type="button" class="btn btn-ghost"
-                        id="btnCancelar" hidden>
-                    Cancelar edição
-                </button>
-            </div>
-        </form>
+        <div class="campo">
+            <label for="ativo">Status do procedimento *</label>
+            <select id="ativo" required>
+                <option value="true" selected>Ativo</option>
+                <option value="false">Inativo</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="form-acoes">
+        <button type="submit" class="btn btn-primary" id="btnSalvar">
+            <i class="fa-solid fa-plus"></i>
+            Salvar procedimento
+        </button>
+
+        <button
+            type="button"
+            class="btn btn-ghost"
+            id="btnCancelar"
+            hidden>
+            Cancelar edição
+        </button>
+    </div>
+</form>
+
     </section>
 
     <section class="painel-secao">

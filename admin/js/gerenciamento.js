@@ -8,6 +8,7 @@ const campoNome = document.getElementById("nome");
 const campoCategoria = document.getElementById("categoria");
 const campoPreco = document.getElementById("preco");
 const campoDuracao = document.getElementById("duracao");
+const campoAtivo = document.getElementById("ativo");
 
 const lista = document.getElementById("listaProcedimentos");
 const listaVazia = document.getElementById("listaVazia");
@@ -239,6 +240,7 @@ form.addEventListener("submit", async evento => {
 
         await carregarProcedimentos();
         limparFormulario();
+        campoAtivo.value = "true";
 
         await Swal.fire({
             icon: "success",
