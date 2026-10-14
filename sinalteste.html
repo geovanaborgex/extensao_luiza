@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luiza Rodrigues Beleza e Estética</title>
+
+  <link rel="icon" type="image/png" sizes="30x30" href="images/logocirculo.png">
+  <link rel="apple-touch-icon" href="images/logocirculo.png">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="css/header.css">
+</head>
+
+<body style="background: #f1f3ea;" >
+
+<header id="header" class="header-interno">
+
+  <nav id="nav">
+
+    <a href="index.html">Início</a>
+
+    <a href="servicos.html">Catálogo</a>
+    
+    <a href="cosmeticos.html">A'Lu Cosméticos</a>
+
+  </nav>
+
+  <a href="index.html" class="logo-link-catalogo">
+      <img src="images/LOGO_NOME_FUNDO_VERDE-removebg-preview.png" class="logo-catalogo">
+    </a>
+    <div class="menu-toggle" style="color: #6B6E55;" onclick="toggleMenu()">
+      ☰
+    </div>
+
+</header>
+
+<!-- FORM -->
+<div class="form-agendamento">
+
+  <h2>Agendar Horário</h2>
+
+  <form id="formAgendamento" action="salvar_agendamento.php" method="POST">
+
+    <!-- NOME -->
+    <div class="form-group">
+      <label>Nome</label>
+      <input type="text" name="nome" required>
+    </div>
+
+    <!-- TELEFONE -->
+  <div class="form-group">
+    <label>Telefone</label>
+    <input
+      type="tel"
+      id="telefone"
+      name="telefone"
+      placeholder="(XX) 9XXXX-XXXX"
+      maxlength="15"
+      required
+    >
+  </div>
+
+    <!-- SERVIÇO -->
+    <div class="form-group">
+      <label>Serviço</label>
+
+     
+    <select name="servico" id="servico" required onchange="mostrarProcedimentos()">
+        <option value="">Carregando serviços...</option>
+    </select>
+
+    </div>
+
+    <!-- PROCEDIMENTO -->
+    <div class="form-group hidden" id="procedimentos-group">
+
+      <label>Procedimento</label>
+  
+      <select id="procedimento"></select>
+  <center>
+      <button
+          type="button"
+          class="btn-add-proced"
+          onclick="adicionarProcedimento()">
+  
+          <i class="fa-solid fa-plus"></i>
+          &nbsp;  Adicionar procedimento
+  
+      </button></center>
+  
+  </div>
+  
+  <div id="listaProcedimentos"></div>
+  
+  <div
+      class="info-procedimento hidden"
+      id="resumoProcedimentos">
+  
+      <p>
+  
+          <i class="fa-regular fa-clock"></i>
+  
+          Tempo total:
+  
+          <strong id="duracaoTotal"></strong>
+  
+      </p>
+  
+      <p>
+  
+          <i class="fa-solid fa-tag"></i>
+  
+          Valor total:
+  
+          <strong id="valorTotal"></strong>
+  
+      </p>
+  
+  </div>
+
+    <center>
+  <button type="button" class="btn-cta" onclick="abrirModalHorario()">
+    RESERVAR HORÁRIO
+  </button>
+    </center>
+
+  </form>
+
+</div>
+
+<!-- WHATS -->
+<a href="https://wa.me/5537999049543?text=Olá,%20gostaria%20de%20agendar%20um%20horário"
+   class="whatsapp-float"
+   target="_blank">
+
+  <img src="images/whatsapp.png">
+
+</a>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-container">
+
+    <!-- LOGO -->
+    <div class="footer-col logo-col">
+      <img src="images/LOGOFUNDOVERDE.jpeg" alt="Logo" class="footer-logo">
+    </div>
+
+        <!-- MAPA -->
+    <div class="footer-col">
+      <h3>Mapa do Site</h3>
+      <ul class="footer-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="servicos.html">Catálogo</a></li>
+        <li><a href="agendar.html">Agendamento</a></li>
+        <li><a href="cosmeticos.html">A'Lu Cosméticos</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+  <h3>Contato</h3>
+
+  <p><i class="fa-regular fa-map" style="color: rgb(255, 255, 255);"></i> Rua São Miguel Arcanjo, 236, Córrego Fundo - MG</p>
+  <p><i class="fa-solid fa-phone" style="color: rgb(255, 255, 255);" ></i>
+    <a href="https://wa.me/5537999049543?text=Olá,%20gostaria%20de%20agendar%20um%20horário" target="_blank"> (37) 99904-9543</a></p>
+  </div>
+
+    <!-- REDES -->
+    <div class="footer-col">
+      <h3>Redes Sociais</h3>
+      <div class="redes">
+         <a href="https://instagram.com/luizagues_belezaeestetica" target="_blank">
+      <i class="fa-brands fa-instagram"> </i> @luizagues_belezaeestetica
+        </a>
+      </div>
+    </div>
+
+</div>
+
+<div class="footer-bottom">
+
+  <p>
+    © 2026 Luiza Rodrigues Beleza & Estética.
+    Todos os direitos reservados.
+  </p>
+
+</div>
+  
+</footer>
+
+<div id="modalHorario" class="modal-horario">
+
+  <div class="modal-conteudo">
+
+    <!-- Botão para fechar o modal -->
+    <button
+      type="button"
+      class="fechar-modal"
+      onclick="fecharModalHorario()"
+    >
+      ×
+    </button>
+
+    <!-- ============================= -->
+    <!-- ETAPA 1: ESCOLHA DO HORÁRIO -->
+    <!-- ============================= -->
+    <div id="etapaHorario">
+
+      <h2>Escolha seu horário:</h2>
+
+      <div class="calendario-topo">
+        <button type="button" onclick="voltarDias()">‹</button>
+
+        <h3 id="mesAtual"></h3>
+
+        <button type="button" onclick="avancarDias()">›</button>
+      </div>
+
+      <div class="dias-modal" id="diasModal"></div>
+
+      <hr>
+
+      <div class="aviso-agendamento">
+        <i class="fa-brands fa-whatsapp"></i>
+
+        <span>
+          Precisa de um horário <strong>para hoje?</strong>
+          Entre em contato pelo WhatsApp para verificar a
+          disponibilidade de encaixes.
+        </span>
+
+        <a
+          href="https://wa.me/5537999049543?text=Ol%C3%A1!%20Gostaria%20de%20verificar%20a%20disponibilidade%20de%20um%20hor%C3%A1rio%20para%20hoje."
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Chamar no WhatsApp
+        </a>
+      </div>
+
+      <h3>Horários disponíveis</h3>
+
+      <div class="horarios-topo">
+
+        <button
+          type="button"
+          onclick="voltarHorarios()"
+          class="btn-seta-horario"
+        >
+          ‹
+        </button>
+
+        <div class="horarios-modal"></div>
+
+        <button
+          type="button"
+          onclick="avancarHorarios()"
+          class="btn-seta-horario"
+        >
+          ›
+        </button>
+
+      </div>
+
+      <div class="resumo-modal">
+
+        <p>
+          <strong>Nome:</strong>
+          <span id="resumoNome">-</span>
+        </p>
+
+        <p>
+          <strong>Telefone:</strong>
+          <span id="resumoTelefone">-</span>
+        </p>
+
+        <p>
+          <strong>Procedimento:</strong>
+          <span id="resumoProcedimento">-</span>
+        </p>
+
+        <p>
+          <strong>Duração:</strong>
+          <span id="resumoDuracao">-</span>
+        </p>
+
+        <p>
+          <strong>Valor:</strong>
+          <span id="resumoValor">-</span>
+        </p>
+
+      </div>
+
+      <p
+        id="statusAgendamento"
+        class="status-agendamento"
+      ></p>
+
+      <button
+        type="button"
+        class="btn-confirmar-horario"
+        onclick="irParaEtapaSinal()"
+      >
+        CONTINUAR
+      </button>
+
+    </div>
+
+    <!-- ================================= -->
+    <!-- ETAPA 2: POLÍTICA E SINAL DE 20% -->
+    <!-- ================================= -->
+    <div id="etapaSinal" style="display: none;">
+
+      <h2>Finalize seu agendamento</h2>
+
+      <p class="subtitulo-sinal">
+        Confira os detalhes antes de prosseguir para o pagamento.
+      </p>
+
+      <div class="resumo-modal resumo-sinal">
+
+        <p>
+          <strong>Data:</strong>
+          <span id="sinalData">-</span>
+        </p>
+
+        <p>
+          <strong>Horário:</strong>
+          <span id="sinalHorario">-</span>
+        </p>
+
+        <p>
+          <strong>Procedimentos:</strong>
+          <span id="sinalProcedimentos">-</span>
+        </p>
+
+        <p>
+          <strong>Valor total:</strong>
+          <span id="sinalTotal">R$ 0,00</span>
+        </p>
+
+        <p class="linha-sinal">
+          <strong>Sinal de 20%:</strong>
+          <span id="sinalValor">R$ 0,00</span>
+        </p>
+
+      </div>
+
+      <div class="politica-agendamento">
+
+        <h3>
+          <i class="fa-solid fa-circle-info"></i>
+          Política de agendamento
+        </h3>
+
+        <p>
+          Cancelamentos e remarcações devem ser comunicados com,
+          no mínimo, <strong>24 horas de antecedência</strong>.
+        </p>
+
+        <p>
+          <strong>Cancelamentos fora do prazo ou não comparecimento:</strong>
+          em caso de cancelamento com menos de 24 horas de antecedência
+          ou não comparecimento, o sinal não será reembolsado, pois o
+          horário foi reservado exclusivamente para você.
+        </p>
+
+        <p>
+          <strong>Remarcação:</strong>
+          avisando dentro do prazo estabelecido, o sinal poderá ser
+          transferido para uma nova data, mediante disponibilidade na agenda.
+        </p>
+
+        <p>
+          <strong>Imprevistos:</strong>
+          em caso de saúde com atestado médico ou falecimento parental,
+          o sinal será ressarcido.
+        </p>
+
+        <p class="aceite-politica">
+          Ao realizar o pagamento do sinal, você declara estar ciente
+          e de acordo com nossa política de agendamento.
+        </p>
+
+      </div>
+
+      <!-- Área temporária: ainda não realiza pagamento -->
+      <div class="area-pagamento">
+
+        <i class="fa-solid fa-lock"></i>
+
+        <h3>Pagamento do sinal</h3>
+
+        <p>
+          O sinal corresponde a 20% do valor total dos procedimentos.
+        </p>
+
+        <p class="aviso-pagamento-teste">
+          A integração de pagamento ainda não está ativa.
+          Nenhuma cobrança será realizada nesta etapa.
+        </p>
+
+        <button
+          type="button"
+          class="btn-confirmar-horario"
+          onclick="simularGeracaoPagamento()"
+        >
+          PAGAMENTO EM BREVE
+        </button>
+
+      </div>
+
+      <button
+        type="button"
+        class="btn-voltar-horario"
+        onclick="voltarParaHorario()"
+      >
+        <i class="fa-solid fa-arrow-left"></i>
+        Voltar e alterar horário
+      </button>
+
+    </div>
+
+  </div>
+
+
+<!-- JS -->
+<script>
+let procedimentosSelecionados = [];
+const procedimentosInfo = {};
+let procedimentosPorServico = {};
+let carregamentoConcluido = false;
+
+const API_PROCEDIMENTOS =
+    "/admin/api/gerenciamento.php?ativos=1";
+
+function normalizarTexto(texto) {
+    return String(texto || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+}
+
+function formatarMoeda(valor) {
+    return Number(valor).toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
+async function carregarProcedimentos() {
+    const selectServico = document.getElementById("servico");
+    const selectProcedimento = document.getElementById("procedimento");
+
+    selectServico.innerHTML =
+        '<option value="">Carregando serviços...</option>';
+
+    selectProcedimento.innerHTML =
+        '<option value="">Selecione um serviço primeiro</option>';
+
+    try {
+        const resposta = await fetch(API_PROCEDIMENTOS, {
+            cache: "no-store"
+        });
+
+        if (!resposta.ok) {
+            throw new Error("Erro HTTP " + resposta.status);
+        }
+
+        const dados = await resposta.json();
+
+        if (!dados.sucesso || !Array.isArray(dados.procedimentos)) {
+            throw new Error("A API não retornou uma lista válida.");
+        }
+
+        const lista = dados.procedimentos;
+
+        if (lista.length === 0) {
+            throw new Error("Não existem procedimentos ativos na planilha.");
+        }
+
+        // Limpa os dados anteriores
+        Object.keys(procedimentosInfo).forEach(nome => {
+            delete procedimentosInfo[nome];
+        });
+
+        procedimentosPorServico = {};
+
+        // Monta a lista a partir da planilha
+        lista.forEach(item => {
+            const servico = String(item.servico || "").trim();
+            const nome = String(item.procedimento || "").trim();
+            const valor = Number(
+                String(item.valor || "0").replace(",", ".")
+            );
+            const duracao = Number(item.duracao);
+
+            if (!servico || !nome ||
+                !Number.isFinite(valor) ||
+                !Number.isFinite(duracao)) {
+                return;
+            }
+
+            procedimentosInfo[nome] = {
+                valor,
+                duracao,
+                servico
+            };
+
+            if (!procedimentosPorServico[servico]) {
+                procedimentosPorServico[servico] = [];
+            }
+
+            procedimentosPorServico[servico].push(nome);
+        });
+
+        selectServico.innerHTML =
+            '<option value="">Selecione um serviço</option>';
+
+        Object.keys(procedimentosPorServico).forEach(servico => {
+            const opcao = document.createElement("option");
+            opcao.value = servico;
+            opcao.textContent = servico;
+            selectServico.appendChild(opcao);
+        });
+
+        carregamentoConcluido = true;
+
+        // Preserva a seleção vinda de um link do catálogo
+        const params = new URLSearchParams(window.location.search);
+        const servicoURL = params.get("servico");
+        const procedimentoURL = params.get("procedimento");
+
+        if (servicoURL) {
+            const opcaoServico = [...selectServico.options].find(opcao =>
+                normalizarTexto(opcao.value) === normalizarTexto(servicoURL)
+            );
+
+            if (opcaoServico) {
+                selectServico.value = opcaoServico.value;
+                mostrarProcedimentos();
+
+                if (procedimentoURL) {
+                    const opcaoProcedimento =
+                        [...selectProcedimento.options].find(opcao =>
+                            normalizarTexto(opcao.value) ===
+                            normalizarTexto(procedimentoURL)
+                        );
+
+                    if (opcaoProcedimento) {
+                        selectProcedimento.value =
+                            opcaoProcedimento.value;
+                    }
+                }
+            }
+        }
+
+    } catch (erro) {
+        console.error("Erro ao carregar procedimentos:", erro);
+
+        selectServico.innerHTML =
+            '<option value="">Erro ao carregar serviços</option>';
+
+        Swal.fire({
+            icon: "error",
+            title: "Não foi possível carregar os serviços",
+            text: "Verifique sua conexão e tente atualizar a página.",
+            confirmButtonColor: "#6B6E55"
+        });
+    }
+}
+
+function mostrarProcedimentos() {
+    const servico = document.getElementById("servico").value;
+    const grupo = document.getElementById("procedimentos-group");
+    const select = document.getElementById("procedimento");
+
+    select.innerHTML = '<option value="">Selecione</option>';
+
+    if (!servico || !procedimentosPorServico[servico]) {
+        grupo.classList.add("hidden");
+        return;
+    }
+
+    grupo.classList.remove("hidden");
+
+    procedimentosPorServico[servico].forEach(nome => {
+        const opcao = document.createElement("option");
+        opcao.value = nome;
+        opcao.textContent = nome;
+        select.appendChild(opcao);
+    });
+}
+
+function adicionarProcedimento() {
+    const nome = document.getElementById("procedimento").value;
+
+    if (!nome || !procedimentosInfo[nome]) return;
+
+    if (procedimentosSelecionados.includes(nome)) {
+        Swal.fire({
+            icon: "info",
+            title: "Procedimento já adicionado",
+            text: "Esse procedimento já está na sua lista.",
+            confirmButtonColor: "#6B6E55"
+        });
+        return;
+    }
+
+    procedimentosSelecionados.push(nome);
+    atualizarListaProcedimentos();
+}
+
+function atualizarListaProcedimentos() {
+    const lista = document.getElementById("listaProcedimentos");
+    lista.innerHTML = "";
+
+    let minutos = 0;
+    let valor = 0;
+
+    procedimentosSelecionados.forEach((proc, index) => {
+        const info = procedimentosInfo[proc];
+
+        if (!info) return;
+
+        minutos += info.duracao;
+        valor += info.valor;
+
+        const item = document.createElement("div");
+        item.className = "procedimento-item";
+
+        const nome = document.createElement("strong");
+        nome.textContent = proc;
+
+        const detalhes = document.createElement("span");
+        detalhes.textContent =
+            `${info.duracao} min • R$ ${formatarMoeda(info.valor)}`;
+
+        const remover = document.createElement("button");
+        remover.type = "button";
+        remover.innerHTML = '<i class="fa-solid fa-trash"></i>';
+        remover.setAttribute("aria-label", "Remover " + proc);
+        remover.addEventListener("click", () => {
+            removerProcedimento(index);
+        });
+
+        item.append(nome, detalhes, remover);
+        lista.appendChild(item);
+    });
+
+    document.getElementById("resumoProcedimentos")
+        .classList.toggle("hidden", procedimentosSelecionados.length === 0);
+
+    document.getElementById("duracaoTotal").textContent =
+        formatarDuracao(minutos);
+
+    document.getElementById("valorTotal").textContent =
+        "R$ " + formatarMoeda(valor);
+}
+
+function removerProcedimento(indice) {
+    procedimentosSelecionados.splice(indice, 1);
+    atualizarListaProcedimentos();
+}
+
+// Inicia o carregamento quando o HTML estiver pronto
+document.addEventListener("DOMContentLoaded", carregarProcedimentos);
+</script>
+
+<script> 
+
+function toggleMenu() {
+  const menu = document.getElementById("nav");
+  nav.classList.toggle("ativo");
+}
+
+function formatarDuracao(minutos) {
+
+console.log("FORMATANDO:", minutos);
+
+const horas = Math.floor(minutos / 60);
+const minutosRestantes = minutos % 60;
+
+if (horas > 0 && minutosRestantes > 0) {
+    return `${horas}h ${minutosRestantes}min`;
+}
+
+if (horas > 0) {
+    return `${horas}h`;
+}
+
+return `${minutosRestantes}min`;
+}
+
+function abrirModalHorario() {
+  const nome = document.querySelector('input[name="nome"]').value;
+  const telefone = document.querySelector('input[name="telefone"]').value;
+  const procedimentos = procedimentosSelecionados.join(", ");
+
+  const telefoneNumeros =
+telefone.replace(/\D/g, "");
+
+if (telefoneNumeros.length !== 11) {
+  Swal.fire({
+    icon: "warning",
+    title: "Telefone inválido",
+    text: "Confira se o DDD e todos os dígitos estão corretos.",
+    confirmButtonColor: "#6B6E55"
+  });
+
+  return;
+}
+
+  if (!nome || !telefone || procedimentosSelecionados.length == 0) {
+    Swal.fire({
+      icon: "warning",
+      title: "Preencha os dados",
+      text: "Informe nome, telefone e procedimento antes de reservar o horário.",
+      confirmButtonColor: "#6B6E55"
+    });
+    return;
+  }
+
+  document.getElementById("resumoNome").innerText = nome;
+  document.getElementById("resumoTelefone").innerText = telefone;
+  document.getElementById("resumoProcedimento").innerHTML=procedimentos;
+  let minutos = 0;
+  let valor = 0;
+
+  procedimentosSelecionados.forEach(p=>{
+      minutos += procedimentosInfo[p].duracao;
+      valor += procedimentosInfo[p].valor;
+  });
+
+  document.getElementById("duracaoTotal").innerHTML =
+    formatarDuracao(minutos);
+
+  document.getElementById("resumoValor").innerHTML =
+  "R$ " + valor.toFixed(2);
+
+  document.getElementById("modalHorario").style.display = "flex";
+
+  gerarDias();
+}
+
+function fecharModalHorario() {
+  document.getElementById("modalHorario").style.display = "none";
+}
+
+let inicioCalendario = 0;
+
+function gerarDias() {
+  const container = document.getElementById("diasModal");
+  const mesAtual = document.getElementById("mesAtual");
+
+  container.innerHTML = "";
+
+  const diasSemana = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+  const meses = [
+    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+  ];
+
+  const hoje = new Date();
+  const diasVisiveis = [];
+
+  let i = inicioCalendario + 1;
+
+  while (diasVisiveis.length < 7) {
+    const data = new Date();
+    data.setDate(hoje.getDate() + i);
+
+    diasVisiveis.push(data);
+    i++;
+  }
+
+  mesAtual.innerText =
+    `${meses[diasVisiveis[0].getMonth()]} ${diasVisiveis[0].getFullYear()}`;
+
+  diasVisiveis.forEach(data => {
+    const botao = document.createElement("button");
+    const ehDomingo = data.getDay() === 0;
+
+
+    botao.innerHTML = `
+      ${diasSemana[data.getDay()]}<br>
+      <strong>${data.getDate()}</strong>
+    `;
+
+
+
+    if (ehDomingo) {
+      botao.classList.add("domingo");
+      botao.disabled = true;
+    } else {
+      botao.onclick = () => {
+        document.querySelectorAll(".dias-modal button")
+          .forEach(btn => btn.classList.remove("ativo"));
+
+        botao.classList.add("ativo");
+
+        dataSelecionada = formatarDataLocal(data);
+        horarioSelecionado = "";
+
+        buscarHorarios(dataSelecionada);
+      };
+    }
+
+    container.appendChild(botao);
+    if (diasVisiveis.indexOf(data) === 0 && !ehDomingo) {
+
+        botao.classList.add("ativo");
+
+        dataSelecionada = formatarDataLocal(data);
+
+        buscarHorarios(dataSelecionada);
+
+        }
+  });
+}
+
+function formatarDataLocal(data) {
+  const ano = data.getFullYear();
+  const mes = String(data.getMonth() + 1).padStart(2, "0");
+  const dia = String(data.getDate()).padStart(2, "0");
+
+  return `${ano}-${mes}-${dia}`;
+}
+
+let dataSelecionada = "";
+let horarioSelecionado = "";
+
+function buscarHorarios(data) {
+
+  console.log("DATA:", data);
+  console.log("PROCEDIMENTOS:", procedimentosSelecionados);
+  const container =
+    document.querySelector(".horarios-modal");
+
+  container.innerHTML =
+    "<p>Carregando horários...</p>";
+
+    if (procedimentosSelecionados.length === 0) {
+    container.innerHTML =
+        "<p>Selecione pelo menos um procedimento.</p>";
+    return;
+}
+
+  const dados = new FormData();
+  dados.append("data", data);
+  dados.append("procedimentos", procedimentosSelecionados.join(","));
+  
+  fetch("buscar_horarios.php", {
+    method: "POST",
+    body: dados
+  })
+
+  .then(response => response.json())
+
+  .then(data => {
+
+    console.log(data);
+
+    container.innerHTML = "";
+
+    // ERRO PHP
+    if (data.status === "erro") {
+
+      container.innerHTML =
+        `<p>${data.mensagem}</p>`;
+
+      return;
+    }
+
+    // SEM HORÁRIOS
+    if (!data.horarios || data.horarios.length === 0) {
+
+      container.innerHTML =
+        "<p>Nenhum horário disponível para este dia.</p>";
+
+      return;
+    }
+
+    // HORÁRIOS
+    data.horarios.forEach(horario => {
+
+      const botao =
+        document.createElement("button");
+
+      botao.type = "button";
+      botao.innerText = horario;
+
+      botao.onclick = () => {
+
+        document
+          .querySelectorAll(".horarios-modal button")
+          .forEach(btn =>
+            btn.classList.remove("ativo")
+          );
+
+        botao.classList.add("ativo");
+
+        horarioSelecionado = horario;
+      };
+
+      container.appendChild(botao);
+
+    });
+
+  })
+
+  .catch(error => {
+
+    console.log(error);
+
+    container.innerHTML =
+      "<p>Erro ao carregar horários.</p>";
+
+  });
+
+}
+
+let scrollHorario = 0;
+
+function avancarHorarios() {
+  const container =
+    document.querySelector(".horarios-modal");
+
+  container.scrollBy({
+    left: 300,
+    behavior: "smooth"
+  });
+}
+
+function voltarHorarios() {
+  const container =
+    document.querySelector(".horarios-modal");
+
+  container.scrollBy({
+    left: -300,
+    behavior: "smooth"
+  });
+}
+
+function avancarDias() {
+  inicioCalendario += 6;
+  gerarDias();
+}
+
+function voltarDias() {
+  if (inicioCalendario >= 6) {
+    inicioCalendario -= 6;
+    gerarDias();
+  }
+}
+
+let agendamentoEmAndamento = false;
+function confirmarAgendamento() {
+  if (agendamentoEmAndamento) return;
+
+  const form = document.getElementById("formAgendamento");
+  const status = document.getElementById("statusAgendamento");
+  const botao = document.querySelector(".btn-confirmar-horario");
+
+  if (!dataSelecionada || !horarioSelecionado) {
+    Swal.fire({
+      icon: "warning",
+      title: "Escolha data e horário",
+      text: "Selecione um dia e um horário antes de confirmar.",
+      confirmButtonColor: "#6B6E55"
+    });
+    return;
+  }
+
+  agendamentoEmAndamento = true;
+  status.style.display = "block";
+  status.innerText = "Confirmando seu horário...";
+  botao.disabled = true;
+  botao.innerText = "CONFIRMANDO...";
+
+  const dados = new FormData(form);
+  dados.append("data", dataSelecionada);
+  dados.append("horario", horarioSelecionado);
+  procedimentosSelecionados.forEach(p => {
+    dados.append("procedimentos[]", p);
+});
+
+  fetch("salvar_agendamento.php", {
+    method: "POST",
+    body: dados
+  })
+  .then(response => response.json())
+  .then(data => {
+    agendamentoEmAndamento = false;
+    botao.disabled = false;
+    botao.innerText = "CONFIRMAR AGENDAMENTO";
+    status.style.display = "none";
+
+    if (data.status === "sucesso") {
+    const nome =
+    document.querySelector('input[name="nome"]').value;
+
+    const telefone =
+    document.querySelector('input[name="telefone"]').value;
+
+    const procedimento =
+    procedimentosSelecionados.join(", ");
+
+    let minutos = 0;
+    procedimentosSelecionados.forEach(p=>{
+        minutos += procedimentosInfo[p].duracao;
+    });
+    const duracao = formatarDuracao(minutos);
+
+    let total = 0;
+    procedimentosSelecionados.forEach(p=>{
+        total += procedimentosInfo[p].valor;
+    });
+    const valor = "R$ " + total.toFixed(2);
+
+    const dataFormatada = dataSelecionada
+      .split("-")
+      .reverse()
+      .join("/");
+
+    const mensagem = `Olá, Luiza! Acabei de realizar um agendamento pelo site.
+
+    Cliente: ${nome}
+    Telefone: ${telefone}
+    Procedimento: ${procedimento}
+    Data: ${dataFormatada}
+    Horário: ${horarioSelecionado}
+    Duração: ${duracao}
+    Valor: ${valor}`;
+
+      const numeroLuiza = "5537999049543";
+      const linkWhatsApp = `https://wa.me/${numeroLuiza}?text=${encodeURIComponent(mensagem)}`;
+      fecharModalHorario();
+
+// Abre automaticamente o WhatsApp
+window.open(linkWhatsApp, "_blank");
+
+// Depois mostra a confirmação
+Swal.fire({
+    icon: "success",
+    title: "Agendamento realizado!",
+    html: `
+        Seu horário foi reservado com sucesso.<br><br>
+        Você será direcionado ao WhatsApp para enviar a confirmação à Luiza.
+    `,
+    confirmButtonColor: "#6B6E55"
+});
+setTimeout(() => {
+
+window.location.href = linkWhatsApp;
+
+},1800);
+
+// Limpa o formulário
+form.reset();
+procedimentosSelecionados = [];
+atualizarListaProcedimentos();
+dataSelecionada = "";
+horarioSelecionado = "";
+ 
+
+    } else {
+      Swal.fire({
+        icon: "warning",
+        title: "Horário indisponível",
+        text: data.mensagem,
+        confirmButtonColor: "#C9A86A"
+      });
+
+      buscarHorarios(dataSelecionada);
+      horarioSelecionado = "";
+    }
+  })
+  .catch(() => {
+    agendamentoEmAndamento = false;
+    botao.disabled = false;
+    botao.innerText = "CONFIRMAR AGENDAMENTO";
+    status.style.display = "none";
+
+    Swal.fire({
+      icon: "error",
+      title: "Erro",
+      text: "Não foi possível realizar o agendamento. Tente novamente.",
+      confirmButtonColor: "#6B6E55"
+    });
+  });
+}
+
+  window.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+
+  const servico = params.get("servico");
+  const procedimento = params.get("procedimento");
+
+  if (servico && procedimento) {
+    const selectServico = document.getElementById("servico");
+    const selectProcedimento = document.getElementById("procedimento");
+
+    selectServico.value = servico;
+
+    mostrarProcedimentos();
+
+    setTimeout(() => {
+      selectProcedimento.value = procedimento;
+      mostrarInfoProcedimento();
+    }, 100);
+  }
+});
+
+const telefoneInput =
+document.getElementById("telefone");
+
+function irParaEtapaSinal() {
+    if (!dataSelecionada || !horarioSelecionado) {
+        Swal.fire({
+            icon: "warning",
+            title: "Escolha data e horário",
+            text: "Selecione uma data e um horário para continuar.",
+            confirmButtonColor: "#6B6E55"
+        });
+        return;
+    }
+
+    if (!procedimentosSelecionados.length) {
+        Swal.fire({
+            icon: "warning",
+            title: "Selecione um procedimento",
+            confirmButtonColor: "#6B6E55"
+        });
+        return;
+    }
+
+    let totalCentavos = 0;
+
+    for (const nome of procedimentosSelecionados) {
+        const procedimento = procedimentosInfo[nome];
+
+        if (!procedimento ||
+            !Number.isFinite(Number(procedimento.valor)) ||
+            Number(procedimento.valor) < 0) {
+            Swal.fire({
+                icon: "error",
+                title: "Erro ao calcular o valor",
+                text: "Confira os procedimentos selecionados.",
+                confirmButtonColor: "#6B6E55"
+            });
+            return;
+        }
+
+        totalCentavos += Math.round(
+            Number(procedimento.valor) * 100
+        );
+    }
+
+    const sinalCentavos = Math.round(totalCentavos * 0.20);
+
+    document.getElementById("sinalTotal").textContent =
+        (totalCentavos / 100).toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        });
+
+    document.getElementById("sinalValor").textContent =
+        (sinalCentavos / 100).toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        });
+
+    document.getElementById("sinalData").textContent =
+        dataSelecionada.split("-").reverse().join("/");
+
+    document.getElementById("sinalHorario").textContent =
+        horarioSelecionado;
+
+    document.getElementById("sinalProcedimentos").textContent =
+        procedimentosSelecionados.join(", ");
+
+    document.getElementById("etapaHorario").style.display = "none";
+    document.getElementById("etapaSinal").style.display = "block";
+}
+
+function voltarParaHorario() {
+    document.getElementById("etapaSinal").style.display = "none";
+    document.getElementById("etapaHorario").style.display = "block";
+}
+
+function simularGeracaoPagamento() {
+  Swal.fire({
+    icon: "info",
+    title: "Pagamento em desenvolvimento",
+    text: "Esta é uma versão de teste. Nenhum pagamento foi gerado e seu agendamento ainda não foi confirmado."
+  });
+}
+
+telefoneInput.addEventListener("input", function(e){
+
+  let valor = e.target.value
+    .replace(/\D/g, "");
+
+  // limita em 11 números (DDD + 9 dígitos)
+  valor = valor.substring(0, 11);
+
+  // (37) 9
+  valor = valor.replace(
+    /^(\d{2})(\d)/,
+    "($1) $2"
+  );
+
+  // (37) 99999-9999
+  valor = valor.replace(
+    /(\d{5})(\d)/,
+    "$1-$2"
+  );
+
+  e.target.value = valor;
+});
+</script>
+
+
+</body>
+</html>
