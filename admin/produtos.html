@@ -1,39 +1,62 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lojinha | Produtos</title><link rel="stylesheet" href="css/lojinha.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos | Painel Administrativo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/lojinha.css">
 </head>
 <body>
-<div class="layout">
-<aside class="sidebar">
-  <div class="brand"><strong>LUÍZA RODRIGUES</strong><span>BELEZA & ESTÉTICA · ADMIN</span></div>
-  <nav>
-    <div class="nav-label">MENU PRINCIPAL</div>
-    <a class="nav-link" href="#"><span class="nav-icon">⌂</span>Painel</a>
-    <a class="nav-link" href="#"><span class="nav-icon">▦</span>Agendamentos</a>
-    <a class="nav-link" href="#"><span class="nav-icon">♙</span>Clientes</a>
-    <div class="nav-label">GESTÃO</div>
-    <a class="nav-link active" href="produtos.html"><span class="nav-icon">♧</span>Lojinha</a>
-    <div class="subnav"><a class="nav-link active" href="produtos.html">Produtos</a><a class="nav-link" href="caixa.html">Caixa</a></div>
-  </nav>
-</aside>
-<main class="main">
-  <header class="topbar"><div><div class="crumb">Lojinha / <b>Produtos</b></div><h1>Produtos</h1><p class="subtitle">Gerencie os produtos e acompanhe o estoque da lojinha.</p></div><button class="btn btn-primary" onclick="abrirModal()">＋ Novo produto</button></header>
-  <section class="stats">
-    <div class="stat"><div class="stat-label">Produtos cadastrados</div><div class="stat-value" id="statProdutos">4</div><div class="stat-note">Produtos no catálogo</div></div>
-    <div class="stat"><div class="stat-label">Unidades em estoque</div><div class="stat-value" id="statUnidades">23</div><div class="stat-note">Soma das quantidades disponíveis</div></div>
-    <div class="stat"><div class="stat-label">Atenção ao estoque</div><div class="stat-value" id="statBaixo">2</div><div class="stat-note">Produtos com 3 unidades ou menos</div></div>
-  </section>
-  <section class="panel">
-    <div class="panel-head"><div><div class="panel-title">Catálogo de produtos</div><div class="subtitle" style="margin-top:4px">Visualização de demonstração</div></div><div class="toolbar"><input class="field search" id="busca" placeholder="⌕  Buscar produto..." oninput="renderizar()"><select class="select" id="filtro" style="width:170px" onchange="renderizar()"><option value="todos">Todos os estoques</option><option value="normal">Em estoque</option><option value="baixo">Estoque baixo</option><option value="zero">Sem estoque</option></select></div></div>
-    <div class="table-wrap"><table><thead><tr><th>PRODUTO</th><th>PREÇO DE VENDA</th><th>ESTOQUE</th><th>STATUS</th><th>AÇÕES</th></tr></thead><tbody id="tabela"></tbody></table></div>
-  </section>
-  <p class="notice">* Esta é uma prévia de front-end. Os dados abaixo são fictícios e não são salvos no Google Sheets.</p>
-</main></div>
-<div class="modal-backdrop" id="modal"><div class="modal"><div class="modal-head"><h2 id="tituloModal">Novo produto</h2><button class="close" onclick="fecharModal()">×</button></div><form id="formProduto"><div class="form-grid"><div class="form-group full"><label for="descricao">Descrição do produto</label><input class="field" id="descricao" required maxlength="100" placeholder="Ex.: Shampoo Hidratante"></div><div class="form-group"><label for="preco">Preço de venda (R$)</label><input class="field" id="preco" type="number" min="0.01" step="0.01" required placeholder="0,00"></div><div class="form-group"><label for="estoque">Quantidade em estoque</label><input class="field" id="estoque" type="number" min="0" step="1" required placeholder="0"></div></div><div class="modal-actions"><button type="button" class="btn btn-light" onclick="fecharModal()">Cancelar</button><button class="btn btn-primary" type="submit">Salvar produto</button></div></form><p class="notice">A ação é apenas demonstrativa nesta versão.</p></div></div>
-<div class="toast" id="toast"></div>
-<script>
+    <button class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></button>
+    <div class="menu-overlay" id="menuOverlay"></div>
+    <aside class="sidebar">
+        <div class="logo"><h2>Luiza</h2><span>Painel Administrativo</span></div>
+        <nav>
+            <a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+            <a href="rel_agenda.html"><i class="fa-solid fa-calendar-check"></i><span>Relatório de Agendamentos</span></a>
+            <a href="rel_graficos.html"><i class="fa-solid fa-chart-column"></i><span>Gráficos e resultados</span></a>
+            <a href="gerenciamento.html"><i class="fa-solid fa-spa"></i><span>Gerenciamento</span></a>
+            <div class="shop-nav-group">
+                <a href="produtos.html" class="shop-nav-main shop-active"><i class="fa-solid fa-store"></i><span>Lojinha</span></a>
+                <div class="shop-subnav">
+                    <a href="produtos.html" class="shop-current"><i class="fa-solid fa-box"></i><span>Produtos</span></a>
+                    <a href="caixa.html" class=""><i class="fa-solid fa-cash-register"></i><span>Caixa</span></a>
+                </div>
+            </div>
+            <a href="../index.html"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Sair</span></a>
+        </nav>
+    </aside>
+    <div class="wrap shop-wrap">
+    <header class="top shop-top">
+        <div><div class="shop-breadcrumb">Lojinha <i class="fa-solid fa-chevron-right"></i> Produtos</div><h1>Produtos</h1><p class="shop-subtitle">Gerencie os produtos e acompanhe o estoque da lojinha.</p></div>
+        <button class="btn btn-gold" onclick="abrirModal()"><i class="fa-solid fa-plus"></i> Novo produto</button>
+    </header>
+    <section class="shop-stats">
+        <div class="shop-stat"><div class="shop-stat-label">Produtos cadastrados</div><div class="shop-stat-value" id="statProdutos">4</div><div class="shop-stat-note">Produtos no catálogo</div></div>
+        <div class="shop-stat"><div class="shop-stat-label">Unidades em estoque</div><div class="shop-stat-value" id="statUnidades">23</div><div class="shop-stat-note">Soma das quantidades disponíveis</div></div>
+        <div class="shop-stat"><div class="shop-stat-label">Atenção ao estoque</div><div class="shop-stat-value" id="statBaixo">2</div><div class="shop-stat-note">Produtos com 3 unidades ou menos</div></div>
+    </section>
+    <section class="shop-panel">
+      <div class="shop-panel-head"><div><h2>Catálogo de produtos</h2><p>Visualização de demonstração</p></div><div class="shop-toolbar"><input class="shop-field shop-search" id="busca" placeholder="Buscar produto..." oninput="renderizar()"><select class="shop-field shop-select" id="filtro" onchange="renderizar()"><option value="todos">Todos os estoques</option><option value="normal">Em estoque</option><option value="baixo">Estoque baixo</option><option value="zero">Sem estoque</option></select></div></div>
+      <div class="shop-table-wrap"><table class="shop-table"><thead><tr><th>PRODUTO</th><th>PREÇO DE VENDA</th><th>ESTOQUE</th><th>STATUS</th><th>AÇÕES</th></tr></thead><tbody id="tabela"></tbody></table></div>
+    </section>
+    <p class="shop-notice"><i class="fa-solid fa-circle-info"></i> Prévia de front-end: os dados são fictícios e não são salvos no Google Sheets.</p>
+    <div class="shop-modal-backdrop" id="modal"><div class="shop-modal"><div class="shop-modal-head"><h2 id="tituloModal">Novo produto</h2><button class="shop-close" onclick="fecharModal()" aria-label="Fechar">×</button></div><form id="formProduto"><div class="shop-form-grid"><div class="shop-form-group shop-full"><label for="descricao">Descrição do produto</label><input class="shop-field" id="descricao" required maxlength="100" placeholder="Ex.: Shampoo Hidratante"></div><div class="shop-form-group"><label for="preco">Preço de venda (R$)</label><input class="shop-field" id="preco" type="number" min="0.01" step="0.01" required placeholder="0,00"></div><div class="shop-form-group"><label for="estoque">Quantidade em estoque</label><input class="shop-field" id="estoque" type="number" min="0" step="1" required placeholder="0"></div></div><div class="shop-modal-actions"><button type="button" class="btn btn-light" onclick="fecharModal()">Cancelar</button><button class="btn btn-gold" type="submit">Salvar produto</button></div></form><p class="shop-notice">Ação apenas demonstrativa nesta versão.</p></div></div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script>
+      // Mantém o menu responsivo do painel quando os scripts do menu estiverem disponíveis.
+      const shopToggle = document.getElementById('menuToggle');
+      const shopOverlay = document.getElementById('menuOverlay');
+      if (shopToggle) shopToggle.addEventListener('click', () => document.body.classList.toggle('menu-aberto'));
+      if (shopOverlay) shopOverlay.addEventListener('click', () => document.body.classList.remove('menu-aberto'));
+    </script>
+    <script>
 let produtos=[
 {id:1,nome:'Shampoo Hidratante',preco:45,estoque:12,emoji:'🧴'},
 {id:2,nome:'Máscara Capilar',preco:62.90,estoque:3,emoji:'🫙'},
@@ -51,4 +74,6 @@ function excluir(id){const p=produtos.find(x=>x.id===id);if(p&&confirm(`Excluir 
 document.getElementById('formProduto').addEventListener('submit',e=>{e.preventDefault();const nome=document.getElementById('descricao').value.trim(),preco=Number(document.getElementById('preco').value),estoque=Number(document.getElementById('estoque').value);if(!nome||preco<=0||estoque<0)return; if(editando!==null){const p=produtos.find(x=>x.id===editando);if(p)Object.assign(p,{nome,preco,estoque});}else produtos.push({id:proximoId++,nome,preco,estoque,emoji:'🧴'});fecharModal();renderizar();aviso('Alteração feita somente nesta demonstração.');});
 function aviso(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2800)}
 document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')fecharModal()});renderizar();
-</script></body></html>
+</script>
+</body>
+</html>
