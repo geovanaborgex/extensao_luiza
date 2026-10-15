@@ -52,7 +52,7 @@
     <!-- NOME -->
     <div class="form-group">
       <label>Nome</label>
-      <input type="text" name="nome" required>
+      <input type="text" id="nome" name="nome" required>
     </div>
 
     <!-- TELEFONE -->
@@ -402,19 +402,25 @@
         <p>
           O sinal corresponde a 20% do valor total dos procedimentos.
         </p>
-
-        <p class="aviso-pagamento-teste">
-          A integração de pagamento ainda não está ativa.
-          Nenhuma cobrança será realizada nesta etapa.
-        </p>
-
+        
+        <label class="aceite-politica-checkbox">
+          <input type="checkbox" id="aceitePoliticaSinal">
+          Li e concordo com a política de agendamento.
+        </label>
+        
         <button
           type="button"
+          id="btnPagamentoSinal"
           class="btn-confirmar-horario"
-          onclick="simularGeracaoPagamento()"
+          onclick="iniciarPagamentoSinal()"
         >
-          PAGAMENTO EM BREVE
+          IR PARA O PAGAMENTO
         </button>
+        
+        <p class="aviso-pagamento-teste">
+          O agendamento só será confirmado após a validação do pagamento.
+        </p>
+  
 
       </div>
 
@@ -430,7 +436,7 @@
     </div>
 
   </div>
-
+</div>
 
 <!-- JS -->
 <script>
@@ -1198,12 +1204,73 @@ function voltarParaHorario() {
     document.getElementById("etapaHorario").style.display = "block";
 }
 
-function simularGeracaoPagamento() {
-  Swal.fire({
-    icon: "info",
-    title: "Pagamento em desenvolvimento",
-    text: "Esta é uma versão de teste. Nenhum pagamento foi gerado e seu agendamento ainda não foi confirmado."
-  });
+async function iniciarPagamentoSinal() {
+    const aceite = document.getElementById("aceitePoliticaSinal");
+    const botao = document.getElementById("btnPagamentoSinal");
+
+    if (!aceite || !aceite.checked) {
+        alert("Você precisa ler e concordar com a política de agendamento.");
+        return;
+    }
+
+    if (!dataSelecionada || !horarioSelecionado) {
+        alert("Selecione uma data e um horário antes de continuar.");
+        return;
+    }
+
+    if (!procedimentosSelecionados || procedimentosSelecionados.length === 0) {
+        alert("Selecione pelo menos um procedimento.");
+        return;
+    }
+
+    const nome = document.getElementById("nome")?.value?.trim() || "";
+    const telefone = document.getElementById("telefone")?.value?.trim() || "";
+
+    if (!nome || !telefone) {
+        alert("Confira se o nome e o telefone foram preenchidos.");
+        return;
+    }
+
+    const textoOriginal = botao.textContent;
+    botao.disabled = true;
+    botao.textContent = "GERANDO PAGAMENTO...";
+
+    try {
+        const resposta = await fetch("criar_pagamento.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nome: nome,
+                telefone: telefone,
+                data: dataSelecionada,
+                horario: horarioSelecionado,
+                procedimentos: procedimentosSelecionados
+            })
+        });
+
+        const resultado = await resposta.json();
+
+        if (!resposta.ok || !resultado.sucesso || !resultado.url) {
+            throw new Error(
+                resultado.mensagem || resultado.erro ||
+                "Não foi possível gerar o link de pagamento."
+            );
+        }
+
+        if (!resultado.url.startsWith("https://")) {
+            throw new Error("O endereço de pagamento retornado é inválido.");
+        }
+
+        window.location.href = resultado.url;
+
+    } catch (erro) {
+        console.error("Erro ao gerar pagamento:", erro);
+        alert("Não foi possível gerar o pagamento. " + erro.message);
+        botao.disabled = false;
+        botao.textContent = textoOriginal;
+    }
 }
 
 telefoneInput.addEventListener("input", function(e){
@@ -1228,6 +1295,7 @@ telefoneInput.addEventListener("input", function(e){
 
   e.target.value = valor;
 });
+
 </script>
 
 
