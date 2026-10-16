@@ -27,7 +27,7 @@
         </div>
 
         <nav>
-            <a href="dashboard.html"  class="ativo">
+            <a href="dashboard.html">
                 <i class="fa-solid fa-house"></i>
                 <span>Dashboard</span>
             </a>
@@ -47,7 +47,7 @@
                 <span>Gerenciamento</span>
             </a>
 
-            <a href="produtos.html">
+            <a href="produtos.html" class="ativo">
                 <i class="fa-solid fa-bottle-droplet"></i>
                 <span>Produtos - Estoque</span>
             </a>
@@ -67,7 +67,7 @@
 
     <div class="wrap shop-wrap">
     <header class="top shop-top">
-        <div><div class="shop-breadcrumb">Lojinha <i class="fa-solid fa-chevron-right"></i> Produtos</div><h1>Produtos</h1><p class="shop-subtitle">Gerencie os produtos e acompanhe o estoque da lojinha.</p></div>
+        <div><h1>Produtos</h1></div>
         <button class="btn btn-gold" onclick="abrirModal()"><i class="fa-solid fa-plus"></i> Novo produto</button>
     </header>
     <section class="shop-stats">
@@ -89,7 +89,7 @@
     </section>
     <section class="shop-panel">
       <div class="shop-panel-head">
-        <div><h2>Catálogo de produtos</h2><p>Visualização de demonstração</p></div>
+        <div><h2>Catálogo de produtos</h2></div>
         <div class="shop-toolbar">
             <input class="shop-field shop-search" id="busca" placeholder="Buscar produto..." oninput="renderizar()">
             <select class="shop-field shop-select" id="filtro" onchange="renderizar()">

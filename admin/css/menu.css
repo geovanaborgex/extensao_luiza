@@ -6,7 +6,7 @@
     top:0;
     width:260px;
     height:100vh;
-    background:#6B6E55;
+    background:#6B6E55 !important;
     color:#fff;
     padding:30px 20px;
     overflow-y:auto;

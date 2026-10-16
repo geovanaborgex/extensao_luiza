@@ -27,7 +27,7 @@
     </div>
 
     <nav>
-        <a href="dashboard.html"  class="ativo">
+        <a href="dashboard.html" >
             <i class="fa-solid fa-house"></i>
             <span>Dashboard</span>
         </a>
@@ -52,7 +52,7 @@
             <span>Produtos - Estoque</span>
         </a>
         
-        <a href="caixa.html">
+        <a href="caixa.html" class="ativo">
             <i class="fa-solid fa-cash-register"></i>
             <span>Caixa - Vendas</span>
         </a>
@@ -66,12 +66,12 @@
 
     <div class="wrap shop-wrap">
     <header class="top shop-top">
-      <div><div class="shop-breadcrumb">Lojinha <i class="fa-solid fa-chevron-right"></i> Caixa</div><h1>Caixa</h1><p class="shop-subtitle">Registre uma venda e confira o valor total antes de finalizar.</p></div>
+      <div><h1>Caixa</h1></div>
       <span class="shop-open-label"><i class="fa-solid fa-circle"></i> Caixa aberto</span>
     </header>
     <section class="shop-stats"><div class="shop-stat"><div class="shop-stat-label">Itens no catálogo</div><div class="shop-stat-value" id="statCatalogo">4</div><div class="shop-stat-note">Produtos disponíveis para seleção</div></div><div class="shop-stat"><div class="shop-stat-label">Itens na venda</div><div class="shop-stat-value" id="statItens">0</div><div class="shop-stat-note">Quantidade total no carrinho</div></div><div class="shop-stat"><div class="shop-stat-label">Total da venda</div><div class="shop-stat-value" id="statTotal">R$ 0,00</div><div class="shop-stat-note">Atualizado automaticamente</div></div></section>
     <div class="shop-sale-grid">
-      <section class="shop-panel"><div class="shop-panel-head"><div><h2>Selecionar produtos</h2><p>Clique em um produto para adicionar à venda</p></div><input class="shop-field shop-search" id="busca" placeholder="Buscar produto..." oninput="renderizarProdutos()"></div><div class="product-picker" id="listaProdutos"></div></section>
+      <section class="shop-panel"><div class="shop-panel-head"><div><h2>Selecionar produtos</h2></div><input class="shop-field shop-search" id="busca" placeholder="Buscar produto..." oninput="renderizarProdutos()"></div><div class="product-picker" id="listaProdutos"></div></section>
       <section class="shop-panel shop-cart-panel"><div class="shop-panel-head"><div><h2>Nova venda</h2><p>Preencha o cliente e confira os itens</p></div><button class="btn btn-light" onclick="limparCarrinho()">Limpar</button></div><div class="shop-cart-body"><div class="shop-form-group"><label for="cliente">Nome do cliente</label><input class="shop-field" id="cliente" placeholder="Ex.: Geovana"></div><div class="shop-cart-label">Produtos da venda</div><div id="carrinho"><div class="cart-empty">Nenhum produto adicionado.</div></div><div class="shop-total-row"><span>Total da venda</span><strong id="total">R$ 0,00</strong></div><button class="btn btn-gold shop-checkout" onclick="finalizarVenda()"><i class="fa-solid fa-check"></i> Finalizar venda</button><p class="shop-notice">A finalização é apenas uma simulação; nada será salvo nem o estoque será alterado.</p></div></section>
     </div>
     </div>
