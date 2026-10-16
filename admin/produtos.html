@@ -12,25 +12,49 @@
     <link rel="stylesheet" href="css/lojinha.css">
 </head>
 <body>
-    <button class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></button>
-    <div class="menu-overlay" id="menuOverlay"></div>
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      
+      <div class="menu-overlay" id="menuOverlay"></div>
+      
+    <!-- MENU LATERAL -->
+
     <aside class="sidebar">
-        <div class="logo"><h2>Luiza</h2><span>Painel Administrativo</span></div>
+        <div class="logo">
+            <h2>Luiza</h2>
+            <span>Painel Administrativo</span>
+        </div>
+
         <nav>
-            <a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
-            <a href="rel_agenda.html"><i class="fa-solid fa-calendar-check"></i><span>Relatório de Agendamentos</span></a>
-            <a href="rel_graficos.html"><i class="fa-solid fa-chart-column"></i><span>Gráficos e resultados</span></a>
-            <a href="gerenciamento.html"><i class="fa-solid fa-spa"></i><span>Gerenciamento</span></a>
-            <div class="shop-nav-group">
-                <a href="produtos.html" class="shop-nav-main shop-active"><i class="fa-solid fa-store"></i><span>Lojinha</span></a>
-                <div class="shop-subnav">
-                    <a href="produtos.html" class="shop-current"><i class="fa-solid fa-box"></i><span>Produtos</span></a>
-                    <a href="caixa.html" class=""><i class="fa-solid fa-cash-register"></i><span>Caixa</span></a>
-                </div>
-            </div>
-            <a href="../index.html"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Sair</span></a>
+            <a href="dashboard.html"  class="ativo">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="rel_agenda.html">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span>Relatório de Agendamentos</span>
+            </a>
+
+            <a href="rel_graficos.html">
+                <i class="fa-solid fa-chart-column"></i>
+                <span>Gráficos e resultados</span>
+            </a>
+
+            <a href="gerenciamento.html">
+                <i class="fa-solid fa-spa"></i>
+                <span>Gerenciamento</span>
+            </a>
+
+            <a href="../index.html">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Sair</span>
+            </a>
         </nav>
     </aside>
+
+
     <div class="wrap shop-wrap">
     <header class="top shop-top">
         <div><div class="shop-breadcrumb">Lojinha <i class="fa-solid fa-chevron-right"></i> Produtos</div><h1>Produtos</h1><p class="shop-subtitle">Gerencie os produtos e acompanhe o estoque da lojinha.</p></div>
