@@ -284,7 +284,7 @@ try {
     
         'customer' => [
             'name' => $nome,
-            'phone_number' => $telefoneFormatado
+            'phone_number' => $telefone
         ],
     
         'items' => [
