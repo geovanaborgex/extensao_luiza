@@ -47,6 +47,16 @@
                 <span>Gerenciamento</span>
             </a>
 
+            <a href="produtos.html">
+                <i class="fa-solid fa-bottle-droplet"></i>
+                <span>Produtos - Estoque</span>
+            </a>
+            
+            <a href="caixa.html">
+                <i class="fa-solid fa-cash-register"></i>
+                <span>Caixa - Vendas</span>
+            </a>
+
             <a href="../index.html">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
                 <span>Sair</span>
@@ -61,13 +71,44 @@
         <button class="btn btn-gold" onclick="abrirModal()"><i class="fa-solid fa-plus"></i> Novo produto</button>
     </header>
     <section class="shop-stats">
-        <div class="shop-stat"><div class="shop-stat-label">Produtos cadastrados</div><div class="shop-stat-value" id="statProdutos">4</div><div class="shop-stat-note">Produtos no catálogo</div></div>
-        <div class="shop-stat"><div class="shop-stat-label">Unidades em estoque</div><div class="shop-stat-value" id="statUnidades">23</div><div class="shop-stat-note">Soma das quantidades disponíveis</div></div>
-        <div class="shop-stat"><div class="shop-stat-label">Atenção ao estoque</div><div class="shop-stat-value" id="statBaixo">2</div><div class="shop-stat-note">Produtos com 3 unidades ou menos</div></div>
+        <div class="shop-stat">
+            <div class="shop-stat-label">Produtos cadastrados</div>
+            <div class="shop-stat-value" id="statProdutos">4</div>
+            <div class="shop-stat-note">Produtos no catálogo</div>
+        </div>
+        <div class="shop-stat">
+            <div class="shop-stat-label">Unidades em estoque</div>
+            <div class="shop-stat-value" id="statUnidades">23</div>
+            <div class="shop-stat-note">Soma das quantidades disponíveis</div>
+        </div>
+        <div class="shop-stat">
+            <div class="shop-stat-label">Atenção ao estoque</div>
+            <div class="shop-stat-value" id="statBaixo">2</div>
+            <div class="shop-stat-note">Produtos com 3 unidades ou menos</div>
+        </div>
     </section>
     <section class="shop-panel">
-      <div class="shop-panel-head"><div><h2>Catálogo de produtos</h2><p>Visualização de demonstração</p></div><div class="shop-toolbar"><input class="shop-field shop-search" id="busca" placeholder="Buscar produto..." oninput="renderizar()"><select class="shop-field shop-select" id="filtro" onchange="renderizar()"><option value="todos">Todos os estoques</option><option value="normal">Em estoque</option><option value="baixo">Estoque baixo</option><option value="zero">Sem estoque</option></select></div></div>
-      <div class="shop-table-wrap"><table class="shop-table"><thead><tr><th>PRODUTO</th><th>PREÇO DE VENDA</th><th>ESTOQUE</th><th>STATUS</th><th>AÇÕES</th></tr></thead><tbody id="tabela"></tbody></table></div>
+      <div class="shop-panel-head">
+        <div><h2>Catálogo de produtos</h2><p>Visualização de demonstração</p></div>
+        <div class="shop-toolbar">
+            <input class="shop-field shop-search" id="busca" placeholder="Buscar produto..." oninput="renderizar()">
+            <select class="shop-field shop-select" id="filtro" onchange="renderizar()">
+                <option value="todos">Todos os estoques</option>
+                <option value="normal">Em estoque</option>
+                <option value="baixo">Estoque baixo</option>
+                <option value="zero">Sem estoque</option></select></div></div>
+      <div class="shop-table-wrap">
+        <table class="shop-table">
+            <thead>
+                <tr><th>PRODUTO</th>
+                    <th>PREÇO DE VENDA</th>
+                    <th>ESTOQUE</th>
+                    <th>STATUS</th>
+                    <th>AÇÕES</th>
+                </tr></thead>
+                <tbody id="tabela"></tbody>
+            </table>
+        </div>
     </section>
     <p class="shop-notice"><i class="fa-solid fa-circle-info"></i> Prévia de front-end: os dados são fictícios e não são salvos no Google Sheets.</p>
     <div class="shop-modal-backdrop" id="modal"><div class="shop-modal"><div class="shop-modal-head"><h2 id="tituloModal">Novo produto</h2><button class="shop-close" onclick="fecharModal()" aria-label="Fechar">×</button></div><form id="formProduto"><div class="shop-form-grid"><div class="shop-form-group shop-full"><label for="descricao">Descrição do produto</label><input class="shop-field" id="descricao" required maxlength="100" placeholder="Ex.: Shampoo Hidratante"></div><div class="shop-form-group"><label for="preco">Preço de venda (R$)</label><input class="shop-field" id="preco" type="number" min="0.01" step="0.01" required placeholder="0,00"></div><div class="shop-form-group"><label for="estoque">Quantidade em estoque</label><input class="shop-field" id="estoque" type="number" min="0" step="1" required placeholder="0"></div></div><div class="shop-modal-actions"><button type="button" class="btn btn-light" onclick="fecharModal()">Cancelar</button><button class="btn btn-gold" type="submit">Salvar produto</button></div></form><p class="shop-notice">Ação apenas demonstrativa nesta versão.</p></div></div>
