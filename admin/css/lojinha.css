@@ -1,18 +1,22 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
+/* =========================================
+   1. VARIÁVEIS E CONFIGURAÇÕES GERAIS
+========================================= */
+
 :root {
     --olive: #6B6E55;
     --olive-dark: #575945;
     --gold: #C9A86A;
     --bg: #f7f7f3;
-    --card: #fff;
+    --card: #ffffff;
     --text: #303127;
     --muted: #858679;
     --line: #e9e9e1;
     --red: #b94a48;
     --green: #54775a;
-    --shadow: 0 5px 22px rgba(44, 45, 33, .05);
+    --shadow: 0 5px 22px rgba(44, 45, 33, 0.05);
 }
 
 * {
@@ -27,49 +31,111 @@ body {
     font-size: 14px;
 }
 
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+}
+
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* =========================================
+   2. ESTRUTURA GERAL
+========================================= */
+
 .layout {
     min-height: 100vh;
     display: flex;
 }
 
+.main {
+    flex: 1;
+    min-width: 0;
+    padding: 34px 38px 45px;
+}
+
+.topbar,
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.crumb {
+    margin-bottom: 6px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.crumb b {
+    color: var(--olive);
+}
+
+h1 {
+    margin: 0 0 5px;
+    font-size: 25px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: white;
+}
+
+h2 {
+    color: var(--text);
+}
+
+.subtitle {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* =========================================
+   3. MENU E NAVEGAÇÃO
+========================================= */
+
 .brand {
     padding: 0 12px 30px;
-    border-bottom: 1px solid var(--line);
     margin-bottom: 22px;
+    border-bottom: 1px solid var(--line);
 }
 
 .brand strong {
     display: block;
-    font-size: 14px;
-    letter-spacing: .5px;
     color: var(--olive-dark);
+    font-size: 14px;
+    letter-spacing: 0.5px;
 }
 
 .brand span {
-    font-size: 10px;
     color: var(--muted);
+    font-size: 10px;
     letter-spacing: 2px;
 }
 
 .nav-label {
+    margin: 10px 0;
+    padding: 0 13px;
+    color: #a2a393;
     font-size: 10px;
     font-weight: 600;
-    color: #a2a393;
     letter-spacing: 1.5px;
-    padding: 0 13px;
-    margin: 10px 0;
 }
 
 .nav-link {
     display: flex;
     align-items: center;
     gap: 12px;
-    text-decoration: none;
-    color: #77796b;
+    margin: 3px 0;
     padding: 12px 13px;
     border-radius: 9px;
-    margin: 3px 0;
+    color: #77796b;
     font-size: 13px;
+    text-decoration: none;
 }
 
 .nav-link:hover,
@@ -94,63 +160,46 @@ body {
     font-size: 12px;
 }
 
-.main {
-    flex: 1;
-    min-width: 0;
-    padding: 34px 38px 45px;
-}
-
-.topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 28px;
-}
-
-.crumb {
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 6px;
-}
-
-.crumb b {
-    color: var(--olive);
-}
-
-h1 {
-    font-size: 25px;
-    margin: 0 0 5px;
-    font-weight: 600;
-    letter-spacing: -.5px;
-}
-
-.subtitle {
-    color: var(--muted);
-    font-size: 12px;
-    margin: 0;
-}
+/* =========================================
+   4. BOTÕES
+========================================= */
 
 .btn {
-    border: 0;
-    border-radius: 8px;
-    padding: 11px 16px;
-    font: 500 12px 'Poppins', sans-serif;
-    cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    transition: .15s;
+    padding: 11px 16px;
+    border: 0;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
 }
 
 .btn-primary {
     background: var(--olive);
-    color: #fff;
+    color: #ffffff;
 }
 
 .btn-primary:hover {
     background: var(--olive-dark);
+}
+
+/* Botão utilizado na tela de produtos */
+
+.btn-gold {
+    background: var(--gold);
+    color: #ffffff;
+}
+
+.btn-gold:hover {
+    background: #b89552;
 }
 
 .btn-light {
@@ -158,114 +207,178 @@ h1 {
     color: var(--olive-dark);
 }
 
+.btn-light:hover {
+    background: #e6e6dc;
+}
+
 .btn-danger {
     background: #fbefed;
     color: var(--red);
 }
 
-.stats {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
-    margin-bottom: 22px;
+.btn:focus-visible,
+.icon-btn:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
 }
 
-.stat {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 13px;
-    padding: 18px 20px;
-    box-shadow: var(--shadow);
-}
-
-.stat-label {
-    font-size: 11px;
-    color: var(--muted);
-    margin-bottom: 9px;
-}
-
-.stat-value {
-    font-size: 25px;
-    font-weight: 600;
-    letter-spacing: -.5px;
-}
-
-.stat-note {
-    font-size: 10px;
-    color: var(--muted);
-    margin-top: 4px;
-}
-
-.panel {
-    background: #fff;
-    border: 1px solid var(--line);
-    border-radius: 13px;
-    box-shadow: var(--shadow);
-    overflow: hidden;
-}
-
-.panel-head {
-    padding: 18px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-    border-bottom: 1px solid var(--line);
-}
-
-.panel-title {
-    font-weight: 600;
-    font-size: 13px;
-}
-
-.toolbar {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    flex-wrap: wrap;
-}
+/* =========================================
+   5. CAMPOS E FORMULÁRIOS
+========================================= */
 
 .field,
 .select,
-textarea {
+textarea,
+.shop-field {
     width: 100%;
-    font: 400 12px 'Poppins', sans-serif;
-    color: var(--text);
+    padding: 11px 12px;
     border: 1px solid #dedfd5;
     border-radius: 8px;
-    background: #fff;
-    padding: 11px 12px;
     outline: none;
+    background: #ffffff;
+    color: var(--text);
+    font-size: 12px;
 }
 
 .field:focus,
 .select:focus,
-textarea:focus {
+textarea:focus,
+.shop-field:focus {
     border-color: var(--olive);
+    box-shadow: 0 0 0 2px rgba(107, 110, 85, 0.10);
 }
 
 .search {
     width: 230px;
 }
 
-.table-wrap {
+.toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* =========================================
+   6. INDICADORES
+========================================= */
+
+.stats,
+.shop-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.stat,
+.shop-stat {
+    min-width: 0;
+    padding: 18px 20px;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: var(--card);
+    box-shadow: var(--shadow);
+}
+
+.stat-label,
+.shop-stat-label {
+    margin-bottom: 9px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.stat-value,
+.shop-stat-value {
+    font-size: 25px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.stat-note,
+.shop-stat-note {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+/* =========================================
+   7. PAINÉIS E CABEÇALHOS
+========================================= */
+
+.panel,
+.shop-panel {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: #ffffff;
+    box-shadow: var(--shadow);
+}
+
+.panel-head,
+.shop-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--line);
+}
+
+.panel-title {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.shop-panel-head h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.shop-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.shop-search {
+    width: 230px;
+    min-width: 180px;
+}
+
+.shop-select {
+    width: auto;
+    min-width: 170px;
+    cursor: pointer;
+}
+
+/* =========================================
+   8. TABELAS GERAIS
+========================================= */
+
+.table-wrap,
+.shop-table-wrap {
+    width: 100%;
     overflow-x: auto;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    white-space: nowrap;
 }
 
 th {
-    font-size: 10px;
+    padding: 13px 20px;
+    background: #fcfcfa;
     color: #8d8f80;
     text-align: left;
-    letter-spacing: .7px;
+    font-size: 10px;
     font-weight: 600;
-    background: #fcfcfa;
-    padding: 13px 20px;
+    letter-spacing: 0.7px;
 }
 
 td {
@@ -278,44 +391,101 @@ tbody tr:hover {
     background: #fdfdfb;
 }
 
+/* =========================================
+   9. TABELA DE PRODUTOS
+========================================= */
+
+.shop-table {
+    width: 100%;
+    min-width: 700px;
+    table-layout: auto;
+    border-collapse: collapse;
+}
+
+.shop-table th,
+.shop-table td {
+    padding: 14px 12px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.shop-table th {
+    white-space: nowrap;
+}
+
+.shop-table td {
+    border-top: 1px solid #f0f0eb;
+}
+
+.shop-table tbody tr:hover {
+    background: #fdfdfb;
+}
+
+/* Evita que a descrição fique espremida */
+
+.shop-table th:first-child,
+.shop-table td:first-child {
+    min-width: 220px;
+}
+
+/* =========================================
+   10. IDENTIFICAÇÃO DOS PRODUTOS
+========================================= */
+
 .product-cell {
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 0;
 }
 
 .product-thumb {
-    width: 38px;
-    height: 42px;
-    border-radius: 8px;
-    background: #f0eee4;
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    font-size: 19px;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: #f4f1e9;
+    font-size: 21px;
 }
 
 .product-name {
-    font-weight: 500;
+    overflow-wrap: anywhere;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
 }
 
 .product-code {
-    font-size: 10px;
+    margin-top: 4px;
     color: var(--muted);
-    margin-top: 3px;
+    font-size: 10px;
 }
 
-.price {
+.shop-table .price {
+    white-space: nowrap;
     font-weight: 600;
 }
+
+.shop-table td:nth-child(3) {
+    white-space: nowrap;
+}
+
+/* =========================================
+   11. STATUS DO ESTOQUE
+========================================= */
 
 .pill {
     display: inline-flex;
     align-items: center;
-    border-radius: 20px;
+    justify-content: center;
     padding: 5px 9px;
+    border-radius: 20px;
     font-size: 10px;
     font-weight: 500;
+    white-space: nowrap;
 }
 
 .pill-green {
@@ -333,113 +503,275 @@ tbody tr:hover {
     color: var(--red);
 }
 
-.actions {
+/* =========================================
+   12. CADASTRO INLINE DE NOVO PRODUTO
+========================================= */
+
+/* Destaca a linha que está sendo cadastrada */
+
+.shop-table .linha-novo-produto {
+    background: #faf9f5;
+}
+
+.shop-table .linha-novo-produto:hover {
+    background: #f6f4ed;
+}
+
+.shop-table .linha-novo-produto td {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border-top: 1px solid #e8dfcb;
+    border-bottom: 1px solid #e8dfcb;
+}
+
+/* Campos de cadastro e edição */
+
+.shop-table .campo-edicao {
+    display: block;
+    width: 100%;
+    min-width: 90px;
+    max-width: 180px;
+    min-height: 38px;
+    padding: 8px 10px;
+    border: 1px solid #d8c49e;
+    border-radius: 8px;
+    outline: none;
+    background: #ffffff;
+    color: var(--text);
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 12px;
+    box-sizing: border-box;
+}
+
+.shop-table .campo-edicao::placeholder {
+    color: #a3a397;
+    opacity: 1;
+}
+
+.shop-table .campo-edicao:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201, 168, 106, 0.15);
+}
+
+/* Campo de descrição */
+
+.shop-table .product-cell .campo-edicao {
+    min-width: 150px;
+    max-width: 220px;
+}
+
+/* Campo de quantidade */
+
+.shop-table .campo-estoque {
+    min-width: 70px;
+    max-width: 90px;
+}
+
+/* Status temporário da nova linha */
+
+.shop-table .linha-novo-produto .pill {
+    background: #f0eee4;
+    color: var(--olive-dark);
+}
+
+/* =========================================
+   13. BOTÕES DE AÇÃO DA TABELA
+========================================= */
+
+.actions,
+.shop-table .actions {
     display: flex;
-    gap: 6px;
+    align-items: center;
+    gap: 7px;
+    white-space: nowrap;
 }
 
 .icon-btn {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
     border: 1px solid var(--line);
-    background: #fff;
-    border-radius: 7px;
-    padding: 7px 9px;
-    cursor: pointer;
+    border-radius: 8px;
+    background: #ffffff;
     color: #77796b;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
 .icon-btn:hover {
-    background: #f2f2eb;
+    border-color: #d8c49e;
+    background: #f4f1e9;
+    color: var(--olive-dark);
 }
 
+/* Botão de salvar */
+
+.shop-table .linha-novo-produto .icon-btn:first-child,
+.shop-table tr:has(input) .icon-btn:first-child {
+    color: var(--green);
+}
+
+.shop-table .linha-novo-produto .icon-btn:first-child:hover {
+    border-color: #b8ceb9;
+    background: #edf4ed;
+}
+
+/* Botão de cancelar */
+
+.shop-table .linha-novo-produto .icon-btn:last-child:hover {
+    border-color: #e5c2bd;
+    background: #fbefed;
+    color: var(--red);
+}
+
+/* =========================================
+   14. MENSAGENS E NOTIFICAÇÕES
+========================================= */
+
 .empty {
-    text-align: center;
     padding: 35px;
     color: var(--muted);
+    text-align: center;
 }
+
+.shop-notice,
+.notice {
+    margin: 14px 0 0;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.shop-notice i {
+    margin-right: 5px;
+}
+
+.toast {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 100;
+    display: none;
+    max-width: calc(100vw - 32px);
+    padding: 13px 18px;
+    border-radius: 9px;
+    background: #303127;
+    color: #ffffff;
+    font-size: 12px;
+    box-shadow: var(--shadow);
+}
+
+.toast.show {
+    display: block;
+}
+
+/* =========================================
+   15. MODAIS LEGADOS
+   Mantidos para telas que ainda os utilizam
+========================================= */
 
 .modal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(30, 31, 24, .38);
+    z-index: 50;
     display: none;
     align-items: center;
     justify-content: center;
     padding: 20px;
-    z-index: 10;
+    background: rgba(30, 31, 24, 0.38);
 }
 
 .modal-backdrop.open {
     display: flex;
 }
 
-.modal {
-    background: #fff;
+.modal,
+.shop-modal {
     width: min(470px, 100%);
-    border-radius: 15px;
+    max-height: 90vh;
+    overflow-y: auto;
     padding: 24px;
-    box-shadow: 0 20px 70px #0002;
+    border-radius: 15px;
+    background: #ffffff;
+    box-shadow: 0 20px 70px rgba(0, 0, 0, 0.13);
 }
 
-.modal-head {
+.modal-head,
+.shop-modal-head {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    gap: 12px;
     margin-bottom: 20px;
 }
 
-.modal-head h2 {
-    font-size: 18px;
+.modal-head h2,
+.shop-modal-head h2 {
     margin: 0;
+    font-size: 18px;
 }
 
-.close {
+.close,
+.shop-close {
     border: 0;
-    background: none;
+    background: transparent;
+    color: var(--muted);
     font-size: 22px;
     cursor: pointer;
-    color: var(--muted);
 }
 
-.form-grid {
+.form-grid,
+.shop-form-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px;
 }
 
-.form-group {
+.form-group,
+.shop-form-group {
     display: flex;
+    min-width: 0;
     flex-direction: column;
     gap: 7px;
 }
 
-.form-group.full {
+.form-group.full,
+.shop-form-group.shop-full {
     grid-column: 1 / -1;
 }
 
-.form-group label {
+.form-group label,
+.shop-form-group label {
+    color: #6f7164;
     font-size: 11px;
     font-weight: 500;
-    color: #6f7164;
 }
 
-.modal-actions {
+.shop-form-group .shop-field {
+    width: 100%;
+}
+
+.modal-actions,
+.shop-modal-actions {
     display: flex;
     justify-content: flex-end;
+    flex-wrap: wrap;
     gap: 9px;
     margin-top: 22px;
 }
 
-.notice {
-    font-size: 11px;
-    color: var(--muted);
-    margin: 14px 0 0;
-}
+/* =========================================
+   16. TELA DE VENDAS / CAIXA
+========================================= */
 
 .sale-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.3fr) minmax(320px, .8fr);
-    gap: 18px;
+    grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.8fr);
     align-items: start;
+    gap: 18px;
 }
 
 .product-picker {
@@ -450,53 +782,53 @@ tbody tr:hover {
 }
 
 .pick-card {
+    padding: 14px;
     border: 1px solid var(--line);
     border-radius: 11px;
-    padding: 14px;
+    background: #ffffff;
     text-align: left;
-    background: #fff;
     cursor: pointer;
-    transition: .15s;
+    transition: border-color 0.2s, transform 0.2s;
 }
 
 .pick-card:hover {
-    border-color: var(--gold);
     transform: translateY(-1px);
+    border-color: var(--gold);
 }
 
 .pick-top {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 15px;
 }
 
 .pick-emoji {
-    font-size: 25px;
-    width: 43px;
-    height: 43px;
-    background: #f2f0e7;
-    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 43px;
+    height: 43px;
+    border-radius: 10px;
+    background: #f2f0e7;
+    font-size: 25px;
 }
 
 .pick-name {
+    margin-bottom: 5px;
     font-size: 12px;
     font-weight: 500;
-    margin-bottom: 5px;
 }
 
 .pick-stock {
-    font-size: 10px;
     color: var(--muted);
+    font-size: 10px;
 }
 
 .pick-price {
-    font-weight: 600;
-    color: var(--olive-dark);
     margin-top: 10px;
+    color: var(--olive-dark);
+    font-weight: 600;
 }
 
 .cart-body {
@@ -521,9 +853,9 @@ tbody tr:hover {
 }
 
 .cart-line-meta {
-    font-size: 10px;
-    color: var(--muted);
     margin-top: 4px;
+    color: var(--muted);
+    font-size: 10px;
 }
 
 .qty-control {
@@ -536,8 +868,8 @@ tbody tr:hover {
     width: 25px;
     height: 25px;
     border: 1px solid var(--line);
-    background: #fff;
     border-radius: 6px;
+    background: #ffffff;
     cursor: pointer;
 }
 
@@ -548,36 +880,36 @@ tbody tr:hover {
 }
 
 .remove-line {
-    border: 0;
-    background: none;
-    color: var(--red);
-    cursor: pointer;
-    font-size: 12px;
     margin-left: 5px;
+    border: 0;
+    background: transparent;
+    color: var(--red);
+    font-size: 12px;
+    cursor: pointer;
 }
 
 .cart-empty {
-    text-align: center;
-    color: var(--muted);
     padding: 25px 0;
+    color: var(--muted);
+    text-align: center;
     font-size: 12px;
 }
 
 .total-row {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     padding: 17px 0 5px;
 }
 
 .total-row span {
-    font-size: 12px;
     color: var(--muted);
+    font-size: 12px;
 }
 
 .total-row strong {
-    font-size: 24px;
     color: var(--olive-dark);
+    font-size: 24px;
 }
 
 .checkout {
@@ -586,34 +918,15 @@ tbody tr:hover {
     padding: 13px;
 }
 
-.toast {
-    position: fixed;
-    right: 22px;
-    bottom: 22px;
-    background: #303127;
-    color: #fff;
-    padding: 13px 18px;
-    border-radius: 9px;
-    font-size: 12px;
-    box-shadow: var(--shadow);
-    z-index: 20;
-    display: none;
-}
-
-.toast.show {
-    display: block;
-}
-
 .mobile-menu {
     display: none;
 }
 
-/* Telas médias */
-@media (max-width: 1000px) {
-    .sidebar {
-        width: 210px;
-    }
+/* =========================================
+   17. TABLETS
+========================================= */
 
+@media (max-width: 1000px) {
     .main {
         padding: 28px 22px;
     }
@@ -627,77 +940,109 @@ tbody tr:hover {
     }
 }
 
-/* Celulares */
-@media (max-width: 700px) {
-    .layout {
-        display: block;
+@media (max-width: 900px) {
+    .shop-stats {
+        gap: 12px;
     }
 
-    .sidebar {
+    .shop-panel-head {
+        align-items: stretch;
+    }
+
+    .shop-toolbar {
         width: 100%;
-        padding: 15px;
-        display: block;
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
     }
 
-    .brand {
-        padding: 0 5px 12px;
-        margin-bottom: 10px;
+    .shop-search {
+        flex: 1;
+        min-width: 150px;
     }
 
-    .nav-label {
-        display: none;
+    .shop-table th,
+    .shop-table td {
+        padding: 12px 9px;
     }
+}
 
-    .sidebar nav {
-        display: flex;
-        gap: 5px;
-        overflow-x: auto;
-    }
+/* =========================================
+   18. CELULARES
+========================================= */
 
-    .nav-link {
-        white-space: nowrap;
-        margin: 0;
-        padding: 9px;
-    }
-
-    .subnav {
-        padding-left: 0;
-        display: flex;
-    }
-
+@media (max-width: 700px) {
     .main {
         padding: 23px 14px;
     }
 
-    .topbar {
+    .topbar,
+    .top {
         align-items: flex-start;
+        flex-wrap: wrap;
     }
 
-    .stats {
+    h1 {
+        font-size: 22px;
+    }
+
+    .stats,
+    .shop-stats {
         grid-template-columns: 1fr;
     }
 
-    .stat {
+    .stat,
+    .shop-stat {
         padding: 15px;
     }
 
-    .search {
-        width: 100%;
-    }
-
-    .panel-head {
-        align-items: flex-start;
+    .panel-head,
+    .shop-panel-head {
+        align-items: stretch;
         flex-direction: column;
+        padding: 16px;
     }
 
-    .toolbar {
+    .toolbar,
+    .shop-toolbar {
         width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search,
+    .shop-search,
+    .shop-select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    /* A tabela pode ser deslizada horizontalmente no celular */
+    .shop-table {
+        min-width: 700px;
+    }
+
+    .shop-table th,
+    .shop-table td {
+        padding: 12px 9px;
+    }
+
+    .shop-table .campo-edicao {
+        min-width: 85px;
+    }
+
+    .shop-table .product-cell .campo-edicao {
+        min-width: 150px;
+    }
+
+    .shop-table .actions {
+        gap: 5px;
+    }
+
+    .shop-table .icon-btn {
+        width: 34px;
+        height: 34px;
     }
 
     .product-picker {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         padding: 10px;
     }
 
@@ -705,16 +1050,30 @@ tbody tr:hover {
         padding: 10px;
     }
 
-    .form-grid {
+    .form-grid,
+    .shop-form-grid {
         grid-template-columns: 1fr;
     }
 
-    .form-group.full {
+    .form-group.full,
+    .shop-form-group.shop-full {
         grid-column: auto;
     }
 
-    h1 {
-        font-size: 22px;
+    .modal,
+    .shop-modal {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .modal-actions,
+    .shop-modal-actions {
+        flex-direction: column-reverse;
+    }
+
+    .modal-actions .btn,
+    .shop-modal-actions .btn {
+        width: 100%;
     }
 
     .sale-grid {
@@ -724,5 +1083,35 @@ tbody tr:hover {
 
     .sale-grid > section {
         width: 100%;
+    }
+
+    .toast {
+        right: 16px;
+        bottom: 16px;
+        left: 16px;
+        text-align: center;
+    }
+}
+
+/* =========================================
+   19. CELULARES PEQUENOS
+========================================= */
+
+@media (max-width: 380px) {
+    .main {
+        padding: 18px 10px;
+    }
+
+    .topbar,
+    .top {
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 10px 12px;
+    }
+
+    .product-picker {
+        grid-template-columns: 1fr;
     }
 }

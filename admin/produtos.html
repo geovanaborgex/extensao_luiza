@@ -1,25 +1,34 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Produtos | Painel Administrativo</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
     <link rel="stylesheet" href="css/admin.css">
     <link rel="stylesheet" href="css/menu.css">
     <link rel="stylesheet" href="css/lojinha.css">
 </head>
-<body>
-    <button class="menu-toggle" id="menuToggle">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-      
-      <div class="menu-overlay" id="menuOverlay"></div>
-      
-    <!-- MENU LATERAL -->
 
+<body>
+
+    <!-- MENU MOBILE -->
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- MENU LATERAL -->
     <aside class="sidebar">
         <div class="logo">
             <h2>Luiza</h2>
@@ -51,7 +60,7 @@
                 <i class="fa-solid fa-bottle-droplet"></i>
                 <span>Produtos - Estoque</span>
             </a>
-            
+
             <a href="caixa.html">
                 <i class="fa-solid fa-cash-register"></i>
                 <span>Caixa - Vendas</span>
@@ -64,81 +73,647 @@
         </nav>
     </aside>
 
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="wrap shop-wrap">
 
-    <div class="wrap shop-wrap">
-    <header class="top shop-top">
-        <div><h1>Produtos</h1></div>
-        <button class="btn btn-gold" onclick="abrirModal()"><i class="fa-solid fa-plus"></i> Novo produto</button>
-    </header>
-    <section class="shop-stats">
-        <div class="shop-stat">
-            <div class="shop-stat-label">Produtos cadastrados</div>
-            <div class="shop-stat-value" id="statProdutos">4</div>
-            <div class="shop-stat-note">Produtos no catálogo</div>
-        </div>
-        <div class="shop-stat">
-            <div class="shop-stat-label">Unidades em estoque</div>
-            <div class="shop-stat-value" id="statUnidades">23</div>
-            <div class="shop-stat-note">Soma das quantidades disponíveis</div>
-        </div>
-        <div class="shop-stat">
-            <div class="shop-stat-label">Atenção ao estoque</div>
-            <div class="shop-stat-value" id="statBaixo">2</div>
-            <div class="shop-stat-note">Produtos com 3 unidades ou menos</div>
-        </div>
-    </section>
-    <section class="shop-panel">
-      <div class="shop-panel-head">
-        <div><h2>Catálogo de produtos</h2></div>
-        <div class="shop-toolbar">
-            <input class="shop-field shop-search" id="busca" placeholder="Buscar produto..." oninput="renderizar()">
-            <select class="shop-field shop-select" id="filtro" onchange="renderizar()">
-                <option value="todos">Todos os estoques</option>
-                <option value="normal">Em estoque</option>
-                <option value="baixo">Estoque baixo</option>
-                <option value="zero">Sem estoque</option></select></div></div>
-      <div class="shop-table-wrap">
-        <table class="shop-table">
-            <thead>
-                <tr><th>PRODUTO</th>
-                    <th>PREÇO DE VENDA</th>
-                    <th>ESTOQUE</th>
-                    <th>STATUS</th>
-                    <th>AÇÕES</th>
-                </tr></thead>
-                <tbody id="tabela"></tbody>
-            </table>
-        </div>
-    </section>
-    <p class="shop-notice"><i class="fa-solid fa-circle-info"></i> Prévia de front-end: os dados são fictícios e não são salvos no Google Sheets.</p>
-    <div class="shop-modal-backdrop" id="modal"><div class="shop-modal"><div class="shop-modal-head"><h2 id="tituloModal">Novo produto</h2><button class="shop-close" onclick="fecharModal()" aria-label="Fechar">×</button></div><form id="formProduto"><div class="shop-form-grid"><div class="shop-form-group shop-full"><label for="descricao">Descrição do produto</label><input class="shop-field" id="descricao" required maxlength="100" placeholder="Ex.: Shampoo Hidratante"></div><div class="shop-form-group"><label for="preco">Preço de venda (R$)</label><input class="shop-field" id="preco" type="number" min="0.01" step="0.01" required placeholder="0,00"></div><div class="shop-form-group"><label for="estoque">Quantidade em estoque</label><input class="shop-field" id="estoque" type="number" min="0" step="1" required placeholder="0"></div></div><div class="shop-modal-actions"><button type="button" class="btn btn-light" onclick="fecharModal()">Cancelar</button><button class="btn btn-gold" type="submit">Salvar produto</button></div></form><p class="shop-notice">Ação apenas demonstrativa nesta versão.</p></div></div>
-    </div>
-    <div class="toast" id="toast"></div>
+        <header class="top shop-top">
+            <div>
+                <h1>Produtos</h1>
+            </div>
+         
+            <button type="button" class="btn btn-gold" onclick="novoProduto()">
+                <i class="fa-solid fa-plus"></i>
+                Novo produto
+            </button>
+
+        </header>
+
+        <!-- INDICADORES -->
+        <section class="shop-stats">
+
+            <div class="shop-stat">
+                <div class="shop-stat-label">Produtos cadastrados</div>
+                <div class="shop-stat-value" id="statProdutos">0</div>
+                <div class="shop-stat-note">Produtos no catálogo</div>
+            </div>
+
+            <div class="shop-stat">
+                <div class="shop-stat-label">Unidades em estoque</div>
+                <div class="shop-stat-value" id="statUnidades">0</div>
+                <div class="shop-stat-note">Soma das quantidades disponíveis</div>
+            </div>
+
+            <div class="shop-stat">
+                <div class="shop-stat-label">Atenção ao estoque</div>
+                <div class="shop-stat-value" id="statBaixo">0</div>
+                <div class="shop-stat-note">Produtos com 3 unidades ou menos</div>
+            </div>
+
+        </section>
+
+        <!-- CATÁLOGO -->
+        <section class="shop-panel">
+
+            <div class="shop-panel-head">
+                <div>
+                    <h2>Catálogo de produtos</h2>
+                </div>
+
+                <div class="shop-toolbar">
+                    <input
+                        class="shop-field shop-search"
+                        id="busca"
+                        type="search"
+                        placeholder="Buscar produto..."
+                        aria-label="Buscar produto">
+
+                    <select
+                        class="shop-field shop-select"
+                        id="filtro"
+                        aria-label="Filtrar estoque">
+
+                        <option value="todos">Todos os estoques</option>
+                        <option value="normal">Em estoque</option>
+                        <option value="baixo">Estoque baixo</option>
+                        <option value="zero">Sem estoque</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="shop-table-wrap">
+                <table class="shop-table">
+                    <thead>
+                        <tr>
+                            <th>PRODUTO</th>
+                            <th>PREÇO DE VENDA</th>
+                            <th>ESTOQUE</th>
+                            <th>STATUS</th>
+                            <th>AÇÕES</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tabela"></tbody>
+                </table>
+            </div>
+
+        </section>
+
+        <p class="shop-notice">
+            <i class="fa-solid fa-circle-info"></i>
+            Prévia de front-end: os dados são fictícios e não são salvos no Google Sheets.
+        </p>
+
+    </main>
+
+    <!-- NOTIFICAÇÕES -->
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
     <script>
-      // Mantém o menu responsivo do painel quando os scripts do menu estiverem disponíveis.
-      const shopToggle = document.getElementById('menuToggle');
-      const shopOverlay = document.getElementById('menuOverlay');
-      if (shopToggle) shopToggle.addEventListener('click', () => document.body.classList.toggle('menu-aberto'));
-      if (shopOverlay) shopOverlay.addEventListener('click', () => document.body.classList.remove('menu-aberto'));
+    /* =========================================
+       MENU RESPONSIVO
+    ========================================= */
+
+    const shopToggle = document.getElementById('menuToggle');
+    const shopOverlay = document.getElementById('menuOverlay');
+
+    shopToggle.addEventListener('click', () => {
+        document.body.classList.toggle('menu-aberto');
+    });
+
+    shopOverlay.addEventListener('click', () => {
+        document.body.classList.remove('menu-aberto');
+    });
+
+
+    /* =========================================
+       PRODUTOS
+    ========================================= */
+
+    let produtos = [
+        {
+            id: 1,
+            nome: 'Shampoo Hidratante',
+            preco: 45,
+            estoque: 12,
+            emoji: '🧴'
+        },
+        {
+            id: 2,
+            nome: 'Máscara Capilar',
+            preco: 62.90,
+            estoque: 3,
+            emoji: '🫙'
+        },
+        {
+            id: 3,
+            nome: 'Óleo Finalizador',
+            preco: 39.90,
+            estoque: 8,
+            emoji: '✨'
+        },
+        {
+            id: 4,
+            nome: 'Leave-in Protetor',
+            preco: 54,
+            estoque: 0,
+            emoji: '🌿'
+        }
+    ];
+
+    let proximoId = 5;
+    let editando = null;
+    let adicionando = false;
+
+    const dinheiro = valor =>
+        Number(valor).toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        });
+
+
+    /* =========================================
+       STATUS DO ESTOQUE
+    ========================================= */
+
+    function status(produto) {
+        if (produto.estoque === 0) {
+            return ['Sem estoque', 'pill-red'];
+        }
+
+        if (produto.estoque <= 3) {
+            return ['Estoque baixo', 'pill-yellow'];
+        }
+
+        return ['Em estoque', 'pill-green'];
+    }
+
+
+    /* =========================================
+       PROTEÇÃO DE TEXTO
+    ========================================= */
+
+    function escapar(texto) {
+        return String(texto).replace(/[&<>"']/g, caractere => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        })[caractere]);
+    }
+
+
+    /* =========================================
+       RENDERIZAÇÃO DA TABELA
+    ========================================= */
+
+   
+function renderizar() {
+    const busca = document.getElementById('busca').value
+        .trim()
+        .toLowerCase();
+
+    const filtro = document.getElementById('filtro').value;
+
+    const lista = produtos.filter(produto => {
+        const correspondeBusca = produto.nome
+            .toLowerCase()
+            .includes(busca);
+
+        const correspondeFiltro =
+            filtro === 'todos' ||
+            (filtro === 'normal' && produto.estoque > 3) ||
+            (filtro === 'baixo' &&
+                produto.estoque > 0 &&
+                produto.estoque <= 3) ||
+            (filtro === 'zero' && produto.estoque === 0);
+
+        return correspondeBusca && correspondeFiltro;
+    });
+
+    const tabela = document.getElementById('tabela');
+
+    // Linha para cadastrar um novo produto
+    const linhaNovoProduto = adicionando ? `
+        <tr class="linha-novo-produto">
+            <td>
+                <input
+                    class="shop-field campo-edicao"
+                    id="novo-nome"
+                    maxlength="100"
+                    placeholder="Descrição do produto"
+                    aria-label="Descrição do produto">
+            </td>
+
+            <td class="price">
+                <input
+                    class="shop-field campo-edicao"
+                    id="novo-preco"
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    placeholder="0,00"
+                    aria-label="Preço de venda">
+            </td>
+
+            <td>
+                <input
+                    class="shop-field campo-edicao campo-estoque"
+                    id="novo-estoque"
+                    type="number"
+                    min="0"
+                    step="1"
+                    placeholder="0"
+                    aria-label="Quantidade em estoque">
+            </td>
+
+            <td>
+                <span class="pill">Novo produto</span>
+            </td>
+
+            <td>
+                <div class="actions">
+                    <button
+                        type="button"
+                        class="icon-btn"
+                        title="Salvar produto"
+                        aria-label="Salvar produto"
+                        onclick="salvarNovoProduto()">
+                        <i class="fa-solid fa-check"></i>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="icon-btn"
+                        title="Cancelar cadastro"
+                        aria-label="Cancelar cadastro"
+                        onclick="cancelarNovoProduto()">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    ` : '';
+
+    // Renderiza os produtos existentes
+    const linhasProdutos = lista.map(produto => {
+        const situacao = status(produto);
+        const estaEditando = editando === produto.id;
+
+        return `
+            <tr>
+                <td>
+                    <div class="product-cell">
+                        <div class="product-thumb">
+                            ${produto.emoji || '🧴'}
+                        </div>
+
+                        <div>
+                            ${
+                                estaEditando
+                                ? `
+                                    <input
+                                        class="shop-field campo-edicao"
+                                        id="nome-${produto.id}"
+                                        maxlength="100"
+                                        value="${escapar(produto.nome)}"
+                                        aria-label="Descrição do produto">
+                                `
+                                : `
+                                    <div class="product-name">
+                                        ${escapar(produto.nome)}
+                                    </div>
+                                `
+                            }
+
+                            <div class="product-code">
+                                Código #${String(produto.id).padStart(3, '0')}
+                            </div>
+                        </div>
+                    </div>
+                </td>
+
+                <td class="price">
+                    ${
+                        estaEditando
+                        ? `
+                            <input
+                                class="shop-field campo-edicao"
+                                id="preco-${produto.id}"
+                                type="number"
+                                min="0.01"
+                                step="0.01"
+                                value="${produto.preco}"
+                                aria-label="Preço de venda">
+                        `
+                        : dinheiro(produto.preco)
+                    }
+                </td>
+
+                <td>
+                    ${
+                        estaEditando
+                        ? `
+                            <input
+                                class="shop-field campo-edicao campo-estoque"
+                                id="estoque-${produto.id}"
+                                type="number"
+                                min="0"
+                                step="1"
+                                value="${produto.estoque}"
+                                aria-label="Quantidade em estoque">
+                        `
+                        : `${produto.estoque} un.`
+                    }
+                </td>
+
+                <td>
+                    <span class="pill ${situacao[1]}">
+                        ${situacao[0]}
+                    </span>
+                </td>
+
+                <td>
+                    <div class="actions">
+                        ${
+                            estaEditando
+                            ? `
+                                <button
+                                    type="button"
+                                    class="icon-btn"
+                                    title="Salvar alterações"
+                                    aria-label="Salvar alterações"
+                                    onclick="salvarEdicao(${produto.id})">
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="icon-btn"
+                                    title="Cancelar edição"
+                                    aria-label="Cancelar edição"
+                                    onclick="cancelarEdicao()">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            `
+                            : `
+                                <button
+                                    type="button"
+                                    class="icon-btn"
+                                    title="Editar"
+                                    aria-label="Editar produto"
+                                    onclick="editar(${produto.id})">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="icon-btn"
+                                    title="Excluir"
+                                    aria-label="Excluir produto"
+                                    onclick="excluir(${produto.id})">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            `
+                        }
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+
+    // Mostra a linha de cadastro antes dos produtos existentes
+    if (lista.length === 0 && !adicionando) {
+        tabela.innerHTML = `
+            <tr>
+                <td colspan="5" class="empty">
+                    Nenhum produto encontrado.
+                </td>
+            </tr>
+        `;
+    } else {
+        tabela.innerHTML = linhaNovoProduto + linhasProdutos;
+    }
+
+    atualizarIndicadores();
+}
+
+
+    /* =========================================
+       INDICADORES DO ESTOQUE
+    ========================================= */
+
+    function atualizarIndicadores() {
+        document.getElementById('statProdutos').textContent =
+            produtos.length;
+
+        document.getElementById('statUnidades').textContent =
+            produtos.reduce((total, produto) => total + produto.estoque, 0);
+
+        document.getElementById('statBaixo').textContent =
+            produtos.filter(produto => produto.estoque <= 3).length;
+    }
+
+
+    /* =========================================
+       EDITAR PRODUTO NA PRÓPRIA LINHA
+    ========================================= */
+
+    function editar(id) {
+    if (editando !== null || adicionando) {
+        alert('Salve ou cancele a operação atual primeiro.');
+        return;
+    }
+
+    const produto = produtos.find(item => item.id === id);
+
+    if (!produto) return;
+
+    editando = id;
+    renderizar();
+
+    document.getElementById(`nome-${id}`).focus();
+}
+
+    /* =========================================
+       SALVAR EDIÇÃO
+    ========================================= */
+
+    function salvarEdicao(id) {
+        const nome = document.getElementById(`nome-${id}`).value.trim();
+        const precoTexto = document.getElementById(`preco-${id}`).value;
+        const estoqueTexto = document.getElementById(`estoque-${id}`).value;
+
+        const preco = Number(precoTexto);
+        const estoque = Number(estoqueTexto);
+
+        if (
+            !nome ||
+            precoTexto.trim() === '' ||
+            !Number.isFinite(preco) ||
+            preco <= 0 ||
+            estoqueTexto.trim() === '' ||
+            !Number.isInteger(estoque) ||
+            estoque < 0
+        ) {
+            alert(
+                'Informe uma descrição, um preço maior que zero e uma quantidade inteira igual ou maior que zero.'
+            );
+            return;
+        }
+
+        const produto = produtos.find(item => item.id === id);
+
+        if (!produto) return;
+
+        produto.nome = nome;
+        produto.preco = preco;
+        produto.estoque = estoque;
+
+        editando = null;
+
+        renderizar();
+        aviso('Produto atualizado!');
+    }
+
+
+    /* =========================================
+       CANCELAR EDIÇÃO
+    ========================================= */
+
+    function cancelarEdicao() {
+        editando = null;
+        renderizar();
+    }
+
+    /* =========================================
+       EXCLUIR PRODUTO
+    ========================================= */
+
+    function excluir(id) {
+        const produto = produtos.find(item => item.id === id);
+
+        if (!produto) return;
+
+        const confirmou = confirm(
+            `Deseja excluir "${produto.nome}"?`
+        );
+
+        if (!confirmou) return;
+
+        produtos = produtos.filter(item => item.id !== id);
+
+        renderizar();
+        aviso('Produto removido do catálogo!');
+    }
+
+
+/* =========================================
+   ADICIONAR PRODUTO NA TABELA
+========================================= */
+
+function novoProduto() {
+    if (editando !== null || adicionando) {
+        alert('Salve ou cancele a operação atual primeiro.');
+        return;
+    }
+
+    adicionando = true;
+
+    document.getElementById('busca').value = '';
+    document.getElementById('filtro').value = 'todos';
+
+    renderizar();
+
+    document.getElementById('novo-nome').focus();
+}
+
+
+    /* =========================================
+    SALVAR NOVO PRODUTO
+    ========================================= */
+
+    function salvarNovoProduto() {
+        const nome = document.getElementById('novo-nome').value.trim();
+        const precoTexto = document.getElementById('novo-preco').value;
+        const estoqueTexto = document.getElementById('novo-estoque').value;
+
+        const preco = Number(precoTexto);
+        const estoque = Number(estoqueTexto);
+
+        if (
+            !nome ||
+            precoTexto.trim() === '' ||
+            !Number.isFinite(preco) ||
+            preco <= 0 ||
+            estoqueTexto.trim() === '' ||
+            !Number.isInteger(estoque) ||
+            estoque < 0
+        ) {
+            alert('Preencha a descrição, um preço maior que zero e uma quantidade inteira igual ou maior que zero.');
+            return;
+        }
+
+        produtos.push({
+            id: proximoId++,
+            nome: nome,
+            preco: preco,
+            estoque: estoque,
+            emoji: '🧴'
+        });
+
+        adicionando = false;
+
+        renderizar();
+        aviso('Produto adicionado ao catálogo!');
+    }
+
+
+    /* =========================================
+    CANCELAR NOVO CADASTRO
+    ========================================= */
+
+    function cancelarNovoProduto() {
+        adicionando = false;
+        renderizar();
+    }
+
+
+    /* =========================================
+       NOTIFICAÇÕES
+    ========================================= */
+
+    let temporizadorAviso;
+
+    function aviso(texto) {
+        const elemento = document.getElementById('toast');
+
+        elemento.textContent = texto;
+        elemento.classList.add('show');
+
+        clearTimeout(temporizadorAviso);
+
+        temporizadorAviso = setTimeout(() => {
+            elemento.classList.remove('show');
+        }, 2800);
+    }
+
+
+
+    /* =========================================
+       BUSCA E FILTROS
+    ========================================= */
+
+    document.getElementById('busca').addEventListener('input', renderizar);
+    document.getElementById('filtro').addEventListener('change', renderizar);
+
+
+    /* =========================================
+       INICIALIZAÇÃO
+    ========================================= */
+
+    renderizar();
     </script>
-    <script>
-let produtos=[
-{id:1,nome:'Shampoo Hidratante',preco:45,estoque:12,emoji:'🧴'},
-{id:2,nome:'Máscara Capilar',preco:62.90,estoque:3,emoji:'🫙'},
-{id:3,nome:'Óleo Finalizador',preco:39.90,estoque:8,emoji:'✨'},
-{id:4,nome:'Leave-in Protetor',preco:54,estoque:0,emoji:'🌿'}
-];let proximoId=5, editando=null;
-const dinheiro=v=>Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-function status(p){if(p.estoque===0)return ['Sem estoque','pill-red'];if(p.estoque<=3)return ['Estoque baixo','pill-yellow'];return ['Em estoque','pill-green'];}
-function renderizar(){const q=document.getElementById('busca').value.toLowerCase();const f=document.getElementById('filtro').value;const lista=produtos.filter(p=>p.nome.toLowerCase().includes(q)&&(f==='todos'||(f==='normal'&&p.estoque>3)||(f==='baixo'&&p.estoque>0&&p.estoque<=3)||(f==='zero'&&p.estoque===0)));document.getElementById('tabela').innerHTML=lista.length?lista.map(p=>{const s=status(p);return `<tr><td><div class="product-cell"><div class="product-thumb">${p.emoji||'🧴'}</div><div><div class="product-name">${escapar(p.nome)}</div><div class="product-code">Código #${String(p.id).padStart(3,'0')}</div></div></div></td><td class="price">${dinheiro(p.preco)}</td><td>${p.estoque} un.</td><td><span class="pill ${s[1]}">${s[0]}</span></td><td><div class="actions"><button class="icon-btn" title="Editar" onclick="editar(${p.id})">✎</button><button class="icon-btn" title="Excluir" onclick="excluir(${p.id})">⌫</button></div></td></tr>`}).join(''):'<tr><td colspan="5" class="empty">Nenhum produto encontrado.</td></tr>';document.getElementById('statProdutos').textContent=produtos.length;document.getElementById('statUnidades').textContent=produtos.reduce((s,p)=>s+p.estoque,0);document.getElementById('statBaixo').textContent=produtos.filter(p=>p.estoque<=3).length;}
-function escapar(t){return String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function abrirModal(p=null){editando=p?p.id:null;document.getElementById('tituloModal').textContent=p?'Editar produto':'Novo produto';document.getElementById('descricao').value=p?p.nome:'';document.getElementById('preco').value=p?p.preco:'';document.getElementById('estoque').value=p?p.estoque:'';document.getElementById('modal').classList.add('open');}
-function fecharModal(){document.getElementById('modal').classList.remove('open');}
-function editar(id){const p=produtos.find(x=>x.id===id);if(p)abrirModal(p);}
-function excluir(id){const p=produtos.find(x=>x.id===id);if(p&&confirm(`Excluir “${p.nome}” desta demonstração?`)){produtos=produtos.filter(x=>x.id!==id);renderizar();aviso('Produto removido apenas desta demonstração.');}}
-document.getElementById('formProduto').addEventListener('submit',e=>{e.preventDefault();const nome=document.getElementById('descricao').value.trim(),preco=Number(document.getElementById('preco').value),estoque=Number(document.getElementById('estoque').value);if(!nome||preco<=0||estoque<0)return; if(editando!==null){const p=produtos.find(x=>x.id===editando);if(p)Object.assign(p,{nome,preco,estoque});}else produtos.push({id:proximoId++,nome,preco,estoque,emoji:'🧴'});fecharModal();renderizar();aviso('Alteração feita somente nesta demonstração.');});
-function aviso(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2800)}
-document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')fecharModal()});renderizar();
-</script>
+
 </body>
 </html>
