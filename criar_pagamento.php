@@ -281,6 +281,12 @@ try {
         'order_nsu' => $pedidoId,
         'redirect_url' => $baseUrl . '/pagamento-retorno.php',
         'webhook_url' => $baseUrl . '/webhook_infinitepay.php',
+    
+        'customer' => [
+            'name' => $nome,
+            'phone_number' => $telefoneFormatado
+        ],
+    
         'items' => [
             [
                 'quantity' => 1,
