@@ -1235,6 +1235,9 @@ async function iniciarPagamentoSinal() {
     botao.disabled = true;
     botao.textContent = "GERANDO PAGAMENTO...";
 
+    console.log("Nome enviado:", nome);
+    console.log("Telefone enviado:", telefone);
+
     try {
         const resposta = await fetch("criar_pagamento.php", {
             method: "POST",

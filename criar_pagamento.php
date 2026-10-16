@@ -276,6 +276,8 @@ try {
 
     $descricao = mb_substr($descricao, 0, 200);
 
+    error_log('Telefone recebido: ' . $telefone);
+    
     $payload = [
         'handle' => $handle,
         'order_nsu' => $pedidoId,
