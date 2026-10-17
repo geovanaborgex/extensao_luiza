@@ -139,6 +139,7 @@ const totalElemento = $("total");
 const statCatalogo = $("statCatalogo");
 const statVendas = $("statVendas");
 const statTotal = $("statTotal");
+const statTotalCaixa = $("statTotalCaixa");
 
 const dataInicialInput = $("dataInicial");
 const dataFinalInput = $("dataFinal");
@@ -700,75 +701,138 @@ formMovimentacao.addEventListener("submit", evento => {
     );
 });
 
+
+
 function atualizarResumoCaixa() {
     const caixa = obterCaixaHoje();
 
+    // Sem caixa aberto: todos os valores ficam zerados.
     if (!caixa) {
-        valorAberturaEl.textContent = dinheiro(0);
-        totalEntradasEl.textContent = dinheiro(0);
-        totalDinheiroEl.textContent = dinheiro(0);
-        totalRetiradasEl.textContent = dinheiro(0);
-        saldoCaixaEl.textContent = dinheiro(0);
+        if (valorAberturaEl) valorAberturaEl.textContent = dinheiro(0);
+        if (totalEntradasEl) totalEntradasEl.textContent = dinheiro(0);
+        if (totalDinheiroEl) totalDinheiroEl.textContent = dinheiro(0);
+        if (totalRetiradasEl) totalRetiradasEl.textContent = dinheiro(0);
+        if (saldoCaixaEl) saldoCaixaEl.textContent = dinheiro(0);
+        if (statTotalCaixa) statTotalCaixa.textContent = dinheiro(0);
 
-        listaMovimentacoes.innerHTML =
-            '<tr><td colspan="4">Abra o caixa para iniciar as movimentações.</td></tr>';
+        if (listaMovimentacoes) {
+            listaMovimentacoes.innerHTML = `
+                <tr>
+                    <td colspan="4">
+                        Abra o caixa para iniciar as movimentações.
+                    </td>
+                </tr>
+            `;
+        }
 
         return;
     }
 
     const movimentacoes = caixa.movimentacoes || [];
 
+    // Total das entradas manuais.
     const entradas = movimentacoes
         .filter(item => item.tipo === "entrada")
-        .reduce((soma, item) => soma + moedaParaNumero(item.valor), 0);
+        .reduce(
+            (soma, item) => soma + moedaParaNumero(item.valor),
+            0
+        );
 
+    // Total das retiradas manuais.
     const retiradas = movimentacoes
         .filter(item => item.tipo === "retirada")
-        .reduce((soma, item) => soma + moedaParaNumero(item.valor), 0);
+        .reduce(
+            (soma, item) => soma + moedaParaNumero(item.valor),
+            0
+        );
 
+    // Somente vendas pagas em dinheiro entram no caixa físico.
     const vendasDinheiro = vendas
         .filter(venda =>
             venda.data === caixa.data &&
             venda.pagamento === "Dinheiro"
         )
-        .reduce((soma, venda) => soma + moedaParaNumero(venda.total), 0);
+        .reduce(
+            (soma, venda) => soma + moedaParaNumero(venda.total),
+            0
+        );
 
     const abertura = moedaParaNumero(caixa.valorAbertura);
+
+    // Saldo físico esperado na gaveta.
     const saldo = abertura + entradas + vendasDinheiro - retiradas;
 
-    valorAberturaEl.textContent = dinheiro(abertura);
-    totalEntradasEl.textContent = dinheiro(entradas);
-    totalDinheiroEl.textContent = dinheiro(vendasDinheiro);
-    totalRetiradasEl.textContent = dinheiro(retiradas);
-    saldoCaixaEl.textContent = dinheiro(saldo);
+    // Atualiza os cards do resumo.
+    if (valorAberturaEl) {
+        valorAberturaEl.textContent = dinheiro(abertura);
+    }
+
+    if (totalEntradasEl) {
+        totalEntradasEl.textContent = dinheiro(entradas);
+    }
+
+    if (totalDinheiroEl) {
+        totalDinheiroEl.textContent = dinheiro(vendasDinheiro);
+    }
+
+    if (totalRetiradasEl) {
+        totalRetiradasEl.textContent = dinheiro(retiradas);
+    }
+
+    if (saldoCaixaEl) {
+        saldoCaixaEl.textContent = dinheiro(saldo);
+    }
+
+    // Atualiza o card principal de Total do caixa.
+    if (statTotalCaixa) {
+        statTotalCaixa.textContent = dinheiro(saldo);
+    }
+
+    // Histórico de entradas e retiradas manuais.
+    if (!listaMovimentacoes) return;
 
     if (!movimentacoes.length) {
-        listaMovimentacoes.innerHTML =
-            '<tr><td colspan="4">Nenhuma movimentação manual hoje.</td></tr>';
+        listaMovimentacoes.innerHTML = `
+            <tr>
+                <td colspan="4">
+                    Nenhuma movimentação manual hoje.
+                </td>
+            </tr>
+        `;
         return;
     }
 
     listaMovimentacoes.innerHTML = [...movimentacoes]
-        .sort((a, b) => b.dataHora.localeCompare(a.dataHora))
+        .sort((a, b) =>
+            new Date(b.dataHora) - new Date(a.dataHora)
+        )
         .map(item => {
             const entrada = item.tipo === "entrada";
             const dataHora = new Date(item.dataHora);
 
             return `
                 <tr>
-                    <td>${dataHora.toLocaleTimeString("pt-BR", {
-                        hour: "2-digit",
-                        minute: "2-digit"
-                    })}</td>
+                    <td>
+                        ${dataHora.toLocaleTimeString("pt-BR", {
+                            hour: "2-digit",
+                            minute: "2-digit"
+                        })}
+                    </td>
+
                     <td>${entrada ? "Entrada" : "Retirada"}</td>
+
                     <td>${escapar(item.descricao)}</td>
+
                     <td class="${entrada ? "valor-entrada" : "valor-retirada"}">
                         ${entrada ? "+" : "−"}${dinheiro(item.valor)}
                     </td>
                 </tr>
             `;
-        }).join("");
+        })
+        .join("");
 }
+
+
 // ======================================================
 // SALVAR VENDA
 // ======================================================
