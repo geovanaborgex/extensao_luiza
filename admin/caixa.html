@@ -1,100 +1,352 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Caixa | Painel Administrativo</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
     <link rel="stylesheet" href="css/admin.css">
     <link rel="stylesheet" href="css/menu.css">
     <link rel="stylesheet" href="css/lojinha.css">
 </head>
+
 <body>
- 
-    <button class="menu-toggle" id="menuToggle">
-      <i class="fa-solid fa-bars"></i>
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">
+        <i class="fa-solid fa-bars"></i>
     </button>
-    
+
     <div class="menu-overlay" id="menuOverlay"></div>
-  
-<!-- MENU LATERAL -->
+
     <aside class="sidebar">
-    <div class="logo">
-        <h2>Luiza</h2>
-        <span>Painel Administrativo</span>
-    </div>
+        <div class="logo">
+            <h2>Luiza</h2>
+            <span>Painel Administrativo</span>
+        </div>
 
-    <nav>
-        <a href="dashboard.html" >
-            <i class="fa-solid fa-house"></i>
-            <span>Dashboard</span>
-        </a>
+        <nav>
+            <a href="dashboard.html">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </a>
 
-        <a href="rel_agenda.html">
-            <i class="fa-solid fa-calendar-check"></i>
-            <span>Relatório de Agendamentos</span>
-        </a>
+            <a href="rel_agenda.html">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span>Relatório de Agendamentos</span>
+            </a>
 
-        <a href="rel_graficos.html">
-            <i class="fa-solid fa-chart-column"></i>
-            <span>Gráficos e resultados</span>
-        </a>
+            <a href="rel_graficos.html">
+                <i class="fa-solid fa-chart-column"></i>
+                <span>Gráficos e resultados</span>
+            </a>
 
-        <a href="gerenciamento.html">
-            <i class="fa-solid fa-spa"></i>
-            <span>Gerenciamento</span>
-        </a>
+            <a href="gerenciamento.html">
+                <i class="fa-solid fa-spa"></i>
+                <span>Gerenciamento</span>
+            </a>
 
-        <a href="produtos.html">
-            <i class="fa-solid fa-bottle-droplet"></i>
-            <span>Produtos - Estoque</span>
-        </a>
-        
-        <a href="caixa.html" class="ativo">
-            <i class="fa-solid fa-cash-register"></i>
-            <span>Caixa - Vendas</span>
-        </a>
+            <a href="produtos.html">
+                <i class="fa-solid fa-bottle-droplet"></i>
+                <span>Produtos - Estoque</span>
+            </a>
 
-        <a href="../index.html">
-            <i class="fa-solid fa-arrow-right-from-bracket"></i>
-            <span>Sair</span>
-        </a>
-    </nav>
+            <a href="caixa.html" class="ativo">
+                <i class="fa-solid fa-cash-register"></i>
+                <span>Caixa - Vendas</span>
+            </a>
+
+            <a href="../index.html">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Sair</span>
+            </a>
+        </nav>
     </aside>
 
-    <div class="wrap shop-wrap">
-    <header class="top shop-top">
-      <div><h1>Caixa</h1></div>
-      <span class="shop-open-label"><i class="fa-solid fa-circle"></i> Caixa aberto</span>
-    </header>
-    <section class="shop-stats"><div class="shop-stat"><div class="shop-stat-label">Itens no catálogo</div><div class="shop-stat-value" id="statCatalogo">4</div><div class="shop-stat-note">Produtos disponíveis para seleção</div></div><div class="shop-stat"><div class="shop-stat-label">Itens na venda</div><div class="shop-stat-value" id="statItens">0</div><div class="shop-stat-note">Quantidade total no carrinho</div></div><div class="shop-stat"><div class="shop-stat-label">Total da venda</div><div class="shop-stat-value" id="statTotal">R$ 0,00</div><div class="shop-stat-note">Atualizado automaticamente</div></div></section>
-    <div class="shop-sale-grid">
-      <section class="shop-panel"><div class="shop-panel-head"><div><h2>Selecionar produtos</h2></div><input class="shop-field shop-search" id="busca" placeholder="Buscar produto..." oninput="renderizarProdutos()"></div><div class="product-picker" id="listaProdutos"></div></section>
-      <section class="shop-panel shop-cart-panel"><div class="shop-panel-head"><div><h2>Nova venda</h2><p>Preencha o cliente e confira os itens</p></div><button class="btn btn-light" onclick="limparCarrinho()">Limpar</button></div><div class="shop-cart-body"><div class="shop-form-group"><label for="cliente">Nome do cliente</label><input class="shop-field" id="cliente" placeholder="Ex.: Geovana"></div><div class="shop-cart-label">Produtos da venda</div><div id="carrinho"><div class="cart-empty">Nenhum produto adicionado.</div></div><div class="shop-total-row"><span>Total da venda</span><strong id="total">R$ 0,00</strong></div><button class="btn btn-gold shop-checkout" onclick="finalizarVenda()"><i class="fa-solid fa-check"></i> Finalizar venda</button><p class="shop-notice">A finalização é apenas uma simulação; nada será salvo nem o estoque será alterado.</p></div></section>
+    <main class="main shop-wrap">
+        <header class="top shop-top">
+            <div>
+                <h1>Caixa</h1>
+            </div>
+
+            <span class="pill pill-green">
+                <i class="fa-solid fa-circle"></i>
+                Caixa aberto
+            </span>
+        </header>
+
+        <!-- RESUMO -->
+        <section class="shop-stats">
+            <div class="shop-stat">
+                <div class="shop-stat-label">Produtos disponíveis</div>
+                <div class="shop-stat-value" id="statCatalogo">0</div>
+                <div class="shop-stat-note">Produtos com estoque disponível</div>
+            </div>
+
+            <div class="shop-stat">
+                <div class="shop-stat-label">Vendas registradas</div>
+                <div class="shop-stat-value" id="statVendas">0</div>
+                <div class="shop-stat-note">Conforme o período selecionado</div>
+            </div>
+
+            <div class="shop-stat">
+                <div class="shop-stat-label">Total vendido</div>
+                <div class="shop-stat-value" id="statTotal">R$ 0,00</div>
+                <div class="shop-stat-note">Soma das vendas do período</div>
+            </div>
+        </section>
+
+        <!-- BOTÃO PARA ABRIR O FORMULÁRIO -->
+        <section class="shop-panel" style="margin-bottom: 22px;">
+            <div class="shop-panel-head">
+                <div>
+                    <h2>Lançamento de vendas</h2>
+                </div>
+
+                <button type="button" class="btn btn-gold" id="btnAbrirVenda">
+                    <i class="fa-solid fa-plus"></i>
+                    Lançar venda
+                </button>
+            </div>
+        </section>
+
+        <!-- FORMULÁRIO DA VENDA: COMEÇA FECHADO -->
+        <section class="shop-panel" id="formularioVenda" hidden
+                 style="margin-bottom: 22px;">
+            <div class="shop-panel-head">
+                <div>
+                    <h2>Nova venda</h2>
+                </div>
+
+                <button type="button" class="btn btn-light" id="btnCancelarVenda">
+                    <i class="fa-solid fa-xmark"></i>
+                    Cancelar
+                </button>
+            </div>
+
+            <div class="sale-grid">
+                <!-- SELEÇÃO DE PRODUTOS -->
+                <section class="shop-panel">
+                    <div class="shop-panel-head">
+                        <div>
+                            <h2>Produtos da venda</h2>
+                        </div>
+                    </div><br>
+                    <center>
+                    <button type="button" id="btnSelecionarProdutos" class="btn btn-primary">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Selecionar produtos
+                    </button></center>
+
+                    <div id="resumoSelecaoProdutos" class="resumo-selecao-produtos">
+                        <p>Nenhum produto selecionado ainda.</p>
+                    </div><br>
+                </section>
+
+                <!-- DADOS DA VENDA -->
+                <section class="shop-panel">
+                    <div class="shop-panel-head">
+                        <h2>Dados da venda</h2>
+                    </div>
+
+                    <div class="cart-body">
+                        <form id="formVenda">
+                            <div class="shop-form-group">
+                                <label for="cliente">Nome do cliente</label>
+                                <input type="text"
+                                       class="shop-field"
+                                       id="cliente"
+                                       maxlength="120"
+                                       placeholder="Ex.: Maria Silva"
+                                       required>
+                            </div>
+
+                            <div class="shop-form-group" style="margin-top: 15px;">
+                                <label for="formaPagamento">Forma de pagamento</label>
+                                <select class="shop-field" id="formaPagamento" required>
+                                    <option value="">Selecione o pagamento</option>
+                                    <option value="PIX Nubank">PIX Nubank</option>
+                                    <option value="PIX InfinityPay">PIX InfinityPay</option>
+                                    <option value="Dinheiro">Dinheiro</option>
+                                    <option value="Cartão de crédito">Cartão de crédito</option>
+                                    <option value="Cartão de débito">Cartão de débito</option>
+                                </select>
+                            </div>
+
+                            <div class="shop-cart-label" style="margin-top: 22px;">
+                                Produtos da venda
+                            </div>
+
+                            <div id="carrinho">
+                                <div class="cart-empty">
+                                    Nenhum produto adicionado.
+                                </div>
+                            </div>
+
+                            <div class="total-row">
+                                <span>Total da venda</span>
+                                <strong id="total">R$ 0,00</strong>
+                            </div>
+
+                            <button type="submit"
+                                    class="btn btn-gold checkout"
+                                    id="btnSalvarVenda">
+                                <i class="fa-solid fa-check"></i>
+                                Salvar venda
+                            </button>
+
+                            <p class="shop-notice">
+                                Confira os produtos e o pagamento antes de salvar.
+                                Depois de registrada, a venda não poderá ser editada.
+                            </p>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <!-- HISTÓRICO -->
+        <section class="shop-panel">
+            <div class="shop-panel-head">
+                <div>
+                    <h2>Histórico de vendas</h2>
+                </div>
+            </div>
+
+            <div class="shop-panel-head">
+                <div class="shop-toolbar">
+                    <div class="shop-form-group">
+                        <label for="dataInicial">Data inicial</label>
+                        <input type="date" class="shop-field" id="dataInicial">
+                    </div>
+
+                    <div class="shop-form-group">
+                        <label for="dataFinal">Data final</label>
+                        <input type="date" class="shop-field" id="dataFinal">
+                    </div>
+
+                    <button type="button" class="btn btn-primary" id="btnFiltrar">
+                        <i class="fa-solid fa-filter"></i>
+                        Filtrar
+                    </button>
+
+                    <button type="button" class="btn btn-light" id="btnLimparFiltro">
+                        Limpar filtro
+                    </button>
+                </div>
+            </div>
+
+            <div class="shop-table-wrap">
+                <table class="shop-table">
+                    <thead>
+                        <tr>
+                            <th>DATA</th>
+                            <th>CLIENTE</th>
+                            <th>PRODUTOS</th>
+                            <th>PAGAMENTO</th>
+                            <th>TOTAL</th>
+                            <th>AÇÃO</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="listaVendas">
+                        <tr>
+                            <td colspan="6" class="empty">
+                                Nenhuma venda registrada.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+   
+        
+<!-- MODAL DE SELEÇÃO DE PRODUTOS -->
+<div id="modalProdutos" class="modal-produtos" aria-hidden="true">
+    <div
+        class="modal-produtos-conteudo"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tituloModalProdutos"
+    >
+        <div class="modal-produtos-cabecalho">
+            <div>
+                <h2 id="tituloModalProdutos">Selecionar produtos</h2>
+                <p class="subtitle">
+                    Escolha os produtos e informe as quantidades.
+                </p>
+            </div>
+
+            <button
+                type="button"
+                id="fecharModalProdutos"
+                class="shop-close"
+                aria-label="Fechar modal"
+            >&times;</button>
+        </div>
+
+        <label class="sr-only" for="buscarProdutosModal">
+            Buscar produtos
+        </label>
+
+        <input
+            type="search"
+            id="buscarProdutosModal"
+            class="shop-field"
+            placeholder="Buscar produtos..."
+            autocomplete="off"
+        >
+
+        <div class="tabela-produtos-modal">
+            <div class="cabecalho-produtos-modal">
+                <span>PRODUTO</span>
+                <span>ESTOQUE DISPONÍVEL</span>
+                <span>PREÇO DE VENDA</span>
+                <span>QUANTIDADE</span>
+            </div>
+
+            <div id="listaProdutosModal" class="lista-produtos-modal">
+                <p class="empty">Carregando produtos...</p>
+            </div>
+        </div>
+
+        <div class="rodape-modal-produtos">
+            <span id="contadorProdutosSelecionados">
+                0 unidades selecionadas
+            </span>
+
+            <div class="modal-acoes-produtos">
+                <button
+                    type="button"
+                    class="btn btn-light"
+                    id="cancelarSelecaoProdutos"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="concluirSelecaoProdutos"
+                >
+                    Concluir seleção
+                </button>
+            </div>
+        </div>
     </div>
-    </div>
-    <div class="toast" id="toast"></div>
-    <script>
-      // Mantém o menu responsivo do painel quando os scripts do menu estiverem disponíveis.
-      const shopToggle = document.getElementById('menuToggle');
-      const shopOverlay = document.getElementById('menuOverlay');
-      if (shopToggle) shopToggle.addEventListener('click', () => document.body.classList.toggle('menu-aberto'));
-      if (shopOverlay) shopOverlay.addEventListener('click', () => document.body.classList.remove('menu-aberto'));
-    </script>
-    <script>
-// Dados fictícios de demonstração; futuramente serão carregados da aba Produtos no Google Sheets.
-const produtos=[{id:1,nome:'Shampoo Hidratante',preco:45,estoque:12,emoji:'🧴'},{id:2,nome:'Máscara Capilar',preco:62.90,estoque:3,emoji:'🫙'},{id:3,nome:'Óleo Finalizador',preco:39.90,estoque:8,emoji:'✨'},{id:4,nome:'Leave-in Protetor',preco:54,estoque:0,emoji:'🌿'}];let carrinho={};const dinheiro=v=>Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-function escapar(t){return String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function renderizarProdutos(){const q=document.getElementById('busca').value.toLowerCase();const lista=produtos.filter(p=>p.nome.toLowerCase().includes(q));document.getElementById('listaProdutos').innerHTML=lista.map(p=>`<button class="pick-card" ${p.estoque===0?'disabled':''} onclick="adicionar(${p.id})" style="${p.estoque===0?'opacity:.5;cursor:not-allowed':''}"><div class="pick-top"><div class="pick-emoji">${p.emoji}</div><span class="pill ${p.estoque===0?'pill-red':p.estoque<=3?'pill-yellow':'pill-green'}">${p.estoque===0?'Indisponível':p.estoque+' un.'}</span></div><div class="pick-name">${escapar(p.nome)}</div><div class="pick-stock">${p.estoque===0?'Sem estoque':'Clique para adicionar'}</div><div class="pick-price">${dinheiro(p.preco)}</div></button>`).join('');document.getElementById('statCatalogo').textContent=produtos.filter(p=>p.estoque>0).length;}
-function adicionar(id){const p=produtos.find(x=>x.id===id);if(!p||p.estoque===0)return;const atual=carrinho[id]||0;if(atual>=p.estoque){aviso('A quantidade selecionada ultrapassa o estoque de demonstração.');return;}carrinho[id]=atual+1;renderizarCarrinho();}
-function alterar(id,delta){const p=produtos.find(x=>x.id===id);const novo=(carrinho[id]||0)+delta;if(novo<=0)delete carrinho[id];else if(novo>p.estoque){aviso('Quantidade maior que o estoque de demonstração.');return;}else carrinho[id]=novo;renderizarCarrinho();}
-function remover(id){delete carrinho[id];renderizarCarrinho();}
-function renderizarCarrinho(){const ids=Object.keys(carrinho);const el=document.getElementById('carrinho');if(!ids.length)el.innerHTML='<div class="cart-empty">Seu carrinho está vazio.<br>Selecione um produto ao lado.</div>';else el.innerHTML=ids.map(id=>{const p=produtos.find(x=>x.id===Number(id)),q=carrinho[id];return `<div class="cart-line"><div><div class="cart-line-name">${escapar(p.nome)}</div><div class="cart-line-meta">${dinheiro(p.preco)} cada · ${dinheiro(p.preco*q)}</div><div class="qty-control" style="margin-top:9px"><button onclick="alterar(${p.id},-1)" aria-label="Diminuir">−</button><span class="qty-number">${q}</span><button onclick="alterar(${p.id},1)" aria-label="Aumentar">＋</button><button class="remove-line" onclick="remover(${p.id})">Remover</button></div></div><div style="font-size:12px;font-weight:600">${dinheiro(p.preco*q)}</div></div>`}).join('');const qtd=ids.reduce((s,id)=>s+carrinho[id],0),total=ids.reduce((s,id)=>{const p=produtos.find(x=>x.id===Number(id));return s+p.preco*carrinho[id]},0);document.getElementById('total').textContent=dinheiro(total);document.getElementById('statTotal').textContent=dinheiro(total);document.getElementById('statItens').textContent=qtd;}
-function limparCarrinho(){carrinho={};renderizarCarrinho();aviso('Carrinho limpo.');}
-function finalizarVenda(){const cliente=document.getElementById('cliente').value.trim();if(!cliente){aviso('Informe o nome do cliente.');document.getElementById('cliente').focus();return;}if(!Object.keys(carrinho).length){aviso('Adicione pelo menos um produto.');return;}const itens=Object.keys(carrinho).map(id=>{const p=produtos.find(x=>x.id===Number(id));return `${carrinho[id]}x ${p.nome}`}).join(', ');const total=Object.keys(carrinho).reduce((s,id)=>{const p=produtos.find(x=>x.id===Number(id));return s+p.preco*carrinho[id]},0);alert(`Prévia da venda\n\nCliente: ${cliente}\nProdutos: ${itens}\nTotal: ${dinheiro(total)}\n\nNenhuma venda foi salva e o estoque não foi alterado.`);}
-function aviso(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2600)}renderizarProdutos();renderizarCarrinho();
-</script>
+</div>
+
+
+
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="js/caixa.js"></script>
 </body>
 </html>
