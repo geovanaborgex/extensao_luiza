@@ -2,7 +2,7 @@
 "use strict";
 
 /* =========================================================
-   CAIXA — LUIZA RODRIGUES BELEZA E ESTÉTICA
+   CONFIGURAÇÃO
    ========================================================= */
 
 const CHAVE_PRODUTOS = "luiza_caixa_produtos_v1";
@@ -17,51 +17,72 @@ const FORMAS_PAGAMENTO = [
     "Cartão de débito"
 ];
 
-const $ = (id) => document.getElementById(id);
+const $ = id => document.getElementById(id);
 
 let carrinho = [];
-let selecaoModal = {};
 let tipoMovimentacaoAtual = "entrada";
 
 /* =========================================================
-   DADOS E UTILITÁRIOS
+   UTILITÁRIOS
    ========================================================= */
 
-function carregarDados(chave, padrao = []) {
+function ler(chave, padrao = []) {
     try {
         const dados = localStorage.getItem(chave);
         return dados ? JSON.parse(dados) : padrao;
     } catch (erro) {
-        console.error(`Erro ao carregar ${chave}:`, erro);
+        console.error("Erro ao ler:", chave, erro);
         return padrao;
     }
 }
 
-function salvarDados(chave, dados) {
-    localStorage.setItem(chave, JSON.stringify(dados));
+function salvar(chave, dados) {
+    try {
+        localStorage.setItem(chave, JSON.stringify(dados));
+    } catch (erro) {
+        console.error("Erro ao salvar:", chave, erro);
+        mostrarAviso("Não foi possível salvar os dados.", "error");
+        throw erro;
+    }
 }
 
 function obterProdutos() {
-    return carregarDados(CHAVE_PRODUTOS, []);
+    const dados = ler(CHAVE_PRODUTOS, []);
+    return Array.isArray(dados) ? dados : [];
 }
 
 function obterVendas() {
-    return carregarDados(CHAVE_VENDAS, []);
+    const dados = ler(CHAVE_VENDAS, []);
+    return Array.isArray(dados) ? dados : [];
 }
 
 function obterSessoes() {
-    return carregarDados(CHAVE_SESSOES, []);
+    const dados = ler(CHAVE_SESSOES, []);
+    return Array.isArray(dados) ? dados : [];
 }
 
-function dinheiro(valor) {
-    return Number(valor || 0).toLocaleString("pt-BR", {
+function numero(valor) {
+    if (typeof valor === "string") {
+        valor = valor.trim();
+
+        if (valor.includes(",")) {
+            valor = valor.replace(/\./g, "").replace(",", ".");
+        }
+    }
+
+    const resultado = Number(valor);
+    return Number.isFinite(resultado) ? resultado : 0;
+}
+
+function moeda(valor) {
+    return numero(valor).toLocaleString("pt-BR", {
         style: "currency",
         currency: "BRL"
     });
 }
 
 function escapar(valor) {
-    return String(valor ?? "").replace(/[&<>"']/g, (caractere) => ({
+    return String(valor ?? "").replace(/[&<>"']/g, caractere => ({
         "&": "&amp;",
         "<": "&lt;",
         ">": "&gt;",
@@ -70,601 +91,456 @@ function escapar(valor) {
     })[caractere]);
 }
 
-function gerarId() {
+function idNovo() {
     return `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
 }
 
-function dataLocal() {
-    const agora = new Date();
-    const ano = agora.getFullYear();
-    const mes = String(agora.getMonth() + 1).padStart(2, "0");
-    const dia = String(agora.getDate()).padStart(2, "0");
+function hoje() {
+    const data = new Date();
 
-    return `${ano}-${mes}-${dia}`;
+    return [
+        data.getFullYear(),
+        String(data.getMonth() + 1).padStart(2, "0"),
+        String(data.getDate()).padStart(2, "0")
+    ].join("-");
 }
 
-function horaLocal(data = new Date()) {
+function hora(dataHora) {
+    if (!dataHora) return "--:--";
+
+    const data = new Date(dataHora);
+
+    if (Number.isNaN(data.getTime())) return "--:--";
+
     return data.toLocaleTimeString("pt-BR", {
         hour: "2-digit",
         minute: "2-digit"
     });
 }
 
-function formatarData(data) {
-    if (!data) return "—";
-
-    const partes = String(data).split("-");
-
-    if (partes.length !== 3) return data;
-
-    return `${partes[2]}/${partes[1]}/${partes[0]}`;
-}
-
-function aviso(mensagem, tipo = "sucesso") {
-    if (typeof window.Swal !== "undefined") {
-        Swal.fire({
+function mostrarAviso(mensagem, tipo = "success") {
+    if (window.Swal) {
+        window.Swal.fire({
             toast: true,
             position: "top-end",
             icon: tipo,
             title: mensagem,
             showConfirmButton: false,
-            timer: 2800,
-            timerProgressBar: true
+            timer: 2800
         });
-
         return;
     }
 
-    alert(mensagem);
-}
+    const toast = $("toast");
 
-function confirmar(mensagem) {
-    if (typeof window.Swal !== "undefined") {
-        return Swal.fire({
-            title: "Tem certeza?",
-            text: mensagem,
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Sim",
-            cancelButtonText: "Cancelar",
-            confirmButtonColor: "#6B6E55"
-        }).then((resultado) => resultado.isConfirmed);
+    if (toast) {
+        toast.textContent = mensagem;
+        toast.classList.add("ativo");
+
+        setTimeout(() => toast.classList.remove("ativo"), 3000);
+    } else {
+        alert(mensagem);
     }
-
-    return Promise.resolve(window.confirm(mensagem));
 }
+
+/* =========================================================
+   MODAIS
+   ========================================================= */
 
 function abrirModal(id) {
     const modal = $(id);
-
     if (!modal) return;
 
-    modal.classList.add("ativo");
-    modal.classList.add("aberto");
+    modal.hidden = false;
     modal.style.display = "flex";
     modal.setAttribute("aria-hidden", "false");
 }
 
 function fecharModal(id) {
     const modal = $(id);
-
     if (!modal) return;
 
-    modal.classList.remove("ativo");
-    modal.classList.remove("aberto");
+    modal.hidden = true;
     modal.style.display = "none";
     modal.setAttribute("aria-hidden", "true");
 }
 
+["modalProdutos", "modalAbertura", "modalMovimentacao"].forEach(id => {
+    const modal = $(id);
+
+    if (!modal) return;
+
+    modal.addEventListener("click", evento => {
+        if (evento.target !== modal) return;
+
+        if (id === "modalAbertura") return;
+
+        fecharModal(id);
+    });
+});
+
+document.addEventListener("keydown", evento => {
+    if (evento.key !== "Escape") return;
+
+    fecharModal("modalProdutos");
+    fecharModal("modalMovimentacao");
+
+    // A abertura é obrigatória quando ainda não existe caixa aberto.
+    if (caixaAberto()) {
+        fecharModal("modalAbertura");
+    }
+});
+
 /* =========================================================
-   CAIXA DO DIA
+   CAIXA E ABERTURA
    ========================================================= */
 
 function obterCaixaHoje() {
-    return obterSessoes().find((sessao) => sessao.data === dataLocal()) || null;
+    return obterSessoes().find(sessao => sessao.data === hoje()) || null;
 }
 
-function salvarSessao(sessaoAtualizada) {
+function salvarSessao(caixa) {
     const sessoes = obterSessoes();
-    const indice = sessoes.findIndex(
-        (sessao) => sessao.data === sessaoAtualizada.data
-    );
+    const indice = sessoes.findIndex(sessao => sessao.data === caixa.data);
 
     if (indice >= 0) {
-        sessoes[indice] = sessaoAtualizada;
+        sessoes[indice] = caixa;
     } else {
-        sessoes.push(sessaoAtualizada);
+        sessoes.push(caixa);
     }
 
-    salvarDados(CHAVE_SESSOES, sessoes);
+    salvar(CHAVE_SESSOES, sessoes);
 }
 
-function caixaEstaAberto() {
+function caixaAberto() {
     const caixa = obterCaixaHoje();
     return Boolean(caixa && caixa.aberto);
 }
 
-function verificarAberturaCaixa() {
-    const caixa = obterCaixaHoje();
-
-    if (!caixa || !caixa.aberto) {
-        if ($("statusCaixa")) {
-            $("statusCaixa").textContent = "Caixa fechado";
-        }
-
-        if ($("btnAbrirVenda")) {
-            $("btnAbrirVenda").disabled = true;
-        }
-
-        if ($("btnEntradaManual")) {
-            $("btnEntradaManual").disabled = true;
-        }
-
-        if ($("btnRetiradaManual")) {
-            $("btnRetiradaManual").disabled = true;
-        }
-
-        abrirModal("modalAbertura");
-        atualizarResumoCaixa();
-        return;
-    }
-
-    if ($("statusCaixa")) {
-        $("statusCaixa").textContent = "Caixa aberto";
-    }
-
-    if ($("btnAbrirVenda")) {
-        $("btnAbrirVenda").disabled = false;
-    }
-
-    if ($("btnEntradaManual")) {
-        $("btnEntradaManual").disabled = false;
-    }
-
-    if ($("btnRetiradaManual")) {
-        $("btnRetiradaManual").disabled = false;
-    }
-
-    fecharModal("modalAbertura");
-    atualizarResumoCaixa();
-}
-
-function abrirCaixa(valorInicial) {
-    if (!Number.isFinite(valorInicial) || valorInicial < 0) {
-        aviso("Informe um valor inicial válido.", "error");
-        return;
-    }
-
-    const existente = obterCaixaHoje();
-
-    if (existente && existente.aberto) {
-        aviso("O caixa de hoje já está aberto.", "info");
-        fecharModal("modalAbertura");
-        return;
-    }
-
-    const agora = new Date();
-
-    const sessao = {
-        id: existente?.id || gerarId(),
-        data: dataLocal(),
-        aberto: true,
-        valorAbertura: valorInicial,
-        dataHoraAbertura: agora.toISOString(),
-        movimentacoes: existente?.movimentacoes || []
-    };
-
-    salvarSessao(sessao);
-
-    fecharModal("modalAbertura");
-
-    if ($("formAbertura")) {
-        $("formAbertura").reset();
-    }
-
-    verificarAberturaCaixa();
-    aviso("Caixa aberto com sucesso!");
-}
-
-$("formAbertura")?.addEventListener("submit", (evento) => {
-    evento.preventDefault();
-
-    const campo = $("valorInicialCaixa");
-    const valor = Number(
-        String(campo?.value ?? "0").replace(",", ".")
-    );
-
-    abrirCaixa(valor);
-});
-
-/* =========================================================
-   RESUMO E MOVIMENTAÇÕES DO CAIXA
-   ========================================================= */
-
-function obterMovimentacoes(caixa) {
+function movimentacoesDoCaixa(caixa) {
     return Array.isArray(caixa?.movimentacoes)
         ? caixa.movimentacoes
         : [];
 }
 
-function calcularResumoCaixa() {
-    const caixa = obterCaixaHoje();
+function verificarAberturaCaixa() {
+    const aberto = caixaAberto();
 
-    if (!caixa) {
-        return {
-            abertura: 0,
-            entradas: 0,
-            retiradas: 0,
-            vendasDinheiro: 0,
-            saldo: 0
-        };
+    if ($("statusCaixa")) {
+        $("statusCaixa").classList.toggle("pill-green", aberto);
+        $("statusCaixa").innerHTML = aberto
+            ? '<i class="fa-solid fa-circle"></i> Caixa aberto'
+            : '<i class="fa-solid fa-circle"></i> Caixa fechado';
     }
 
-    const movimentacoes = obterMovimentacoes(caixa);
+    ["btnAbrirVenda", "btnEntradaManual", "btnRetiradaManual"]
+        .forEach(id => {
+            if ($(id)) $(id).disabled = !aberto;
+        });
 
-    const entradas = movimentacoes
-        .filter((mov) => mov.tipo === "entrada")
-        .reduce((total, mov) => total + Number(mov.valor || 0), 0);
+    if (aberto) {
+        fecharModal("modalAbertura");
+    } else {
+        abrirModal("modalAbertura");
+    }
 
-    const retiradas = movimentacoes
-        .filter((mov) => mov.tipo === "retirada")
-        .reduce((total, mov) => total + Number(mov.valor || 0), 0);
-
-    const vendasDinheiro = obterVendas()
-        .filter((venda) => {
-            if (venda.data !== caixa.data) return false;
-            if (venda.pagamento !== "Dinheiro") return false;
-
-            // Contabiliza somente vendas realizadas após a abertura.
-            if (venda.dataHora && caixa.dataHoraAbertura) {
-                return new Date(venda.dataHora).getTime() >=
-                    new Date(caixa.dataHoraAbertura).getTime();
-            }
-
-            return true;
-        })
-        .reduce((total, venda) => total + Number(venda.total || 0), 0);
-
-    const abertura = Number(caixa.valorAbertura || 0);
-
-    return {
-        abertura,
-        entradas,
-        retiradas,
-        vendasDinheiro,
-        saldo: abertura + entradas + vendasDinheiro - retiradas
-    };
+    atualizarResumoCaixa();
 }
 
-function renderizarMovimentacoes() {
-    const lista = $("listaMovimentacoes");
-
-    if (!lista) return;
-
-    const caixa = obterCaixaHoje();
-    const movimentacoes = obterMovimentacoes(caixa)
-        .slice()
-        .sort((a, b) => new Date(b.dataHora) - new Date(a.dataHora));
-
-    if (!movimentacoes.length) {
-        lista.innerHTML = `
-            <tr>
-                <td colspan="5">Nenhuma movimentação registrada.</td>
-            </tr>
-        `;
+function abrirCaixa(valorInicial) {
+    if (!Number.isFinite(valorInicial) || valorInicial < 0) {
+        mostrarAviso("Informe um valor inicial válido.", "error");
         return;
     }
 
-    lista.innerHTML = movimentacoes.map((mov) => `
-        <tr>
-            <td>${escapar(horaLocal(new Date(mov.dataHora)))}</td>
-            <td>${mov.tipo === "entrada" ? "Entrada" : "Retirada"}</td>
-            <td>${escapar(mov.descricao || "Movimentação manual")}</td>
-            <td>${dinheiro(mov.valor)}</td>
-            <td>
-                <button
-                    type="button"
-                    class="btn-excluir-movimentacao"
-                    data-id="${escapar(mov.id)}"
-                    aria-label="Excluir movimentação"
-                >Excluir</button>
-            </td>
-        </tr>
-    `).join("");
+    if (caixaAberto()) {
+        mostrarAviso("O caixa de hoje já está aberto.", "info");
+        fecharModal("modalAbertura");
+        return;
+    }
+
+    const caixaAnterior = obterCaixaHoje();
+
+    const caixa = {
+        id: caixaAnterior?.id || idNovo(),
+        data: hoje(),
+        aberto: true,
+        valorAbertura: valorInicial,
+        dataHoraAbertura: new Date().toISOString(),
+        movimentacoes: movimentacoesDoCaixa(caixaAnterior)
+    };
+
+    salvarSessao(caixa);
+
+    fecharModal("modalAbertura");
+    verificarAberturaCaixa();
+    mostrarAviso("Caixa aberto com sucesso!");
+}
+
+$("formAbertura")?.addEventListener("submit", evento => {
+    evento.preventDefault();
+
+    abrirCaixa(numero($("valorInicialCaixa")?.value));
+});
+
+/* =========================================================
+   CÁLCULOS FINANCEIROS
+   ========================================================= */
+
+function vendasDeHoje() {
+    return obterVendas().filter(venda => venda.data === hoje());
+}
+
+function calcularFinanceiro() {
+    const caixa = obterCaixaHoje();
+    const movimentacoes = movimentacoesDoCaixa(caixa);
+    const vendas = vendasDeHoje();
+
+    const abertura = numero(caixa?.valorAbertura);
+
+    const entradasManuais = movimentacoes
+        .filter(movimento => movimento.tipo === "entrada")
+        .reduce((soma, movimento) => soma + numero(movimento.valor), 0);
+
+    const retiradas = movimentacoes
+        .filter(movimento => movimento.tipo === "retirada")
+        .reduce((soma, movimento) => soma + numero(movimento.valor), 0);
+
+    const totalVendas = vendas.reduce(
+        (soma, venda) => soma + numero(venda.total),
+        0
+    );
+
+    const quantidadeVendas = vendas.length;
+
+    /*
+     * Total recebido:
+     * fundo de abertura + vendas do dia + entradas manuais.
+     *
+     * As retiradas não são descontadas desse indicador.
+     * O fundo de abertura não é uma venda.
+     */
+
+    const totalRecebido = abertura + totalVendas + entradasManuais;
+
+    return {
+        abertura,
+        entradasManuais,
+        retiradas,
+        totalVendas,
+        totalRecebido,
+        quantidadeVendas
+    };
 }
 
 function atualizarResumoCaixa() {
-    const caixa = obterCaixaHoje();
-    const resumo = calcularResumoCaixa();
+    const resumo = calcularFinanceiro();
 
-    if ($("valorAbertura")) {
-        $("valorAbertura").textContent = dinheiro(resumo.abertura);
-    }
+    const valores = {
+        statVendas: resumo.quantidadeVendas,
+        totalVendasDia: moeda(resumo.totalVendas),
+        totalRecebido: moeda(resumo.totalRecebido),
+        valorAbertura: moeda(resumo.abertura),
+        totalEntradas: moeda(resumo.entradasManuais),
+        totalRetiradas: moeda(resumo.retiradas)
+    };
 
-    if ($("totalEntradas")) {
-        $("totalEntradas").textContent = dinheiro(resumo.entradas);
-    }
-
-    if ($("totalDinheiro")) {
-        $("totalDinheiro").textContent = dinheiro(resumo.vendasDinheiro);
-    }
-
-    if ($("totalRetiradas")) {
-        $("totalRetiradas").textContent = dinheiro(resumo.retiradas);
-    }
-
-    if ($("saldoCaixa")) {
-        $("saldoCaixa").textContent = dinheiro(resumo.saldo);
-    }
-
-    if ($("statTotalCaixa")) {
-        $("statTotalCaixa").textContent = dinheiro(resumo.saldo);
-    }
-
-    if ($("statusCaixa")) {
-        $("statusCaixa").textContent =
-            caixa?.aberto ? "Caixa aberto" : "Caixa fechado";
-    }
+    Object.entries(valores).forEach(([id, valor]) => {
+        if ($(id)) $(id).textContent = valor;
+    });
 
     renderizarMovimentacoes();
     renderizarVendasDoCaixa();
 }
 
-function registrarMovimentacao(tipo, descricao, valor) {
-    if (!caixaEstaAberto()) {
-        aviso("Abra o caixa antes de registrar movimentações.", "warning");
-        return;
-    }
-
-    if (!Number.isFinite(valor) || valor <= 0) {
-        aviso("Informe um valor maior que zero.", "error");
-        return;
-    }
-
-    const caixa = obterCaixaHoje();
-
-    caixa.movimentacoes = obterMovimentacoes(caixa);
-
-    caixa.movimentacoes.push({
-        id: gerarId(),
-        tipo,
-        descricao: descricao.trim() || (
-            tipo === "entrada" ? "Entrada manual" : "Retirada manual"
-        ),
-        valor,
-        dataHora: new Date().toISOString()
-    });
-
-    salvarSessao(caixa);
-    atualizarResumoCaixa();
-
-    aviso(
-        tipo === "entrada"
-            ? "Entrada registrada com sucesso!"
-            : "Retirada registrada com sucesso!"
-    );
-}
+/* =========================================================
+   ENTRADAS E RETIRADAS MANUAIS
+   ========================================================= */
 
 $("btnEntradaManual")?.addEventListener("click", () => {
+    if (!caixaAberto()) {
+        mostrarAviso("Abra o caixa primeiro.", "warning");
+        return;
+    }
+
     tipoMovimentacaoAtual = "entrada";
 
     if ($("tituloMovimentacao")) {
         $("tituloMovimentacao").textContent = "Registrar entrada";
     }
 
-    if ($("tipoMovimentacao")) {
-        $("tipoMovimentacao").value = "entrada";
+    if ($("descricaoMovimentacao")) {
+        $("descricaoMovimentacao").textContent =
+            "Informe o valor adicionado ao caixa.";
     }
 
+    $("formMovimentacao")?.reset();
     abrirModal("modalMovimentacao");
 });
 
 $("btnRetiradaManual")?.addEventListener("click", () => {
+    if (!caixaAberto()) {
+        mostrarAviso("Abra o caixa primeiro.", "warning");
+        return;
+    }
+
     tipoMovimentacaoAtual = "retirada";
 
     if ($("tituloMovimentacao")) {
         $("tituloMovimentacao").textContent = "Registrar retirada";
     }
 
-    if ($("tipoMovimentacao")) {
-        $("tipoMovimentacao").value = "retirada";
+    if ($("descricaoMovimentacao")) {
+        $("descricaoMovimentacao").textContent =
+            "Informe o valor retirado do caixa.";
     }
 
+    $("formMovimentacao")?.reset();
     abrirModal("modalMovimentacao");
 });
 
-$("formMovimentacao")?.addEventListener("submit", (evento) => {
+$("cancelarMovimentacao")?.addEventListener("click", () => {
+    fecharModal("modalMovimentacao");
+});
+
+$("formMovimentacao")?.addEventListener("submit", evento => {
     evento.preventDefault();
 
-    const descricao =
-        $("descricaoMovimentacao")?.value ||
-        $("motivoMovimentacao")?.value ||
-        "";
+    if (!caixaAberto()) {
+        mostrarAviso("Abra o caixa primeiro.", "warning");
+        return;
+    }
 
-    const valorCampo = $("valorMovimentacao")?.value;
-    const valor = Number(String(valorCampo ?? "").replace(",", "."));
+    const valor = numero($("valorMovimentacao")?.value);
+    const descricao = $("motivoMovimentacao")?.value.trim() || "";
 
-    const tipoCampo = $("tipoMovimentacao")?.value;
-    const tipo = tipoCampo === "retirada"
-        ? "retirada"
-        : tipoMovimentacaoAtual;
+    if (valor <= 0) {
+        mostrarAviso("Informe um valor maior que zero.", "warning");
+        return;
+    }
 
-    registrarMovimentacao(tipo, descricao, valor);
-
-    fecharModal("modalMovimentacao");
-    $("formMovimentacao").reset();
-});
-
-$("listaMovimentacoes")?.addEventListener("click", async (evento) => {
-    const botao = evento.target.closest("[data-id]");
-    if (!botao) return;
-
-    const id = botao.dataset.id;
-
-    const desejaExcluir = await confirmar(
-        "Deseja excluir esta movimentação? O saldo será recalculado."
-    );
-
-    if (!desejaExcluir) return;
+    if (!descricao) {
+        mostrarAviso("Informe a descrição.", "warning");
+        return;
+    }
 
     const caixa = obterCaixaHoje();
-    if (!caixa) return;
 
-    caixa.movimentacoes = obterMovimentacoes(caixa).filter(
-        (mov) => String(mov.id) !== String(id)
-    );
+    if (!caixa) {
+        mostrarAviso("Não foi possível localizar o caixa de hoje.", "error");
+        return;
+    }
+
+    caixa.movimentacoes = movimentacoesDoCaixa(caixa);
+
+    caixa.movimentacoes.push({
+        id: idNovo(),
+        tipo: tipoMovimentacaoAtual,
+        descricao,
+        valor,
+        dataHora: new Date().toISOString()
+    });
 
     salvarSessao(caixa);
+
+    $("formMovimentacao").reset();
+    fecharModal("modalMovimentacao");
     atualizarResumoCaixa();
-    aviso("Movimentação excluída.");
+
+    mostrarAviso(
+        tipoMovimentacaoAtual === "entrada"
+            ? "Entrada registrada com sucesso!"
+            : "Retirada registrada com sucesso!"
+    );
 });
+
+function renderizarMovimentacoes() {
+    const lista = $("listaMovimentacoes");
+    if (!lista) return;
+
+    const movimentacoes = movimentacoesDoCaixa(obterCaixaHoje())
+        .slice()
+        .sort((a, b) => new Date(b.dataHora) - new Date(a.dataHora));
+
+    if (!movimentacoes.length) {
+        lista.innerHTML = `
+            <tr>
+                <td colspan="4">Nenhuma movimentação registrada hoje.</td>
+            </tr>
+        `;
+        return;
+    }
+
+    lista.innerHTML = movimentacoes.map(movimento => `
+        <tr>
+            <td>${escapar(hora(movimento.dataHora))}</td>
+            <td>${movimento.tipo === "entrada" ? "Entrada" : "Retirada"}</td>
+            <td>${escapar(movimento.descricao)}</td>
+            <td>${moeda(movimento.valor)}</td>
+        </tr>
+    `).join("");
+}
 
 /* =========================================================
    PRODUTOS E ESTOQUE
    ========================================================= */
 
-function renderizarCatalogo() {
-    const produtos = obterProdutos();
-
-    if ($("statCatalogo")) {
-        $("statCatalogo").textContent = produtos.length;
-    }
-
-    if ($("buscaProduto")) {
-        renderizarListaProdutos($("buscaProduto").value);
-    }
+function nomeDoProduto(produto) {
+    return String(
+        produto.nome ??
+        produto.nomeProduto ??
+        produto.descricao ??
+        "Produto"
+    );
 }
 
-function renderizarListaProdutos(busca = "") {
-    const lista = $("listaProdutos");
-    if (!lista) return;
-
-    const termo = busca.trim().toLowerCase();
-
-    const produtos = obterProdutos().filter((produto) =>
-        String(produto.nome || "").toLowerCase().includes(termo)
+function precoDoProduto(produto) {
+    return numero(
+        produto.preco ??
+        produto.precoVenda ??
+        produto.valor ??
+        0
     );
+}
 
-    if (!produtos.length) {
-        lista.innerHTML = `
-            <p class="mensagem-vazia">Nenhum produto encontrado.</p>
-        `;
-        return;
+function estoqueDoProduto(produto) {
+    return numero(
+        produto.estoque ??
+        produto.quantidade ??
+        produto.qtd ??
+        0
+    );
+}
+
+function definirEstoque(produto, quantidade) {
+    if ("estoque" in produto || !("quantidade" in produto)) {
+        produto.estoque = quantidade;
+    } else {
+        produto.quantidade = quantidade;
     }
-
-    lista.innerHTML = produtos.map((produto) => `
-        <div class="produto-item">
-            <div>
-                <strong>${escapar(produto.nome)}</strong>
-                <p>${dinheiro(produto.preco)} · Estoque: ${Number(produto.estoque || 0)}</p>
-            </div>
-            <button
-                type="button"
-                data-adicionar-produto="${escapar(produto.id)}"
-                ${Number(produto.estoque || 0) <= 0 ? "disabled" : ""}
-            >Adicionar</button>
-        </div>
-    `).join("");
 }
 
 function atualizarCatalogo() {
-    renderizarCatalogo();
     renderizarProdutosModal();
 }
 
-$("buscaProduto")?.addEventListener("input", (evento) => {
-    renderizarListaProdutos(evento.target.value);
-});
-
-$("listaProdutos")?.addEventListener("click", (evento) => {
-    const botao = evento.target.closest("[data-adicionar-produto]");
-    if (!botao) return;
-
-    adicionarProduto(botao.dataset.adicionarProduto);
-});
-
-function adicionarProduto(id) {
-    const produtos = obterProdutos();
-    const produto = produtos.find((item) => String(item.id) === String(id));
-
-    if (!produto) {
-        aviso("Produto não encontrado.", "error");
-        return;
-    }
-
-    const itemExistente = carrinho.find(
-        (item) => String(item.id) === String(id)
-    );
-
-    const quantidadeAtual = itemExistente ? itemExistente.quantidade : 0;
-
-    if (quantidadeAtual + 1 > Number(produto.estoque || 0)) {
-        aviso("Não há estoque suficiente para esse produto.", "warning");
-        return;
-    }
-
-    if (itemExistente) {
-        itemExistente.quantidade += 1;
-    } else {
-        carrinho.push({
-            id: produto.id,
-            nome: produto.nome,
-            preco: Number(produto.preco || 0),
-            quantidade: 1
-        });
-    }
-
-    renderizarCarrinho();
-    atualizarResumoSelecao();
-}
-
-function alterarQuantidade(id, quantidade) {
-    const item = carrinho.find(
-        (produto) => String(produto.id) === String(id)
-    );
-
-    if (!item) return;
-
-    const produtos = obterProdutos();
-    const produto = produtos.find(
-        (p) => String(p.id) === String(id)
-    );
-
-    if (!produto) return;
-
-    const novaQuantidade = Number(quantidade);
-
-    if (!Number.isInteger(novaQuantidade) || novaQuantidade < 1) {
-        removerProduto(id);
-        return;
-    }
-
-    if (novaQuantidade > Number(produto.estoque || 0)) {
-        aviso("Quantidade maior que o estoque disponível.", "warning");
-        renderizarCarrinho();
-        return;
-    }
-
-    item.quantidade = novaQuantidade;
-
-    renderizarCarrinho();
-    atualizarResumoSelecao();
-}
-
-function removerProduto(id) {
-    carrinho = carrinho.filter(
-        (item) => String(item.id) !== String(id)
-    );
-
-    renderizarCarrinho();
-    atualizarResumoSelecao();
-}
-
-function calcularTotal() {
+function totalCarrinho() {
     return carrinho.reduce(
-        (total, item) => total + Number(item.preco) * Number(item.quantidade),
+        (soma, item) => soma + item.preco * item.quantidade,
         0
     );
+}
+
+function atualizarResumoSelecao() {
+    const quantidade = carrinho.reduce(
+        (soma, item) => soma + item.quantidade,
+        0
+    );
+
+    if ($("contadorProdutosSelecionados")) {
+        $("contadorProdutosSelecionados").textContent =
+            `${quantidade} unidade(s) selecionada(s)`;
+    }
 }
 
 function renderizarCarrinho() {
@@ -673,79 +549,132 @@ function renderizarCarrinho() {
 
     if (!carrinho.length) {
         lista.innerHTML = `
-            <p class="mensagem-vazia">Nenhum produto selecionado.</p>
+            <div class="cart-empty">Nenhum produto adicionado.</div>
         `;
     } else {
-        lista.innerHTML = carrinho.map((item) => `
+        lista.innerHTML = carrinho.map(item => `
             <div class="item-carrinho">
                 <div>
                     <strong>${escapar(item.nome)}</strong>
-                    <p>${dinheiro(item.preco)} cada</p>
+                    <p>${moeda(item.preco)} cada</p>
                 </div>
 
                 <div class="controles-quantidade">
-                    <button
-                        type="button"
-                        data-diminuir="${escapar(item.id)}"
-                        aria-label="Diminuir quantidade"
-                    >−</button>
+                    <button type="button"
+                        data-diminuir="${escapar(item.id)}">−</button>
 
-                    <input
-                        type="number"
-                        min="1"
-                        value="${Number(item.quantidade)}"
-                        data-quantidade="${escapar(item.id)}"
-                        aria-label="Quantidade de ${escapar(item.nome)}"
-                    >
+                    <span>${item.quantidade}</span>
 
-                    <button
-                        type="button"
-                        data-aumentar="${escapar(item.id)}"
-                        aria-label="Aumentar quantidade"
-                    >+</button>
+                    <button type="button"
+                        data-aumentar="${escapar(item.id)}">+</button>
                 </div>
 
-                <strong>${dinheiro(item.preco * item.quantidade)}</strong>
+                <strong>${moeda(item.preco * item.quantidade)}</strong>
 
-                <button
-                    type="button"
-                    data-remover="${escapar(item.id)}"
-                    aria-label="Remover produto"
-                >Remover</button>
+                <button type="button"
+                    data-remover="${escapar(item.id)}">Remover</button>
             </div>
         `).join("");
     }
 
     if ($("total")) {
-        $("total").textContent = dinheiro(calcularTotal());
+        $("total").textContent = moeda(totalCarrinho());
     }
 
-    if ($("totalVenda")) {
-        $("totalVenda").textContent = dinheiro(calcularTotal());
-    }
+    atualizarResumoSelecao();
 }
 
-$("carrinho")?.addEventListener("click", (evento) => {
-    const diminuir = evento.target.closest("[data-diminuir]");
-    const aumentar = evento.target.closest("[data-aumentar]");
-    const remover = evento.target.closest("[data-remover]");
+function adicionarProduto(id) {
+    const produto = obterProdutos().find(
+        item => String(item.id) === String(id)
+    );
 
-    if (diminuir) {
-        const id = diminuir.dataset.diminuir;
-        const item = carrinho.find(
-            (produto) => String(produto.id) === String(id)
-        );
-
-        if (item) alterarQuantidade(id, item.quantidade - 1);
+    if (!produto) {
+        mostrarAviso("Produto não encontrado no estoque.", "error");
+        return;
     }
 
-    if (aumentar) {
-        const id = aumentar.dataset.aumentar;
+    const item = carrinho.find(
+        atual => String(atual.id) === String(id)
+    );
+
+    const quantidadeAtual = item?.quantidade || 0;
+
+    if (quantidadeAtual + 1 > estoqueDoProduto(produto)) {
+        mostrarAviso("Estoque insuficiente.", "warning");
+        return;
+    }
+
+    if (item) {
+        item.quantidade++;
+    } else {
+        carrinho.push({
+            id: produto.id,
+            nome: nomeDoProduto(produto),
+            preco: precoDoProduto(produto),
+            quantidade: 1
+        });
+    }
+
+    renderizarCarrinho();
+    renderizarProdutosModal();
+}
+
+function alterarQuantidade(id, quantidade) {
+    const item = carrinho.find(
+        atual => String(atual.id) === String(id)
+    );
+
+    if (!item) return;
+
+    if (quantidade < 1) {
+        removerProduto(id);
+        return;
+    }
+
+    const produto = obterProdutos().find(
+        atual => String(atual.id) === String(id)
+    );
+
+    if (!produto || quantidade > estoqueDoProduto(produto)) {
+        mostrarAviso("Quantidade maior que o estoque disponível.", "warning");
+        return;
+    }
+
+    item.quantidade = quantidade;
+
+    renderizarCarrinho();
+    renderizarProdutosModal();
+}
+
+function removerProduto(id) {
+    carrinho = carrinho.filter(
+        item => String(item.id) !== String(id)
+    );
+
+    renderizarCarrinho();
+    renderizarProdutosModal();
+}
+
+$("carrinho")?.addEventListener("click", evento => {
+    const menos = evento.target.closest("[data-diminuir]");
+    const mais = evento.target.closest("[data-aumentar]");
+    const remover = evento.target.closest("[data-remover]");
+
+    if (menos) {
         const item = carrinho.find(
-            (produto) => String(produto.id) === String(id)
+            atual => String(atual.id) === menos.dataset.diminuir
         );
 
-        if (item) alterarQuantidade(id, item.quantidade + 1);
+        if (item) alterarQuantidade(item.id, item.quantidade - 1);
+    }
+
+    if (mais) {
+        const item = carrinho.find(
+            atual => String(atual.id) === mais.dataset.aumentar
+        );
+
+        if (item) alterarQuantidade(item.id, item.quantidade + 1);
     }
 
     if (remover) {
@@ -753,95 +682,64 @@ $("carrinho")?.addEventListener("click", (evento) => {
     }
 });
 
-$("carrinho")?.addEventListener("change", (evento) => {
-    const campo = evento.target.closest("[data-quantidade]");
-    if (!campo) return;
+function renderizarProdutosModal() {
+    const lista = $("listaProdutosModal");
+    if (!lista) return;
 
-    alterarQuantidade(campo.dataset.quantidade, campo.value);
-});
+    const termo = $("buscarProdutosModal")?.value.trim().toLowerCase() || "";
+
+    const produtos = obterProdutos().filter(produto =>
+        nomeDoProduto(produto).toLowerCase().includes(termo)
+    );
+
+    if (!produtos.length) {
+        lista.innerHTML = `
+            <p class="empty">Nenhum produto encontrado.</p>
+        `;
+        return;
+    }
+
+    lista.innerHTML = produtos.map(produto => {
+        const item = carrinho.find(
+            atual => String(atual.id) === String(produto.id)
+        );
+
+        const quantidade = item?.quantidade || 0;
+        const estoque = estoqueDoProduto(produto);
+
+        return `
+            <div class="produto-modal-item">
+                <span class="produto-modal-nome">
+                    ${escapar(nomeDoProduto(produto))}
+                </span>
+
+                <span>${estoque}</span>
+
+                <span>${moeda(precoDoProduto(produto))}</span>
+
+                <div class="produto-modal-acoes">
+                    <button type="button"
+                        data-modal-diminuir="${escapar(produto.id)}"
+                        ${quantidade <= 0 ? "disabled" : ""}>−</button>
+
+                    <span>${quantidade}</span>
+
+                    <button type="button"
+                        data-modal-aumentar="${escapar(produto.id)}"
+                        ${quantidade >= estoque ? "disabled" : ""}>+</button>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
 
 /* =========================================================
    MODAL DE SELEÇÃO DE PRODUTOS
    ========================================================= */
 
-function atualizarResumoSelecao() {
-    const resumo = $("resumoSelecaoProdutos");
-
-    if (!resumo) return;
-
-    if (!carrinho.length) {
-        resumo.innerHTML = "<p>Nenhum produto selecionado ainda.</p>";
-        return;
-    }
-
-    resumo.innerHTML = `
-        <p>
-            <strong>${carrinho.reduce((total, item) => total + item.quantidade, 0)}</strong>
-            unidade(s) selecionada(s) ·
-            <strong>${dinheiro(calcularTotal())}</strong>
-        </p>
-    `;
-}
-
-function renderizarProdutosModal() {
-    const lista = $("listaProdutosModal");
-    if (!lista) return;
-
-    const busca = $("buscarProdutosModal")?.value?.trim().toLowerCase() || "";
-
-    const produtos = obterProdutos().filter((produto) =>
-        String(produto.nome || "").toLowerCase().includes(busca)
-    );
-
-    if (!produtos.length) {
-        lista.innerHTML = "<p>Nenhum produto encontrado.</p>";
-        return;
-    }
-
-    lista.innerHTML = produtos.map((produto) => {
-        const selecionado = carrinho.find(
-            (item) => String(item.id) === String(produto.id)
-        );
-
-        const quantidade = selecionado?.quantidade || 0;
-        const estoque = Number(produto.estoque || 0);
-
-        return `
-            <div class="produto-modal-item">
-                <div class="produto-modal-info">
-                    <strong>${escapar(produto.nome)}</strong>
-                    <span>${dinheiro(produto.preco)}</span>
-                    <small>Estoque: ${estoque}</small>
-                </div>
-
-                <div class="produto-modal-acoes">
-                    <button
-                        type="button"
-                        data-modal-diminuir="${escapar(produto.id)}"
-                        ${quantidade <= 0 ? "disabled" : ""}
-                    >−</button>
-
-                    <span>${quantidade}</span>
-
-                    <button
-                        type="button"
-                        data-modal-aumentar="${escapar(produto.id)}"
-                        ${quantidade >= estoque ? "disabled" : ""}
-                    >+</button>
-                </div>
-            </div>
-        `;
-    }).join("");
-
-    if ($("contadorProdutosSelecionados")) {
-        $("contadorProdutosSelecionados").textContent =
-            String(carrinho.reduce((total, item) => total + item.quantidade, 0));
-    }
-}
-
 $("btnSelecionarProdutos")?.addEventListener("click", () => {
-    if (!caixaEstaAberto()) {
-        aviso("Abra o caixa antes de iniciar uma venda.", "warning");
+    if (!caixaAberto()) {
+        mostrarAviso("Abra o caixa antes de lançar uma venda.", "warning");
         return;
     }
 
@@ -851,24 +749,21 @@ $("btnSelecionarProdutos")?.addEventListener("click", () => {
 
 $("buscarProdutosModal")?.addEventListener("input", renderizarProdutosModal);
 
-$("listaProdutosModal")?.addEventListener("click", (evento) => {
-    const aumentar = evento.target.closest("[data-modal-aumentar]");
-    const diminuir = evento.target.closest("[data-modal-diminuir]");
+$("listaProdutosModal")?.addEventListener("click", evento => {
+    const mais = evento.target.closest("[data-modal-aumentar]");
+    const menos = evento.target.closest("[data-modal-diminuir]");
 
-    if (aumentar) {
-        adicionarProduto(aumentar.dataset.modalAumentar);
+    if (mais) {
+        adicionarProduto(mais.dataset.modalAumentar);
     }
 
-    if (diminuir) {
-        const id = diminuir.dataset.modalDiminuir;
+    if (menos) {
         const item = carrinho.find(
-            (produto) => String(produto.id) === String(id)
+            atual => String(atual.id) === menos.dataset.modalDiminuir
         );
 
-        if (item) alterarQuantidade(id, item.quantidade - 1);
+        if (item) alterarQuantidade(item.id, item.quantidade - 1);
     }
-
-    renderizarProdutosModal();
 });
 
 $("fecharModalProdutos")?.addEventListener("click", () => {
@@ -882,7 +777,6 @@ $("cancelarSelecaoProdutos")?.addEventListener("click", () => {
 $("concluirSelecaoProdutos")?.addEventListener("click", () => {
     fecharModal("modalProdutos");
     renderizarCarrinho();
-    atualizarResumoSelecao();
 });
 
 /* =========================================================
@@ -890,329 +784,218 @@ $("concluirSelecaoProdutos")?.addEventListener("click", () => {
    ========================================================= */
 
 $("btnAbrirVenda")?.addEventListener("click", () => {
-    if (!caixaEstaAberto()) {
-        aviso("Abra o caixa antes de iniciar uma venda.", "warning");
+    if (!caixaAberto()) {
+        mostrarAviso("Abra o caixa antes de lançar uma venda.", "warning");
         return;
     }
 
     carrinho = [];
+
+    $("formVenda")?.reset();
+
     renderizarCarrinho();
-    atualizarResumoSelecao();
 
-    if ($("cliente")) $("cliente").value = "";
-
-    if ($("formaPagamento")) {
-        $("formaPagamento").value = FORMAS_PAGAMENTO[0];
+    if ($("formularioVenda")) {
+        $("formularioVenda").hidden = false;
+        $("formularioVenda").scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
     }
-
-    abrirModal("formularioVenda");
 });
 
 $("btnCancelarVenda")?.addEventListener("click", () => {
-    fecharModal("formularioVenda");
+    if ($("formularioVenda")) {
+        $("formularioVenda").hidden = true;
+    }
+
+    carrinho = [];
+
+    $("formVenda")?.reset();
+
+    renderizarCarrinho();
+    fecharModal("modalProdutos");
 });
 
-$("formVenda")?.addEventListener("submit", (evento) => {
+$("formVenda")?.addEventListener("submit", evento => {
     evento.preventDefault();
 
-    if (!caixaEstaAberto()) {
-        aviso("Abra o caixa antes de registrar uma venda.", "warning");
+    if (!caixaAberto()) {
+        mostrarAviso("Abra o caixa antes de registrar uma venda.", "warning");
         return;
     }
 
     if (!carrinho.length) {
-        aviso("Selecione pelo menos um produto.", "warning");
+        mostrarAviso("Selecione pelo menos um produto.", "warning");
         return;
     }
 
-    const formaPagamento = $("formaPagamento")?.value || "";
+    const cliente = $("cliente")?.value.trim() || "";
+    const pagamento = $("formaPagamento")?.value || "";
 
-    if (!FORMA_PAGAMENTO_VALIDO(formaPagamento)) {
-        aviso("Selecione uma forma de pagamento válida.", "warning");
+    if (!cliente) {
+        mostrarAviso("Informe o nome do cliente.", "warning");
+        return;
+    }
+
+    if (!FORMAS_PAGAMENTO.includes(pagamento)) {
+        mostrarAviso("Selecione uma forma de pagamento.", "warning");
         return;
     }
 
     const produtos = obterProdutos();
 
-    // Confere novamente o estoque antes de concluir.
+    // Valida o estoque de todos os itens antes de alterar qualquer quantidade.
     for (const item of carrinho) {
         const produto = produtos.find(
-            (p) => String(p.id) === String(item.id)
+            atual => String(atual.id) === String(item.id)
         );
 
-        if (!produto || Number(produto.estoque || 0) < item.quantidade) {
-            aviso(`Estoque insuficiente para ${item.nome}.`, "error");
+        if (!produto || estoqueDoProduto(produto) < item.quantidade) {
+            mostrarAviso(`Estoque insuficiente para ${item.nome}.`, "error");
             return;
         }
     }
 
+    const total = totalCarrinho();
     const agora = new Date();
 
-    const novaVenda = {
-        id: gerarId(),
-        data: dataLocal(),
+    const venda = {
+        id: idNovo(),
+        data: hoje(),
         dataHora: agora.toISOString(),
-        cliente: $("cliente")?.value?.trim() || "Cliente não informado",
-        pagamento: formaPagamento,
-        itens: carrinho.map((item) => ({
+        cliente,
+        pagamento,
+        itens: carrinho.map(item => ({
             id: item.id,
             nome: item.nome,
-            preco: Number(item.preco),
-            quantidade: Number(item.quantidade),
-            subtotal: Number(item.preco) * Number(item.quantidade)
+            preco: item.preco,
+            quantidade: item.quantidade,
+            subtotal: item.preco * item.quantidade
         })),
-        total: calcularTotal()
+        total
     };
 
-    // Dá baixa no estoque.
+    // Guarda os dados anteriores para evitar alterações parciais em caso de erro.
+    const produtosAnteriores = JSON.stringify(produtos);
+    const vendas = obterVendas();
+
     for (const item of carrinho) {
         const produto = produtos.find(
-            (p) => String(p.id) === String(item.id)
+            atual => String(atual.id) === String(item.id)
         );
 
-        produto.estoque = Number(produto.estoque || 0) - item.quantidade;
+        definirEstoque(
+            produto,
+            estoqueDoProduto(produto) - item.quantidade
+        );
     }
 
-    salvarDados(CHAVE_PRODUTOS, produtos);
+    try {
+        salvar(CHAVE_PRODUTOS, produtos);
+        vendas.push(venda);
+        salvar(CHAVE_VENDAS, vendas);
+    } catch (erro) {
+        // Tenta restaurar o estoque se uma gravação falhar.
+        try {
+            localStorage.setItem(CHAVE_PRODUTOS, produtosAnteriores);
+        } catch (erroRestauracao) {
+            console.error("Não foi possível restaurar o estoque.", erroRestauracao);
+        }
 
-    const vendas = obterVendas();
-    vendas.push(novaVenda);
-    salvarDados(CHAVE_VENDAS, vendas);
+        return;
+    }
 
     carrinho = [];
 
     $("formVenda")?.reset();
-    fecharModal("formularioVenda");
+
+    if ($("formularioVenda")) {
+        $("formularioVenda").hidden = true;
+    }
+
     fecharModal("modalProdutos");
 
     renderizarCarrinho();
-    atualizarResumoSelecao();
     atualizarCatalogo();
-    renderizarVendas();
     atualizarResumoCaixa();
 
-    aviso("Venda registrada com sucesso!");
+    mostrarAviso("Venda registrada com sucesso!");
 });
 
-function FORMA_PAGAMENTO_VALIDO(forma) {
-    return FORMAS_PAGAMENTO.includes(forma);
-}
-
 /* =========================================================
-   VENDAS DO DIA — APÓS A ABERTURA DO CAIXA
+   VENDAS DO DIA
    ========================================================= */
 
 function renderizarVendasDoCaixa() {
     const lista = $("listaVendasCaixa");
     if (!lista) return;
 
-    const caixa = obterCaixaHoje();
-
     if ($("dataVendasCaixa")) {
         $("dataVendasCaixa").textContent =
-            `Data: ${formatarData(caixa?.data || dataLocal())}`;
+            `Vendas realizadas em ${hoje().split("-").reverse().join("/")}.`;
     }
 
-    if (!caixa || !caixa.aberto) {
+    if (!caixaAberto()) {
         lista.innerHTML = `
             <tr>
-                <td colspan="5">Abra o caixa para visualizar as vendas do dia.</td>
+                <td colspan="4">Abra o caixa para visualizar as vendas do dia.</td>
             </tr>
         `;
         return;
     }
 
-    const abertura = caixa.dataHoraAbertura
+    const caixa = obterCaixaHoje();
+
+    const abertura = caixa?.dataHoraAbertura
         ? new Date(caixa.dataHoraAbertura).getTime()
         : 0;
 
-    const vendas = obterVendas()
-        .filter((venda) => {
-            if (venda.data !== caixa.data) return false;
+    const vendas = vendasDeHoje()
+        .filter(venda => {
+            if (!venda.dataHora || !abertura) return true;
 
-            if (venda.dataHora && abertura) {
-                return new Date(venda.dataHora).getTime() >= abertura;
-            }
-
-            return true;
+            const instante = new Date(venda.dataHora).getTime();
+            return !Number.isNaN(instante) && instante >= abertura;
         })
         .sort((a, b) => new Date(b.dataHora) - new Date(a.dataHora));
 
     if (!vendas.length) {
         lista.innerHTML = `
             <tr>
-                <td colspan="5">Nenhuma venda registrada após a abertura do caixa.</td>
+                <td colspan="4">Nenhuma venda registrada após a abertura do caixa.</td>
             </tr>
         `;
         return;
     }
 
-    lista.innerHTML = vendas.map((venda) => `
+    lista.innerHTML = vendas.map(venda => `
         <tr>
-            <td>${escapar(venda.dataHora ? horaLocal(new Date(venda.dataHora)) : "—")}</td>
+            <td>${escapar(hora(venda.dataHora))}</td>
             <td>${escapar(venda.cliente || "Cliente não informado")}</td>
             <td>${escapar(venda.pagamento || "—")}</td>
-            <td>${dinheiro(venda.total)}</td>
-            <td>${escapar(venda.itens?.length || 0)} item(ns)</td>
+            <td>${moeda(venda.total)}</td>
         </tr>
     `).join("");
 }
-
-/* =========================================================
-   HISTÓRICO GERAL DE VENDAS
-   Compatível com páginas que tenham esses filtros.
-   ========================================================= */
-
-function renderizarVendas() {
-    const lista = $("listaVendas");
-    const statVendas = $("statVendas");
-    const statTotal = $("statTotal");
-
-    const dataInicial = $("dataInicial")?.value || "";
-    const dataFinal = $("dataFinal")?.value || "";
-
-    let vendas = obterVendas().slice();
-
-    if (dataInicial) {
-        vendas = vendas.filter((venda) => venda.data >= dataInicial);
-    }
-
-    if (dataFinal) {
-        vendas = vendas.filter((venda) => venda.data <= dataFinal);
-    }
-
-    vendas.sort((a, b) => new Date(b.dataHora) - new Date(a.dataHora));
-
-    if (statVendas) {
-        statVendas.textContent = obterVendas().length;
-    }
-
-    if (statTotal) {
-        statTotal.textContent = dinheiro(
-            vendas.reduce((total, venda) => total + Number(venda.total || 0), 0)
-        );
-    }
-
-    if (!lista) return;
-
-    if (!vendas.length) {
-        lista.innerHTML = `
-            <tr>
-                <td colspan="7">Nenhuma venda encontrada.</td>
-            </tr>
-        `;
-        return;
-    }
-
-    lista.innerHTML = vendas.map((venda) => `
-        <tr>
-            <td>${formatarData(venda.data)}</td>
-            <td>${escapar(venda.dataHora ? horaLocal(new Date(venda.dataHora)) : "—")}</td>
-            <td>${escapar(venda.cliente || "Cliente não informado")}</td>
-            <td>${escapar(venda.pagamento || "—")}</td>
-            <td>${dinheiro(venda.total)}</td>
-            <td>${escapar(venda.itens?.length || 0)}</td>
-            <td>
-                <button
-                    type="button"
-                    data-excluir-venda="${escapar(venda.id)}"
-                >Excluir</button>
-            </td>
-        </tr>
-    `).join("");
-}
-
-$("btnFiltrar")?.addEventListener("click", renderizarVendas);
-
-$("btnLimparFiltro")?.addEventListener("click", () => {
-    if ($("dataInicial")) $("dataInicial").value = "";
-    if ($("dataFinal")) $("dataFinal").value = "";
-
-    renderizarVendas();
-});
-
-$("listaVendas")?.addEventListener("click", (evento) => {
-    const botao = evento.target.closest("[data-excluir-venda]");
-    if (!botao) return;
-
-    excluirVenda(botao.dataset.excluirVenda);
-});
-
-/* =========================================================
-   EXCLUIR VENDA E DEVOLVER ESTOQUE
-   ========================================================= */
-
-async function excluirVenda(id) {
-    const desejaExcluir = await confirmar(
-        "Deseja excluir esta venda? Os produtos vendidos voltarão ao estoque."
-    );
-
-    if (!desejaExcluir) return;
-
-    const vendas = obterVendas();
-    const venda = vendas.find(
-        (item) => String(item.id) === String(id)
-    );
-
-    if (!venda) {
-        aviso("Venda não encontrada.", "error");
-        return;
-    }
-
-    const produtos = obterProdutos();
-
-    for (const item of venda.itens || []) {
-        const produto = produtos.find(
-            (p) => String(p.id) === String(item.id)
-        );
-
-        if (produto) {
-            produto.estoque =
-                Number(produto.estoque || 0) + Number(item.quantidade || 0);
-        }
-    }
-
-    salvarDados(CHAVE_PRODUTOS, produtos);
-
-    salvarDados(
-        CHAVE_VENDAS,
-        vendas.filter((item) => String(item.id) !== String(id))
-    );
-
-    atualizarCatalogo();
-    renderizarVendas();
-    atualizarResumoCaixa();
-
-    aviso("Venda excluída e estoque atualizado.");
-}
-
-/* =========================================================
-   BOTÕES PARA FECHAR MODAIS
-   ========================================================= */
-
-document.querySelectorAll("[data-fechar-modal]").forEach((botao) => {
-    botao.addEventListener("click", () => {
-        fecharModal(botao.dataset.fecharModal);
-    });
-});
-
-$("fecharModalVenda")?.addEventListener("click", () => {
-    fecharModal("formularioVenda");
-});
-
-$("fecharModalMovimentacao")?.addEventListener("click", () => {
-    fecharModal("modalMovimentacao");
-});
 
 /* =========================================================
    INICIALIZAÇÃO
    ========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+function inicializarCaixa() {
+    fecharModal("modalProdutos");
+    fecharModal("modalMovimentacao");
+
     renderizarCarrinho();
-    atualizarResumoSelecao();
     atualizarCatalogo();
-    renderizarVendas();
     verificarAberturaCaixa();
-    atualizarResumoCaixa();
-});
+
+    console.log("Caixa inicializado.");
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", inicializarCaixa);
+} else {
+    inicializarCaixa();
+}

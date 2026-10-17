@@ -86,53 +86,47 @@
         </header>
 
         <!-- RESUMO -->
-        <section class="shop-stats">
-            <div class="shop-stat">
-                <div class="shop-stat-label">Produtos disponíveis</div>
-                <div class="shop-stat-value" id="statCatalogo">0</div>
-                <div class="shop-stat-note">Produtos com estoque disponível</div>
-            </div>
+     
+<!-- RESUMO PRINCIPAL -->
+<section class="shop-stats">
 
-            <div class="shop-stat">
-                <div class="shop-stat-label">Vendas registradas</div>
-                <div class="shop-stat-value" id="statVendas">0</div>
-                <div class="shop-stat-note">Conforme o período selecionado</div>
-            </div>
+    <div class="shop-stat">
+        <div class="shop-stat-label">Vendas registradas</div>
+        <div class="shop-stat-value" id="statVendas">0</div>
+        <div class="shop-stat-note">Vendas realizadas no dia</div>
+    </div>
 
-           <div class="shop-stat">
-                <div class="shop-stat-label">Total do caixa</div>
-                <div class="shop-stat-value" id="statTotalCaixa">R$ 0,00</div>
-                <div class="shop-stat-note">
-                    Abertura + entradas + vendas − retiradas
-                </div>
-            </div>
-        </section>
+    <div class="shop-stat">
+        <div class="shop-stat-label">Total de vendas</div>
+        <div class="shop-stat-value" id="totalVendasDia">R$ 0,00</div>
+        <div class="shop-stat-note">Soma de todas as vendas do dia</div>
+    </div>
 
-        <section class="shop-stats resumo-caixa">
+    <div class="shop-stat">
+        <div class="shop-stat-label">Total recebido</div>
+        <div class="shop-stat-value" id="totalRecebido">R$ 0,00</div>
+        <div class="shop-stat-note">Abertura + vendas + entradas manuais</div>
+    </div>
+</section>
+
+<!-- RESUMO DAS MOVIMENTAÇÕES -->
+<section class="shop-stats resumo-caixa">
     <div class="shop-stat">
         <div class="shop-stat-label">Fundo de abertura</div>
         <div class="shop-stat-value" id="valorAbertura">R$ 0,00</div>
+        <div class="shop-stat-note">Valor inicial do caixa</div>
     </div>
 
     <div class="shop-stat">
         <div class="shop-stat-label">Entradas manuais</div>
         <div class="shop-stat-value" id="totalEntradas">R$ 0,00</div>
+        <div class="shop-stat-note">Valores adicionados manualmente</div>
     </div>
 
     <div class="shop-stat">
-        <div class="shop-stat-label">Vendas em dinheiro</div>
-        <div class="shop-stat-value" id="totalDinheiro">R$ 0,00</div>
-    </div>
-
-    <div class="shop-stat">
-        <div class="shop-stat-label">Retiradas</div>
+        <div class="shop-stat-label">Total de retiradas</div>
         <div class="shop-stat-value" id="totalRetiradas">R$ 0,00</div>
-    </div>
-
-    <div class="shop-stat">
-        <div class="shop-stat-label">Saldo esperado em dinheiro</div>
-        <div class="shop-stat-value" id="saldoCaixa">R$ 0,00</div>
-        <div class="shop-stat-note">Movimentação do dia atual</div>
+        <div class="shop-stat-note">Valores retirados do caixa</div>
     </div>
 </section>
 
