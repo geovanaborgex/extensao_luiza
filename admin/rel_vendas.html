@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Relatório de Vendas | Luiza Rodrigues</title>
+    <link rel="stylesheet" href="css/menu.css">
+
+    <link rel="stylesheet" href="css/rel_vendas.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+
+<body>
+
+<div class="layout">
+ <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>Luiza</h2>
+            <span>Painel Administrativo</span>
+        </div>
+
+        <nav>
+            <a href="dashboard.html">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="rel_agenda.html">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span>Relatório de Agendamentos</span>
+            </a>
+
+            <a href="rel_graficos.html">
+                <i class="fa-solid fa-chart-column"></i>
+                <span>Gráficos e resultados</span>
+            </a>
+
+            <a href="gerenciamento.html">
+                <i class="fa-solid fa-spa"></i>
+                <span>Gerenciamento</span>
+            </a>
+
+            <a href="produtos.html">
+                <i class="fa-solid fa-bottle-droplet"></i>
+                <span>Produtos - Estoque</span>
+            </a>
+
+            <a href="caixa.html">
+                <i class="fa-solid fa-cash-register"></i>
+                <span>Caixa - Vendas</span>
+            </a>
+
+            <a href="rel_vendas.html" class="ativo">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Relatório de Vendas</span>
+            </a>
+
+            <a href="../index.html">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Sair</span>
+            </a>
+        </nav>
+    </aside>
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="conteudo">
+
+        <!-- TOPO -->
+        <header class="topo">
+            <div>
+                <h1>Relatório de Vendas</h1>
+                <p>Visualize as vendas, os produtos mais vendidos e seus melhores clientes.</p>
+            </div>
+
+            <a href="caixa.html" class="btn-voltar">
+                <i class="fa-solid fa-arrow-left"></i>
+                Voltar ao caixa
+            </a>
+        </header>
+
+        <!-- AVISO -->
+        <div id="avisoDados" class="aviso" role="status"></div>
+
+        <!-- FILTROS -->
+        <section class="filtros">
+
+            <div>
+                <label for="dataInicio">Data inicial</label>
+                <input type="date" id="dataInicio">
+            </div>
+
+            <div>
+                <label for="dataFim">Data final</label>
+                <input type="date" id="dataFim">
+            </div>
+
+            <div>
+                <label for="filtroPagamento">Forma de pagamento</label>
+                <select id="filtroPagamento">
+                    <option value="">Todas</option>
+                    <option value="PIX Nubank">PIX Nubank</option>
+                    <option value="PIX InfinityPay">PIX InfinityPay</option>
+                    <option value="Dinheiro">Dinheiro</option>
+                    <option value="Cartão de crédito">Cartão de crédito</option>
+                    <option value="Cartão de débito">Cartão de débito</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="filtroCliente">Cliente</label>
+                <input
+                    type="search"
+                    id="filtroCliente"
+                    placeholder="Nome do cliente">
+            </div>
+
+            <button type="button" id="btnFiltrar">
+                <i class="fa-solid fa-filter"></i>
+                Filtrar
+            </button>
+
+        </section>
+
+        <!-- INDICADORES -->
+        <section class="cards">
+
+            <article class="card">
+                <i class="fa-solid fa-sack-dollar"></i>
+                <h3>Faturamento</h3>
+                <span id="totalFaturamento">R$ 0,00</span>
+                <p>Total vendido no período</p>
+            </article>
+
+            <article class="card">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <h3>Vendas realizadas</h3>
+                <span id="totalVendas">0</span>
+                <p>Quantidade de vendas</p>
+            </article>
+
+        </section>
+
+        <!-- RANKINGS -->
+        <section class="grade-relatorios">
+
+            <!-- PRODUTOS MAIS VENDIDOS -->
+            <article class="tabela">
+                <div class="titulo-tabela">
+                    <h2>
+                        <i class="fa-solid fa-ranking-star"></i>
+                        Produtos mais vendidos
+                    </h2>
+                </div>
+
+                <p class="descricao-tabela">
+                    Ranking de produtos por quantidade vendida.
+                </p>
+
+                <div class="tabela-scroll">
+                    <table class="tabela-corpo">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Unidades</th>
+                                <th>Faturamento</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="tabelaProdutos">
+                            <tr>
+                                <td colspan="3">Carregando produtos...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+
+            <!-- CLIENTES QUE MAIS COMPRARAM -->
+            <article class="tabela">
+                <div class="titulo-tabela">
+                    <h2>
+                        <i class="fa-solid fa-users"></i>
+                        Melhores clientes
+                    </h2>
+                </div>
+
+                <p class="descricao-tabela">
+                    Clientes com maior valor total em compras.
+                </p>
+
+                <div class="tabela-scroll">
+                    <table class="tabela-corpo">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Compras</th>
+                                <th>Total gasto</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="tabelaClientes">
+                            <tr>
+                                <td colspan="3">Carregando clientes...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- HISTÓRICO DE VENDAS -->
+        <section class="tabela">
+
+            <div class="titulo-tabela">
+                <h2>
+                    <i class="fa-solid fa-receipt"></i>
+                    Histórico de vendas
+                </h2>
+            </div>
+
+            <div class="busca-vendas">
+                <input
+                    type="search"
+                    id="buscaHistorico"
+                    placeholder="Pesquisar por cliente, produto ou pagamento...">
+            </div>
+
+            <p id="infoHistorico" class="resultado-info">
+                0 vendas encontradas
+            </p>
+
+            <div class="tabela-scroll">
+                <table class="tabela-corpo">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Cliente</th>
+                            <th>Produtos</th>
+                            <th>Pagamento</th>
+                            <th>Valor total</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tabelaHistorico">
+                        <tr>
+                            <td colspan="5">Nenhuma venda encontrada.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/rel_vendas.js"></script>
+
+</body>
+</html>

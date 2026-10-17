@@ -7,6 +7,24 @@
 
 const CHAVE_PRODUTOS = "luiza_caixa_produtos_v1";
 const CHAVE_VENDAS = "luiza_caixa_vendas_v1";
+const CHAVE_CAIXAS = "luiza_caixa_sessoes_v1";
+
+let sessoesCaixa = carregarDados(CHAVE_CAIXAS, []);
+let tipoMovimentacaoAtual = "entrada";
+
+function obterCaixaHoje() {
+    const hoje = dataLocal();
+    return sessoesCaixa.find(caixa => caixa.data === hoje) || null;
+}
+
+function salvarSessoesCaixa() {
+    return salvarDados(CHAVE_CAIXAS, sessoesCaixa);
+}
+
+function moedaParaNumero(valor) {
+    const numero = Number(valor);
+    return Number.isFinite(numero) ? numero : 0;
+}
 
 const produtosIniciais = [
     { id: 1, nome: "Shampoo Hidratante", preco: 45.00, estoque: 12, emoji: "🧴" },
@@ -126,6 +144,27 @@ const dataInicialInput = $("dataInicial");
 const dataFinalInput = $("dataFinal");
 const listaVendas = $("listaVendas");
 
+const statusCaixa = $("statusCaixa");
+const modalAbertura = $("modalAbertura");
+const formAbertura = $("formAbertura");
+const valorInicialCaixa = $("valorInicialCaixa");
+
+const modalMovimentacao = $("modalMovimentacao");
+const formMovimentacao = $("formMovimentacao");
+const valorMovimentacao = $("valorMovimentacao");
+const motivoMovimentacao = $("motivoMovimentacao");
+
+const btnEntradaManual = $("btnEntradaManual");
+const btnRetiradaManual = $("btnRetiradaManual");
+const cancelarMovimentacao = $("cancelarMovimentacao");
+
+const valorAberturaEl = $("valorAbertura");
+const totalEntradasEl = $("totalEntradas");
+const totalDinheiroEl = $("totalDinheiro");
+const totalRetiradasEl = $("totalRetiradas");
+const saldoCaixaEl = $("saldoCaixa");
+const listaMovimentacoes = $("listaMovimentacoes");
+
 // ======================================================
 // MENU RESPONSIVO
 // ======================================================
@@ -179,8 +218,6 @@ function abrirModal() {
     buscarProdutosModal.value = "";
 
     renderizarProdutosModal();
-    atualizarContadorModal();
-
     modalProdutos.classList.add("aberto");
     modalProdutos.setAttribute("aria-hidden", "false");
 
@@ -325,20 +362,8 @@ function alterarQuantidadeModal(id, variacao) {
     }
 
     renderizarProdutosModal();
-    atualizarContadorModal();
 }
 
-function atualizarContadorModal() {
-    const quantidade = Object.values(selecaoModal).reduce(
-        (soma, valor) => soma + valor,
-        0
-    );
-
-    contadorProdutosSelecionados.textContent =
-        quantidade === 1
-            ? "1 unidade selecionada"
-            : `${quantidade} unidades selecionadas`;
-}
 
 concluirSelecaoProdutos.addEventListener("click", () => {
     // Confere o estoque novamente antes de aplicar a seleção.
@@ -462,6 +487,7 @@ function renderizarCarrinho() {
     atualizarResumoSelecao();
 }
 
+
 carrinhoElemento.addEventListener("click", evento => {
     const diminuir = evento.target.closest("[data-diminuir]");
     const aumentar = evento.target.closest("[data-aumentar]");
@@ -520,6 +546,229 @@ function validarEstoque() {
     return true;
 }
 
+function verificarAberturaCaixa() {
+    const caixa = obterCaixaHoje();
+
+    if (!caixa) {
+        modalAbertura.hidden = false;
+        document.body.style.overflow = "hidden";
+
+        if (btnAbrirVenda) btnAbrirVenda.disabled = true;
+        if (btnEntradaManual) btnEntradaManual.disabled = true;
+        if (btnRetiradaManual) btnRetiradaManual.disabled = true;
+
+        statusCaixa.innerHTML =
+            '<i class="fa-solid fa-circle"></i> Caixa fechado';
+
+        return;
+    }
+
+    modalAbertura.hidden = true;
+    document.body.style.overflow = "";
+
+    if (btnAbrirVenda) btnAbrirVenda.disabled = false;
+    if (btnEntradaManual) btnEntradaManual.disabled = false;
+    if (btnRetiradaManual) btnRetiradaManual.disabled = false;
+
+    statusCaixa.innerHTML =
+        '<i class="fa-solid fa-circle"></i> Caixa aberto';
+
+    atualizarResumoCaixa();
+}
+
+formAbertura.addEventListener("submit", evento => {
+    evento.preventDefault();
+
+    if (obterCaixaHoje()) {
+        aviso("O caixa de hoje já foi aberto.");
+        verificarAberturaCaixa();
+        return;
+    }
+
+    const valor = Number(valorInicialCaixa.value);
+
+    if (!Number.isFinite(valor) || valor < 0) {
+        aviso("Informe um valor inicial válido.");
+        return;
+    }
+
+    const novoCaixa = {
+        id: gerarId(),
+        data: dataLocal(),
+        dataHoraAbertura: new Date().toISOString(),
+        valorAbertura: Math.round(valor * 100) / 100,
+        movimentacoes: []
+    };
+
+    sessoesCaixa.push(novoCaixa);
+
+    if (!salvarSessoesCaixa()) {
+        sessoesCaixa.pop();
+        return;
+    }
+
+    verificarAberturaCaixa();
+    aviso("Caixa aberto com sucesso!");
+});
+
+function abrirModalMovimentacao(tipo) {
+    const caixa = obterCaixaHoje();
+
+    if (!caixa) {
+        aviso("Abra o caixa antes de registrar movimentações.");
+        verificarAberturaCaixa();
+        return;
+    }
+
+    tipoMovimentacaoAtual = tipo;
+
+    $("tituloMovimentacao").textContent =
+        tipo === "entrada" ? "Entrada manual" : "Retirada do caixa";
+
+    $("descricaoMovimentacao").textContent =
+        tipo === "entrada"
+            ? "Registre o dinheiro colocado no caixa."
+            : "Registre o dinheiro retirado do caixa.";
+
+    motivoMovimentacao.value = "";
+    valorMovimentacao.value = "";
+    modalMovimentacao.hidden = false;
+    valorMovimentacao.focus();
+}
+
+btnEntradaManual.addEventListener("click", () => {
+    abrirModalMovimentacao("entrada");
+});
+
+btnRetiradaManual.addEventListener("click", () => {
+    abrirModalMovimentacao("retirada");
+});
+
+cancelarMovimentacao.addEventListener("click", () => {
+    modalMovimentacao.hidden = true;
+    formMovimentacao.reset();
+});
+
+formMovimentacao.addEventListener("submit", evento => {
+    evento.preventDefault();
+
+    const caixa = obterCaixaHoje();
+
+    if (!caixa) {
+        aviso("Não existe um caixa aberto hoje.");
+        verificarAberturaCaixa();
+        return;
+    }
+
+    const valor = Number(valorMovimentacao.value);
+    const descricao = motivoMovimentacao.value.trim();
+
+    if (!Number.isFinite(valor) || valor <= 0) {
+        aviso("Informe um valor maior que zero.");
+        return;
+    }
+
+    if (!descricao) {
+        aviso("Informe a descrição da movimentação.");
+        motivoMovimentacao.focus();
+        return;
+    }
+
+    const movimentacao = {
+        id: gerarId(),
+        tipo: tipoMovimentacaoAtual,
+        valor: Math.round(valor * 100) / 100,
+        descricao,
+        dataHora: new Date().toISOString()
+    };
+
+    caixa.movimentacoes.push(movimentacao);
+
+    if (!salvarSessoesCaixa()) {
+        caixa.movimentacoes.pop();
+        return;
+    }
+
+    modalMovimentacao.hidden = true;
+    formMovimentacao.reset();
+
+    atualizarResumoCaixa();
+    aviso(
+        tipoMovimentacaoAtual === "entrada"
+            ? "Entrada registrada com sucesso!"
+            : "Retirada registrada com sucesso!"
+    );
+});
+
+function atualizarResumoCaixa() {
+    const caixa = obterCaixaHoje();
+
+    if (!caixa) {
+        valorAberturaEl.textContent = dinheiro(0);
+        totalEntradasEl.textContent = dinheiro(0);
+        totalDinheiroEl.textContent = dinheiro(0);
+        totalRetiradasEl.textContent = dinheiro(0);
+        saldoCaixaEl.textContent = dinheiro(0);
+
+        listaMovimentacoes.innerHTML =
+            '<tr><td colspan="4">Abra o caixa para iniciar as movimentações.</td></tr>';
+
+        return;
+    }
+
+    const movimentacoes = caixa.movimentacoes || [];
+
+    const entradas = movimentacoes
+        .filter(item => item.tipo === "entrada")
+        .reduce((soma, item) => soma + moedaParaNumero(item.valor), 0);
+
+    const retiradas = movimentacoes
+        .filter(item => item.tipo === "retirada")
+        .reduce((soma, item) => soma + moedaParaNumero(item.valor), 0);
+
+    const vendasDinheiro = vendas
+        .filter(venda =>
+            venda.data === caixa.data &&
+            venda.pagamento === "Dinheiro"
+        )
+        .reduce((soma, venda) => soma + moedaParaNumero(venda.total), 0);
+
+    const abertura = moedaParaNumero(caixa.valorAbertura);
+    const saldo = abertura + entradas + vendasDinheiro - retiradas;
+
+    valorAberturaEl.textContent = dinheiro(abertura);
+    totalEntradasEl.textContent = dinheiro(entradas);
+    totalDinheiroEl.textContent = dinheiro(vendasDinheiro);
+    totalRetiradasEl.textContent = dinheiro(retiradas);
+    saldoCaixaEl.textContent = dinheiro(saldo);
+
+    if (!movimentacoes.length) {
+        listaMovimentacoes.innerHTML =
+            '<tr><td colspan="4">Nenhuma movimentação manual hoje.</td></tr>';
+        return;
+    }
+
+    listaMovimentacoes.innerHTML = [...movimentacoes]
+        .sort((a, b) => b.dataHora.localeCompare(a.dataHora))
+        .map(item => {
+            const entrada = item.tipo === "entrada";
+            const dataHora = new Date(item.dataHora);
+
+            return `
+                <tr>
+                    <td>${dataHora.toLocaleTimeString("pt-BR", {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    })}</td>
+                    <td>${entrada ? "Entrada" : "Retirada"}</td>
+                    <td>${escapar(item.descricao)}</td>
+                    <td class="${entrada ? "valor-entrada" : "valor-retirada"}">
+                        ${entrada ? "+" : "−"}${dinheiro(item.valor)}
+                    </td>
+                </tr>
+            `;
+        }).join("");
+}
 // ======================================================
 // SALVAR VENDA
 // ======================================================
@@ -530,6 +779,12 @@ formVenda.addEventListener("submit", evento => {
     const cliente = clienteInput.value.trim();
     const pagamento = pagamentoInput.value;
     const itens = Object.entries(carrinho);
+
+    if (!obterCaixaHoje()) {
+    aviso("Abra o caixa antes de registrar uma venda.");
+    verificarAberturaCaixa();
+    return;
+}
 
     if (!cliente) {
         aviso("Informe o nome do cliente.");
@@ -597,8 +852,8 @@ formVenda.addEventListener("submit", evento => {
     formVenda.reset();
 
     renderizarCarrinho();
+    atualizarResumoCaixa();
     renderizarProdutosModal();
-    atualizarContadorModal();
     renderizarVendas();
     atualizarCatalogo();
 
@@ -794,3 +1049,5 @@ renderizarCarrinho();
 atualizarResumoSelecao();
 atualizarCatalogo();
 renderizarVendas();
+verificarAberturaCaixa();
+atualizarResumoCaixa();

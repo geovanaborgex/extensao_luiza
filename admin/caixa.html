@@ -61,6 +61,11 @@
                 <span>Caixa - Vendas</span>
             </a>
 
+             <a href="rel_vendas.html">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Relatório de Vendas</span>
+            </a>
+
             <a href="../index.html">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
                 <span>Sair</span>
@@ -74,9 +79,9 @@
                 <h1>Caixa</h1>
             </div>
 
-            <span class="pill pill-green">
+           <span class="pill pill-green" id="statusCaixa">
                 <i class="fa-solid fa-circle"></i>
-                Caixa aberto
+                Verificando caixa...
             </span>
         </header>
 
@@ -94,12 +99,81 @@
                 <div class="shop-stat-note">Conforme o período selecionado</div>
             </div>
 
-            <div class="shop-stat">
-                <div class="shop-stat-label">Total vendido</div>
-                <div class="shop-stat-value" id="statTotal">R$ 0,00</div>
-                <div class="shop-stat-note">Soma das vendas do período</div>
+           <div class="shop-stat">
+                <div class="shop-stat-label">Total do caixa</div>
+                <div class="shop-stat-value" id="statTotalCaixa">R$ 0,00</div>
+                <div class="shop-stat-note">
+                    Abertura + entradas + vendas − retiradas
+                </div>
             </div>
         </section>
+
+        <section class="shop-stats resumo-caixa">
+    <div class="shop-stat">
+        <div class="shop-stat-label">Fundo de abertura</div>
+        <div class="shop-stat-value" id="valorAbertura">R$ 0,00</div>
+    </div>
+
+    <div class="shop-stat">
+        <div class="shop-stat-label">Entradas manuais</div>
+        <div class="shop-stat-value" id="totalEntradas">R$ 0,00</div>
+    </div>
+
+    <div class="shop-stat">
+        <div class="shop-stat-label">Vendas em dinheiro</div>
+        <div class="shop-stat-value" id="totalDinheiro">R$ 0,00</div>
+    </div>
+
+    <div class="shop-stat">
+        <div class="shop-stat-label">Retiradas</div>
+        <div class="shop-stat-value" id="totalRetiradas">R$ 0,00</div>
+    </div>
+
+    <div class="shop-stat">
+        <div class="shop-stat-label">Saldo esperado em dinheiro</div>
+        <div class="shop-stat-value" id="saldoCaixa">R$ 0,00</div>
+        <div class="shop-stat-note">Movimentação do dia atual</div>
+    </div>
+</section>
+
+<section class="shop-panel painel-movimentacoes">
+    <div class="shop-panel-head">
+        <div>
+            <h2>Movimentações do caixa</h2>
+            <p>Registre valores colocados ou retirados do caixa.</p>
+        </div>
+    </div>
+
+    <div class="acoes-caixa">
+        <button type="button" class="btn btn-primary" id="btnEntradaManual">
+            <i class="fa-solid fa-circle-plus"></i>
+            Entrada manual
+        </button>
+
+        <button type="button" class="btn btn-light" id="btnRetiradaManual">
+            <i class="fa-solid fa-circle-minus"></i>
+            Retirada do caixa
+        </button>
+    </div>
+
+    <div class="tabela-movimentacoes">
+        <table>
+            <thead>
+                <tr>
+                    <th>Horário</th>
+                    <th>Tipo</th>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                </tr>
+            </thead>
+            <tbody id="listaMovimentacoes">
+                <tr>
+                    <td colspan="4">Nenhuma movimentação registrada hoje.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
 
         <!-- BOTÃO PARA ABRIR O FORMULÁRIO -->
         <section class="shop-panel" style="margin-bottom: 22px;">
@@ -143,9 +217,7 @@
                         Selecionar produtos
                     </button></center>
 
-                    <div id="resumoSelecaoProdutos" class="resumo-selecao-produtos">
-                        <p>Nenhum produto selecionado ainda.</p>
-                    </div><br>
+                <br>
                 </section>
 
                 <!-- DADOS DA VENDA -->
@@ -209,62 +281,6 @@
                 </section>
             </div>
         </section>
-
-        <!-- HISTÓRICO -->
-        <section class="shop-panel">
-            <div class="shop-panel-head">
-                <div>
-                    <h2>Histórico de vendas</h2>
-                </div>
-            </div>
-
-            <div class="shop-panel-head">
-                <div class="shop-toolbar">
-                    <div class="shop-form-group">
-                        <label for="dataInicial">Data inicial</label>
-                        <input type="date" class="shop-field" id="dataInicial">
-                    </div>
-
-                    <div class="shop-form-group">
-                        <label for="dataFinal">Data final</label>
-                        <input type="date" class="shop-field" id="dataFinal">
-                    </div>
-
-                    <button type="button" class="btn btn-primary" id="btnFiltrar">
-                        <i class="fa-solid fa-filter"></i>
-                        Filtrar
-                    </button>
-
-                    <button type="button" class="btn btn-light" id="btnLimparFiltro">
-                        Limpar filtro
-                    </button>
-                </div>
-            </div>
-
-            <div class="shop-table-wrap">
-                <table class="shop-table">
-                    <thead>
-                        <tr>
-                            <th>DATA</th>
-                            <th>CLIENTE</th>
-                            <th>PRODUTOS</th>
-                            <th>PAGAMENTO</th>
-                            <th>TOTAL</th>
-                            <th>AÇÃO</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="listaVendas">
-                        <tr>
-                            <td colspan="6" class="empty">
-                                Nenhuma venda registrada.
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-   
         
 <!-- MODAL DE SELEÇÃO DE PRODUTOS -->
 <div id="modalProdutos" class="modal-produtos" aria-hidden="true">
@@ -341,6 +357,82 @@
     </div>
 </div>
 
+<!-- MODAL DE ABERTURA -->
+<div class="modal-caixa" id="modalAbertura" hidden>
+    <div class="modal-caixa-conteudo"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="tituloAbertura">
+
+        <div class="icone-abertura">
+            <i class="fa-solid fa-cash-register"></i>
+        </div>
+
+        <h2 id="tituloAbertura">Vamos abrir o caixa?</h2>
+        <p>Informe o dinheiro que está na gaveta no início do dia.
+           Se não houver dinheiro, deixe R$ 0,00.</p>
+
+        <form id="formAbertura">
+            <label for="valorInicialCaixa">Valor inicial (R$)</label>
+            <input class="shop-field"
+                   type="number"
+                   id="valorInicialCaixa"
+                   min="0"
+                   step="0.01"
+                   value="0"
+                   required>
+
+            <button class="btn btn-gold checkout" type="submit">
+                <i class="fa-solid fa-lock-open"></i>
+                Abrir caixa
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL DE ENTRADA OU RETIRADA -->
+<div class="modal-caixa" id="modalMovimentacao" hidden>
+    <div class="modal-caixa-conteudo"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="tituloMovimentacao">
+
+        <h2 id="tituloMovimentacao">Movimentação manual</h2>
+        <p id="descricaoMovimentacao">
+            Informe os dados da movimentação.
+        </p>
+
+        <form id="formMovimentacao">
+            <label for="valorMovimentacao">Valor (R$)</label>
+            <input class="shop-field"
+                   type="number"
+                   id="valorMovimentacao"
+                   min="0.01"
+                   step="0.01"
+                   placeholder="Ex.: 300,00"
+                   required>
+
+            <label for="motivoMovimentacao">Descrição</label>
+            <input class="shop-field"
+                   type="text"
+                   id="motivoMovimentacao"
+                   maxlength="150"
+                   placeholder="Ex.: Reposição de dinheiro"
+                   required>
+
+            <div class="acoes-caixa">
+                <button type="button" class="btn btn-light"
+                        id="cancelarMovimentacao">
+                    Cancelar
+                </button>
+
+                <button type="submit" class="btn btn-gold">
+                    Confirmar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
 
     </main>
