@@ -839,54 +839,127 @@ tbody tr:hover {
     margin-bottom: 15px;
 }
 
-.cart-line {
+
+/* =========================================
+   16. TELA DE VENDAS / CAIXA
+========================================= */
+
+.cart-body {
+    padding: 18px 20px;
+}
+
+.cart-body .form-group {
+    margin-bottom: 15px;
+}
+
+/* Cabeçalho e linhas dos produtos da venda */
+
+.carrinho-cabecalho,
+.item-carrinho {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 10px;
-    padding: 13px 0;
+    grid-template-columns: minmax(0, 2fr) minmax(75px, 0.9fr) minmax(105px, 1.3fr) minmax(85px, 1fr);
+    align-items: center;
+    gap: 12px;
+}
+
+.carrinho-cabecalho {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.item-carrinho {
+    padding: 14px 0;
     border-bottom: 1px solid var(--line);
 }
 
-.cart-line-name {
+.nome-produto-carrinho {
+    min-width: 0;
+    overflow-wrap: anywhere;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
 }
 
-.cart-line-meta {
-    margin-top: 4px;
-    color: var(--muted);
-    font-size: 10px;
+.preco-produto-carrinho {
+    white-space: nowrap;
+    font-size: 12px;
 }
 
-.qty-control {
+.quantidade-produto-carrinho {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
 }
 
-.qty-control button {
-    width: 25px;
-    height: 25px;
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    background: #ffffff;
+.quantidade-produto-carrinho .btn-quantidade {
+    flex-shrink: 0;
+}
+
+.total-produto-carrinho {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    min-width: 0;
+}
+
+.total-produto-carrinho strong {
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.remove-line {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--red);
+    font-size: 10px;
     cursor: pointer;
 }
 
-.qty-number {
-    min-width: 15px;
+.cart-empty {
+    padding: 25px 0;
+    color: var(--muted);
     text-align: center;
     font-size: 12px;
 }
 
-.remove-line {
-    margin-left: 5px;
-    border: 0;
-    background: transparent;
-    color: var(--red);
-    font-size: 12px;
-    cursor: pointer;
+/* Ajuste para telas menores */
+
+@media (max-width: 600px) {
+    .cart-body {
+        padding: 14px 10px;
+    }
+
+    .carrinho-cabecalho,
+    .item-carrinho {
+        grid-template-columns: minmax(85px, 1.5fr) minmax(55px, 0.8fr) minmax(85px, 1.2fr) minmax(70px, 1fr);
+        gap: 6px;
+    }
+
+    .carrinho-cabecalho {
+        font-size: 9px;
+    }
+
+    .nome-produto-carrinho,
+    .preco-produto-carrinho,
+    .total-produto-carrinho strong {
+        font-size: 10px;
+    }
+
+    .quantidade-produto-carrinho {
+        gap: 3px;
+    }
+
+    .quantidade-produto-carrinho .btn-quantidade {
+        width: 23px;
+        height: 25px;
+    }
 }
+
 
 .cart-empty {
     padding: 25px 0;

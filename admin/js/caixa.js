@@ -704,6 +704,7 @@ function atualizarResumoSelecao() {
     }
 }
 
+
 function renderizarCarrinho() {
     const lista = $("carrinho");
 
@@ -716,43 +717,58 @@ function renderizarCarrinho() {
             </div>
         `;
     } else {
-        lista.innerHTML = carrinho.map(item => `
-            <div class="item-carrinho">
-                <div>
-                    <strong>${escapar(item.nome)}</strong>
-                    <p>${moeda(item.preco)} cada</p>
-                </div>
+        lista.innerHTML = `
+            <div class="carrinho-cabecalho">
+                <span>Produto</span>
+                <span>Preço</span>
+                <span>Quantidade</span>
+                <span>Total</span>
+            </div>
 
-                <div class="coluna-quantidade">
-                    <button
-                        type="button"
-                        class="btn-quantidade"
-                        data-diminuir="${escapar(item.id)}"
-                        aria-label="Diminuir quantidade"
-                    >−</button>
+            ${carrinho.map(item => `
+                <div class="item-carrinho">
+                    <strong class="nome-produto-carrinho">
+                        ${escapar(item.nome)}
+                    </strong>
 
-                    <span class="quantidade-modal">
-                        ${item.quantidade}
+                    <span class="preco-produto-carrinho">
+                        ${moeda(item.preco)}
                     </span>
 
-                    <button
-                        type="button"
-                        class="btn-quantidade"
-                        data-aumentar="${escapar(item.id)}"
-                        aria-label="Aumentar quantidade"
-                    >+</button>
+                    <div class="quantidade-produto-carrinho">
+                        <button
+                            type="button"
+                            class="btn-quantidade"
+                            data-diminuir="${escapar(item.id)}"
+                            aria-label="Diminuir quantidade"
+                        >−</button>
+
+                        <span class="quantidade-modal">
+                            ${item.quantidade}
+                        </span>
+
+                        <button
+                            type="button"
+                            class="btn-quantidade"
+                            data-aumentar="${escapar(item.id)}"
+                            aria-label="Aumentar quantidade"
+                        >+</button>
+                    </div>
+
+                    <div class="total-produto-carrinho">
+                        <strong>
+                            ${moeda(item.preco * item.quantidade)}
+                        </strong>
+
+                        <button
+                            type="button"
+                            class="remove-line"
+                            data-remover="${escapar(item.id)}"
+                        >Remover</button>
+                    </div>
                 </div>
-
-                <strong>
-                    ${moeda(item.preco * item.quantidade)}
-                </strong>
-
-                <button
-                    type="button"
-                    data-remover="${escapar(item.id)}"
-                >Remover</button>
-            </div>
-        `).join("");
+            `).join("")}
+        `;
     }
 
     if ($("total")) {
@@ -761,6 +777,7 @@ function renderizarCarrinho() {
 
     atualizarResumoSelecao();
 }
+
 
 
 function adicionarProduto(id) {
