@@ -123,12 +123,29 @@ try {
     $dados = requisicaoJson();
 
     if ($metodo === 'POST') {
-        $produto = validarProduto($dados);
-        $id = trim((string)($dados['id'] ?? ''));
+       
+$produto = validarProduto($dados);
+$id = trim((string)($dados['id'] ?? ''));
 
-        if ($id === '') {
-            $id = 'P' . bin2hex(random_bytes(6));
-        }
+if ($id === '') {
+    $produtosExistentes = listarProdutos();
+    $maiorId = 0;
+
+    foreach ($produtosExistentes as $produtoExistente) {
+        $idExistente = (string)($produtoExistente['id'] ?? '');
+
+              if (ctype_digit($idExistente)) {
+                  $numeroId = (int)$idExistente;
+
+                  if ($numeroId > $maiorId) {
+                      $maiorId = $numeroId;
+                  }
+              }
+          }
+
+          $id = (string)($maiorId + 1);
+      }
+
 
         if (localizarLinhaProduto($id) !== null) {
             responder(['erro' => 'Já existe um produto com esse ID.'], 409);
