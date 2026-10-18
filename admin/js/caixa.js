@@ -723,17 +723,23 @@ function renderizarCarrinho() {
                     <p>${moeda(item.preco)} cada</p>
                 </div>
 
-                <div class="controles-quantidade">
+                <div class="coluna-quantidade">
                     <button
                         type="button"
+                        class="btn-quantidade"
                         data-diminuir="${escapar(item.id)}"
+                        aria-label="Diminuir quantidade"
                     >−</button>
 
-                    <span>${item.quantidade}</span>
+                    <span class="quantidade-modal">
+                        ${item.quantidade}
+                    </span>
 
                     <button
                         type="button"
+                        class="btn-quantidade"
                         data-aumentar="${escapar(item.id)}"
+                        aria-label="Aumentar quantidade"
                     >+</button>
                 </div>
 
@@ -755,6 +761,7 @@ function renderizarCarrinho() {
 
     atualizarResumoSelecao();
 }
+
 
 function adicionarProduto(id) {
     const produto = obterProdutos().find(
