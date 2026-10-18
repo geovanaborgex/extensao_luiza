@@ -864,6 +864,7 @@ $("carrinho")?.addEventListener("click", evento => {
     }
 });
 
+
 function renderizarProdutosModal() {
     const lista = $("listaProdutosModal");
 
@@ -890,36 +891,46 @@ function renderizarProdutosModal() {
 
         const quantidade = item?.quantidade || 0;
         const estoque = estoqueDoProduto(produto);
+        const semEstoque = estoque <= 0;
 
         return `
-            <div class="produto-modal-item">
-                <span class="produto-modal-nome">
-                    ${escapar(nomeDoProduto(produto))}
+            <div class="linha-produto-modal">
+                <div class="coluna-nome-produto">
+                    <span>${escapar(nomeDoProduto(produto))}</span>
+                </div>
+
+                <span class="coluna-estoque ${semEstoque ? "estoque-zero" : ""}">
+                    ${estoque} un.
                 </span>
 
-                <span>${estoque}</span>
+                <span class="coluna-preco">
+                    ${moeda(precoDoProduto(produto))}
+                </span>
 
-                <span>${moeda(precoDoProduto(produto))}</span>
-
-                <div class="produto-modal-acoes">
+                <div class="coluna-quantidade">
                     <button
                         type="button"
+                        class="btn-quantidade"
                         data-modal-diminuir="${escapar(produto.id)}"
                         ${quantidade <= 0 ? "disabled" : ""}
+                        aria-label="Diminuir quantidade"
                     >−</button>
 
-                    <span>${quantidade}</span>
+                    <span class="quantidade-modal">${quantidade}</span>
 
                     <button
                         type="button"
+                        class="btn-quantidade"
                         data-modal-aumentar="${escapar(produto.id)}"
-                        ${quantidade >= estoque ? "disabled" : ""}
+                        ${semEstoque || quantidade >= estoque ? "disabled" : ""}
+                        aria-label="Aumentar quantidade"
                     >+</button>
                 </div>
             </div>
         `;
     }).join("");
 }
+
 
 /* =========================================================
    MODAL DE SELEÇÃO DE PRODUTOS

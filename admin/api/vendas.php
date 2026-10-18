@@ -153,7 +153,28 @@ try {
         $total += $produto['preco'] * $quantidade;
     }
 
-    $idVenda = 'V' . bin2hex(random_bytes(6));
+    // Gera o próximo ID sequencial com base nas vendas já registradas.
+    $respostaIds = $sheets->spreadsheets_values->get(
+        PLANILHA_PROCEDIMENTOS_ID,
+        'Vendas!A2:A'
+    );
+
+    $maiorNumero = 0;
+
+    foreach (($respostaIds->getValues() ?? []) as $linhaId) {
+        $idExistente = trim((string)($linhaId[0] ?? ''));
+
+        if (preg_match('/^V(\d+)$/', $idExistente, $resultado)) {
+            $maiorNumero = max($maiorNumero, (int)$resultado[1]);
+        }
+    }
+
+    $idVenda = 'V' . str_pad(
+        (string)($maiorNumero + 1),
+        3,
+        '0',
+        STR_PAD_LEFT
+    );
     $dataVenda = date('Y-m-d H:i:s');
 
     $produtosVenda = [];
