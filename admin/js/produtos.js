@@ -1,108 +1,163 @@
-    /* =========================================
-       MENU RESPONSIVO
-    ========================================= */
 
-    const shopToggle = document.getElementById('menuToggle');
-    const shopOverlay = document.getElementById('menuOverlay');
+/* =========================================
+   CONFIGURAÇÃO DA API
+========================================= */
 
-    shopToggle.addEventListener('click', () => {
-        document.body.classList.toggle('menu-aberto');
+const API_PRODUTOS = 'api/produtos.php';
+
+let produtos = [];
+let editando = null;
+let adicionando = false;
+let carregando = false;
+
+const dinheiro = valor =>
+    Number(valor).toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
     });
 
-    shopOverlay.addEventListener('click', () => {
-        document.body.classList.remove('menu-aberto');
-    });
+/* =========================================
+   MENU RESPONSIVO
+========================================= */
 
+const shopToggle = document.getElementById('menuToggle');
+const shopOverlay = document.getElementById('menuOverlay');
 
-    /* =========================================
-       PRODUTOS
-    ========================================= */
+shopToggle?.addEventListener('click', () => {
+    document.body.classList.toggle('menu-aberto');
+});
 
-    let produtos = [
-        {
-            id: 1,
-            nome: 'Shampoo Hidratante',
-            preco: 45,
-            estoque: 12,
+shopOverlay?.addEventListener('click', () => {
+    document.body.classList.remove('menu-aberto');
+});
+
+/* =========================================
+   COMUNICAÇÃO COM A API
+========================================= */
+
+async function requisicaoProdutos(metodo = 'GET', dados = null) {
+    const opcoes = {
+        method: metodo,
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+
+    if (dados !== null) {
+        opcoes.headers['Content-Type'] = 'application/json';
+        opcoes.body = JSON.stringify(dados);
+    }
+
+    const resposta = await fetch(API_PRODUTOS, opcoes);
+
+    const texto = await resposta.text();
+
+    let resultado;
+
+    try {
+        resultado = JSON.parse(texto);
+    } catch {
+        throw new Error(
+            'A API não retornou JSON válido. Verifique o endereço e os erros do PHP.'
+        );
+    }
+
+    if (!resposta.ok || resultado.sucesso === false || resultado.erro) {
+        throw new Error(
+            resultado.erro || 'Não foi possível concluir a operação.'
+        );
+    }
+
+    return resultado;
+}
+
+/* =========================================
+   CARREGAR PRODUTOS DO GOOGLE SHEETS
+========================================= */
+
+async function carregarProdutos() {
+    carregando = true;
+    renderizar();
+
+    try {
+        const resultado = await requisicaoProdutos('GET');
+
+        produtos = (resultado.produtos || []).map(item => ({
+            id: String(item.id),
+            nome: String(item.produto || ''),
+            preco: Number(item.preco) || 0,
+            estoque: Number(item.estoque) || 0,
             emoji: '🧴'
-        },
-        {
-            id: 2,
-            nome: 'Máscara Capilar',
-            preco: 62.90,
-            estoque: 3,
-            emoji: '🫙'
-        },
-        {
-            id: 3,
-            nome: 'Óleo Finalizador',
-            preco: 39.90,
-            estoque: 8,
-            emoji: '✨'
-        },
-        {
-            id: 4,
-            nome: 'Leave-in Protetor',
-            preco: 54,
-            estoque: 0,
-            emoji: '🌿'
-        }
-    ];
+        }));
 
-    let proximoId = 5;
-    let editando = null;
-    let adicionando = false;
+        produtos.sort((a, b) =>
+            a.nome.localeCompare(b.nome, 'pt-BR')
+        );
 
-    const dinheiro = valor =>
-        Number(valor).toLocaleString('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-        });
+    } catch (erro) {
+        console.error('Erro ao carregar produtos:', erro);
+        alert('Não foi possível carregar os produtos: ' + erro.message);
 
+    } finally {
+        carregando = false;
+        renderizar();
+    }
+}
 
-    /* =========================================
-       STATUS DO ESTOQUE
-    ========================================= */
+/* =========================================
+   STATUS DO ESTOQUE
+========================================= */
 
-    function status(produto) {
-        if (produto.estoque === 0) {
-            return ['Sem estoque', 'pill-red'];
-        }
-
-        if (produto.estoque <= 3) {
-            return ['Estoque baixo', 'pill-yellow'];
-        }
-
-        return ['Em estoque', 'pill-green'];
+function status(produto) {
+    if (produto.estoque === 0) {
+        return ['Sem estoque', 'pill-red'];
     }
 
-
-    /* =========================================
-       PROTEÇÃO DE TEXTO
-    ========================================= */
-
-    function escapar(texto) {
-        return String(texto).replace(/[&<>"']/g, caractere => ({
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#39;'
-        })[caractere]);
+    if (produto.estoque <= 3) {
+        return ['Estoque baixo', 'pill-yellow'];
     }
 
+    return ['Em estoque', 'pill-green'];
+}
 
-    /* =========================================
-       RENDERIZAÇÃO DA TABELA
-    ========================================= */
+/* =========================================
+   PROTEÇÃO DE TEXTO
+========================================= */
 
-   
+function escapar(texto) {
+    return String(texto).replace(/[&<>"']/g, caractere => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    })[caractere]);
+}
+
+/* =========================================
+   RENDERIZAÇÃO DA TABELA
+========================================= */
+
 function renderizar() {
     const busca = document.getElementById('busca').value
         .trim()
         .toLowerCase();
 
     const filtro = document.getElementById('filtro').value;
+    const tabela = document.getElementById('tabela');
+
+    if (carregando) {
+        tabela.innerHTML = `
+            <tr>
+                <td colspan="5" class="empty">
+                    Carregando produtos...
+                </td>
+            </tr>
+        `;
+
+        atualizarIndicadores();
+        return;
+    }
 
     const lista = produtos.filter(produto => {
         const correspondeBusca = produto.nome
@@ -120,9 +175,6 @@ function renderizar() {
         return correspondeBusca && correspondeFiltro;
     });
 
-    const tabela = document.getElementById('tabela');
-
-    // Linha para cadastrar um novo produto
     const linhaNovoProduto = adicionando ? `
         <tr class="linha-novo-produto">
             <td>
@@ -141,7 +193,7 @@ function renderizar() {
                     type="number"
                     min="0.01"
                     step="0.01"
-                    placeholder="0,00"
+                    placeholder="0.00"
                     aria-label="Preço de venda">
             </td>
 
@@ -184,17 +236,17 @@ function renderizar() {
         </tr>
     ` : '';
 
-    // Renderiza os produtos existentes
     const linhasProdutos = lista.map(produto => {
         const situacao = status(produto);
         const estaEditando = editando === produto.id;
+        const idSeguro = escapar(produto.id);
 
         return `
             <tr>
                 <td>
                     <div class="product-cell">
                         <div class="product-thumb">
-                            ${produto.emoji || '🧴'}
+                            ${produto.emoji}
                         </div>
 
                         <div>
@@ -203,7 +255,7 @@ function renderizar() {
                                 ? `
                                     <input
                                         class="shop-field campo-edicao"
-                                        id="nome-${produto.id}"
+                                        id="nome-${idSeguro}"
                                         maxlength="100"
                                         value="${escapar(produto.nome)}"
                                         aria-label="Descrição do produto">
@@ -216,7 +268,7 @@ function renderizar() {
                             }
 
                             <div class="product-code">
-                                Código #${String(produto.id).padStart(3, '0')}
+                                Código #${idSeguro}
                             </div>
                         </div>
                     </div>
@@ -228,7 +280,7 @@ function renderizar() {
                         ? `
                             <input
                                 class="shop-field campo-edicao"
-                                id="preco-${produto.id}"
+                                id="preco-${idSeguro}"
                                 type="number"
                                 min="0.01"
                                 step="0.01"
@@ -245,7 +297,7 @@ function renderizar() {
                         ? `
                             <input
                                 class="shop-field campo-edicao campo-estoque"
-                                id="estoque-${produto.id}"
+                                id="estoque-${idSeguro}"
                                 type="number"
                                 min="0"
                                 step="1"
@@ -272,7 +324,7 @@ function renderizar() {
                                     class="icon-btn"
                                     title="Salvar alterações"
                                     aria-label="Salvar alterações"
-                                    onclick="salvarEdicao(${produto.id})">
+                                    onclick="salvarEdicao('${idSeguro}')">
                                     <i class="fa-solid fa-check"></i>
                                 </button>
 
@@ -291,7 +343,7 @@ function renderizar() {
                                     class="icon-btn"
                                     title="Editar"
                                     aria-label="Editar produto"
-                                    onclick="editar(${produto.id})">
+                                    onclick="editar('${idSeguro}')">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
 
@@ -300,7 +352,7 @@ function renderizar() {
                                     class="icon-btn"
                                     title="Excluir"
                                     aria-label="Excluir produto"
-                                    onclick="excluir(${produto.id})">
+                                    onclick="excluir('${idSeguro}')">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             `
@@ -311,7 +363,6 @@ function renderizar() {
         `;
     }).join('');
 
-    // Mostra a linha de cadastro antes dos produtos existentes
     if (lista.length === 0 && !adicionando) {
         tabela.innerHTML = `
             <tr>
@@ -327,118 +378,153 @@ function renderizar() {
     atualizarIndicadores();
 }
 
+/* =========================================
+   INDICADORES DO ESTOQUE
+========================================= */
 
-    /* =========================================
-       INDICADORES DO ESTOQUE
-    ========================================= */
+function atualizarIndicadores() {
+    document.getElementById('statProdutos').textContent =
+        produtos.length;
 
-    function atualizarIndicadores() {
-        document.getElementById('statProdutos').textContent =
-            produtos.length;
+    document.getElementById('statUnidades').textContent =
+        produtos.reduce(
+            (total, produto) => total + produto.estoque,
+            0
+        );
 
-        document.getElementById('statUnidades').textContent =
-            produtos.reduce((total, produto) => total + produto.estoque, 0);
+    document.getElementById('statBaixo').textContent =
+        produtos.filter(produto => produto.estoque <= 3).length;
+}
 
-        document.getElementById('statBaixo').textContent =
-            produtos.filter(produto => produto.estoque <= 3).length;
+/* =========================================
+   VALIDAR CAMPOS
+========================================= */
+
+function obterDadosFormulario(prefixo) {
+    const nome = document.getElementById(`${prefixo}nome`).value.trim();
+    const precoTexto = document.getElementById(`${prefixo}preco`).value;
+    const estoqueTexto = document.getElementById(`${prefixo}estoque`).value;
+
+    const preco = Number(precoTexto);
+    const estoque = Number(estoqueTexto);
+
+    if (
+        !nome ||
+        precoTexto.trim() === '' ||
+        !Number.isFinite(preco) ||
+        preco <= 0 ||
+        estoqueTexto.trim() === '' ||
+        !Number.isInteger(estoque) ||
+        estoque < 0
+    ) {
+        throw new Error(
+            'Informe a descrição, um preço maior que zero e uma quantidade inteira igual ou maior que zero.'
+        );
     }
 
+    return {
+        produto: nome,
+        preco,
+        estoque
+    };
+}
 
-    /* =========================================
-       EDITAR PRODUTO NA PRÓPRIA LINHA
-    ========================================= */
+/* =========================================
+   EDITAR PRODUTO
+========================================= */
 
-    function editar(id) {
+function editar(id) {
     if (editando !== null || adicionando) {
         alert('Salve ou cancele a operação atual primeiro.');
         return;
     }
 
-    const produto = produtos.find(item => item.id === id);
+    const produto = produtos.find(item => item.id === String(id));
 
     if (!produto) return;
 
-    editando = id;
+    editando = produto.id;
     renderizar();
 
-    document.getElementById(`nome-${id}`).focus();
+    document.getElementById(`nome-${produto.id}`).focus();
 }
 
-    /* =========================================
-       SALVAR EDIÇÃO
-    ========================================= */
+/* =========================================
+   SALVAR EDIÇÃO NA PLANILHA
+========================================= */
 
-    function salvarEdicao(id) {
-        const nome = document.getElementById(`nome-${id}`).value.trim();
-        const precoTexto = document.getElementById(`preco-${id}`).value;
-        const estoqueTexto = document.getElementById(`estoque-${id}`).value;
+async function salvarEdicao(id) {
+    const produto = produtos.find(item => item.id === String(id));
 
-        const preco = Number(precoTexto);
-        const estoque = Number(estoqueTexto);
+    if (!produto) return;
 
-        if (
-            !nome ||
-            precoTexto.trim() === '' ||
-            !Number.isFinite(preco) ||
-            preco <= 0 ||
-            estoqueTexto.trim() === '' ||
-            !Number.isInteger(estoque) ||
-            estoque < 0
-        ) {
-            alert(
-                'Informe uma descrição, um preço maior que zero e uma quantidade inteira igual ou maior que zero.'
-            );
-            return;
-        }
+    try {
+        const dados = obterDadosFormulario('');
 
-        const produto = produtos.find(item => item.id === id);
+        await requisicaoProdutos('PUT', {
+            id: produto.id,
+            ...dados
+        });
 
-        if (!produto) return;
-
-        produto.nome = nome;
-        produto.preco = preco;
-        produto.estoque = estoque;
+        produto.nome = dados.produto;
+        produto.preco = dados.preco;
+        produto.estoque = dados.estoque;
 
         editando = null;
 
         renderizar();
-        aviso('Produto atualizado!');
+        aviso('Produto atualizado na planilha!');
+
+    } catch (erro) {
+        console.error('Erro ao atualizar produto:', erro);
+        alert(erro.message);
     }
+}
 
+/* =========================================
+   CANCELAR EDIÇÃO
+========================================= */
 
-    /* =========================================
-       CANCELAR EDIÇÃO
-    ========================================= */
+function cancelarEdicao() {
+    editando = null;
+    renderizar();
+}
 
-    function cancelarEdicao() {
-        editando = null;
-        renderizar();
-    }
+/* =========================================
+   EXCLUIR PRODUTO DA PLANILHA
+========================================= */
 
-    /* =========================================
-       EXCLUIR PRODUTO
-    ========================================= */
+async function excluir(id) {
+    const produto = produtos.find(item => item.id === String(id));
 
-    function excluir(id) {
-        const produto = produtos.find(item => item.id === id);
+    if (!produto) return;
 
-        if (!produto) return;
+    const confirmou = confirm(
+        `Deseja excluir "${produto.nome}"?`
+    );
 
-        const confirmou = confirm(
-            `Deseja excluir "${produto.nome}"?`
+    if (!confirmou) return;
+
+    try {
+        await requisicaoProdutos('DELETE', {
+            id: produto.id
+        });
+
+        produtos = produtos.filter(
+            item => item.id !== produto.id
         );
-
-        if (!confirmou) return;
-
-        produtos = produtos.filter(item => item.id !== id);
 
         renderizar();
         aviso('Produto removido do catálogo!');
-    }
 
+    } catch (erro) {
+        console.error('Erro ao excluir produto:', erro);
+        alert(erro.message);
+    }
+}
 
 /* =========================================
-   ADICIONAR PRODUTO NA TABELA
+   NOVO PRODUTO
 ========================================= */
 
 function novoProduto() {
@@ -457,88 +543,87 @@ function novoProduto() {
     document.getElementById('novo-nome').focus();
 }
 
+/* =========================================
+   SALVAR NOVO PRODUTO NA PLANILHA
+========================================= */
 
-    /* =========================================
-    SALVAR NOVO PRODUTO
-    ========================================= */
+async function salvarNovoProduto() {
+    try {
+        const dados = obterDadosFormulario('novo-');
 
-    function salvarNovoProduto() {
-        const nome = document.getElementById('novo-nome').value.trim();
-        const precoTexto = document.getElementById('novo-preco').value;
-        const estoqueTexto = document.getElementById('novo-estoque').value;
+        const resultado = await requisicaoProdutos('POST', dados);
+        const item = resultado.produto;
 
-        const preco = Number(precoTexto);
-        const estoque = Number(estoqueTexto);
-
-        if (
-            !nome ||
-            precoTexto.trim() === '' ||
-            !Number.isFinite(preco) ||
-            preco <= 0 ||
-            estoqueTexto.trim() === '' ||
-            !Number.isInteger(estoque) ||
-            estoque < 0
-        ) {
-            alert('Preencha a descrição, um preço maior que zero e uma quantidade inteira igual ou maior que zero.');
-            return;
+        if (!item || item.id === undefined || item.id === null) {
+            throw new Error(
+                'O produto pode ter sido cadastrado, mas a API não retornou seu ID. Atualize a lista antes de tentar novamente.'
+            );
         }
 
         produtos.push({
-            id: proximoId++,
-            nome: nome,
-            preco: preco,
-            estoque: estoque,
+            id: String(item.id),
+            nome: String(item.produto),
+            preco: Number(item.preco),
+            estoque: Number(item.estoque),
             emoji: '🧴'
         });
 
         adicionando = false;
 
         renderizar();
-        aviso('Produto adicionado ao catálogo!');
+        aviso('Produto cadastrado no Google Sheets!');
+
+    } catch (erro) {
+        console.error('Erro ao cadastrar produto:', erro);
+        alert(erro.message);
     }
+}
 
+/* =========================================
+   CANCELAR NOVO CADASTRO
+========================================= */
 
-    /* =========================================
-    CANCELAR NOVO CADASTRO
-    ========================================= */
-
-    function cancelarNovoProduto() {
-        adicionando = false;
-        renderizar();
-    }
-
-
-    /* =========================================
-       NOTIFICAÇÕES
-    ========================================= */
-
-    let temporizadorAviso;
-
-    function aviso(texto) {
-        const elemento = document.getElementById('toast');
-
-        elemento.textContent = texto;
-        elemento.classList.add('show');
-
-        clearTimeout(temporizadorAviso);
-
-        temporizadorAviso = setTimeout(() => {
-            elemento.classList.remove('show');
-        }, 2800);
-    }
-
-
-
-    /* =========================================
-       BUSCA E FILTROS
-    ========================================= */
-
-    document.getElementById('busca').addEventListener('input', renderizar);
-    document.getElementById('filtro').addEventListener('change', renderizar);
-
-
-    /* =========================================
-       INICIALIZAÇÃO
-    ========================================= */
-
+function cancelarNovoProduto() {
+    adicionando = false;
     renderizar();
+}
+
+/* =========================================
+   NOTIFICAÇÕES
+========================================= */
+
+let temporizadorAviso;
+
+function aviso(texto) {
+    const elemento = document.getElementById('toast');
+
+    if (!elemento) {
+        alert(texto);
+        return;
+    }
+
+    elemento.textContent = texto;
+    elemento.classList.add('show');
+
+    clearTimeout(temporizadorAviso);
+
+    temporizadorAviso = setTimeout(() => {
+        elemento.classList.remove('show');
+    }, 2800);
+}
+
+/* =========================================
+   BUSCA E FILTROS
+========================================= */
+
+document.getElementById('busca')
+    .addEventListener('input', renderizar);
+
+document.getElementById('filtro')
+    .addEventListener('change', renderizar);
+
+/* =========================================
+   INICIALIZAÇÃO
+========================================= */
+
+carregarProdutos();
