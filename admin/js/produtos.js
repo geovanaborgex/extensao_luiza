@@ -400,33 +400,31 @@ function atualizarIndicadores() {
    VALIDAR CAMPOS
 ========================================= */
 
-function obterDadosFormulario(prefixo) {
-    const nome = document.getElementById(`${prefixo}nome`).value.trim();
-    const precoTexto = document.getElementById(`${prefixo}preco`).value;
-    const estoqueTexto = document.getElementById(`${prefixo}estoque`).value;
-
-    const preco = Number(precoTexto);
-    const estoque = Number(estoqueTexto);
-
-   
 function obterDadosFormulario(prefixo, id = null) {
-    const sufixo = id !== null ? `-${id}` : '';
+    let campoNome;
+    let campoPreco;
+    let campoEstoque;
 
-    const campoNome = document.getElementById(
-        prefixo === 'novo-' ? 'novo-nome' : `nome${sufixo}`
-    );
-
-    const campoPreco = document.getElementById(
-        prefixo === 'novo-' ? 'novo-preco' : `preco${sufixo}`
-    );
-
-    const campoEstoque = document.getElementById(
-        prefixo === 'novo-' ? 'novo-estoque' : `estoque${sufixo}`
-    );
+    if (prefixo === 'novo-') {
+        campoNome = document.getElementById('novo-nome');
+        campoPreco = document.getElementById('novo-preco');
+        campoEstoque = document.getElementById('novo-estoque');
+    } else {
+        campoNome = document.getElementById(`nome-${id}`);
+        campoPreco = document.getElementById(`preco-${id}`);
+        campoEstoque = document.getElementById(`estoque-${id}`);
+    }
 
     if (!campoNome || !campoPreco || !campoEstoque) {
+        console.error('Campos não encontrados:', {
+            id,
+            nome: !!campoNome,
+            preco: !!campoPreco,
+            estoque: !!campoEstoque
+        });
+
         throw new Error(
-            'Não foi possível localizar os campos de edição. Cancele a edição e tente novamente.'
+            'Não foi possível localizar todos os campos. Cancele a edição e tente novamente.'
         );
     }
 
@@ -447,17 +445,16 @@ function obterDadosFormulario(prefixo, id = null) {
         estoque < 0
     ) {
         throw new Error(
-            'Informe a descrição, um preço maior que zero e uma quantidade inteira igual ou maior que zero.'
+            'Informe o nome, um preço maior que zero e um estoque inteiro igual ou maior que zero.'
         );
     }
 
     return {
         produto: nome,
-        preco,
-        estoque
+        preco: preco,
+        estoque: estoque
     };
 }
-};
 
 /* =========================================
    EDITAR PRODUTO
