@@ -408,6 +408,35 @@ function obterDadosFormulario(prefixo) {
     const preco = Number(precoTexto);
     const estoque = Number(estoqueTexto);
 
+   
+function obterDadosFormulario(prefixo, id = null) {
+    const sufixo = id !== null ? `-${id}` : '';
+
+    const campoNome = document.getElementById(
+        prefixo === 'novo-' ? 'novo-nome' : `nome${sufixo}`
+    );
+
+    const campoPreco = document.getElementById(
+        prefixo === 'novo-' ? 'novo-preco' : `preco${sufixo}`
+    );
+
+    const campoEstoque = document.getElementById(
+        prefixo === 'novo-' ? 'novo-estoque' : `estoque${sufixo}`
+    );
+
+    if (!campoNome || !campoPreco || !campoEstoque) {
+        throw new Error(
+            'Não foi possível localizar os campos de edição. Cancele a edição e tente novamente.'
+        );
+    }
+
+    const nome = campoNome.value.trim();
+    const precoTexto = campoPreco.value;
+    const estoqueTexto = campoEstoque.value;
+
+    const preco = Number(precoTexto);
+    const estoque = Number(estoqueTexto);
+
     if (
         !nome ||
         precoTexto.trim() === '' ||
@@ -428,6 +457,7 @@ function obterDadosFormulario(prefixo) {
         estoque
     };
 }
+};
 
 /* =========================================
    EDITAR PRODUTO
@@ -459,7 +489,7 @@ async function salvarEdicao(id) {
     if (!produto) return;
 
     try {
-        const dados = obterDadosFormulario('');
+        const dados = obterDadosFormulario('', id);
 
         await requisicaoProdutos('PUT', {
             id: produto.id,
