@@ -152,23 +152,36 @@ function mostrarAviso(mensagem, tipo = "success") {
 
 async function requisitarApi(url, opcoes = {}) {
     const resposta = await fetch(url, opcoes);
+    const texto = await resposta.text();
 
     let dados;
 
     try {
-        dados = await resposta.json();
-    } catch {
-        throw new Error("O servidor retornou uma resposta inválida.");
+        dados = JSON.parse(texto);
+    } catch (erro) {
+        console.error("URL chamada:", url);
+        console.error("Status HTTP:", resposta.status);
+        console.error("Resposta original do servidor:", texto);
+
+        throw new Error(
+            `O servidor não retornou JSON válido (HTTP ${resposta.status}). ` +
+            `Confira o console e os logs do Render.`
+        );
     }
 
-    if (!resposta.ok || dados.sucesso === false || dados.erro) {
+    if (
+        !resposta.ok ||
+        dados.sucesso === false ||
+        dados.erro
+    ) {
         throw new Error(
-            dados.erro || "Não foi possível concluir a operação."
+            dados.erro || `Erro na requisição (HTTP ${resposta.status}).`
         );
     }
 
     return dados;
 }
+
 
 function normalizarProduto(produto) {
     return {
