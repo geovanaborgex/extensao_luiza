@@ -1,54 +1,233 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lojinha | Produtos</title><link rel="stylesheet" href="lojinha.css">
-</head>
-<body>
-<div class="layout">
-<aside class="sidebar">
-  <div class="brand"><strong>LUÍZA RODRIGUES</strong><span>BELEZA & ESTÉTICA · ADMIN</span></div>
-  <nav>
-    <div class="nav-label">MENU PRINCIPAL</div>
-    <a class="nav-link" href="#"><span class="nav-icon">⌂</span>Painel</a>
-    <a class="nav-link" href="#"><span class="nav-icon">▦</span>Agendamentos</a>
-    <a class="nav-link" href="#"><span class="nav-icon">♙</span>Clientes</a>
-    <div class="nav-label">GESTÃO</div>
-    <a class="nav-link active" href="produtos.php"><span class="nav-icon">♧</span>Lojinha</a>
-    <div class="subnav"><a class="nav-link active" href="produtos.php">Produtos</a><a class="nav-link" href="caixa.php">Caixa</a></div>
-  </nav>
-</aside>
-<main class="main">
-  <header class="topbar"><div><div class="crumb">Lojinha / <b>Produtos</b></div><h1>Produtos</h1><p class="subtitle">Gerencie os produtos e acompanhe o estoque da lojinha.</p></div><button class="btn btn-primary" onclick="abrirModal()">＋ Novo produto</button></header>
-  <section class="stats">
-    <div class="stat"><div class="stat-label">Produtos cadastrados</div><div class="stat-value" id="statProdutos">4</div><div class="stat-note">Produtos no catálogo</div></div>
-    <div class="stat"><div class="stat-label">Unidades em estoque</div><div class="stat-value" id="statUnidades">23</div><div class="stat-note">Soma das quantidades disponíveis</div></div>
-    <div class="stat"><div class="stat-label">Atenção ao estoque</div><div class="stat-value" id="statBaixo">2</div><div class="stat-note">Produtos com 3 unidades ou menos</div></div>
-  </section>
-  <section class="panel">
-    <div class="panel-head"><div><div class="panel-title">Catálogo de produtos</div><div class="subtitle" style="margin-top:4px">Visualização de demonstração</div></div><div class="toolbar"><input class="field search" id="busca" placeholder="⌕  Buscar produto..." oninput="renderizar()"><select class="select" id="filtro" style="width:170px" onchange="renderizar()"><option value="todos">Todos os estoques</option><option value="normal">Em estoque</option><option value="baixo">Estoque baixo</option><option value="zero">Sem estoque</option></select></div></div>
-    <div class="table-wrap"><table><thead><tr><th>PRODUTO</th><th>PREÇO DE VENDA</th><th>ESTOQUE</th><th>STATUS</th><th>AÇÕES</th></tr></thead><tbody id="tabela"></tbody></table></div>
-  </section>
-  <p class="notice">* Esta é uma prévia de front-end. Os dados abaixo são fictícios e não são salvos no Google Sheets.</p>
-</main></div>
-<div class="modal-backdrop" id="modal"><div class="modal"><div class="modal-head"><h2 id="tituloModal">Novo produto</h2><button class="close" onclick="fecharModal()">×</button></div><form id="formProduto"><div class="form-grid"><div class="form-group full"><label for="descricao">Descrição do produto</label><input class="field" id="descricao" required maxlength="100" placeholder="Ex.: Shampoo Hidratante"></div><div class="form-group"><label for="preco">Preço de venda (R$)</label><input class="field" id="preco" type="number" min="0.01" step="0.01" required placeholder="0,00"></div><div class="form-group"><label for="estoque">Quantidade em estoque</label><input class="field" id="estoque" type="number" min="0" step="1" required placeholder="0"></div></div><div class="modal-actions"><button type="button" class="btn btn-light" onclick="fecharModal()">Cancelar</button><button class="btn btn-primary" type="submit">Salvar produto</button></div></form><p class="notice">A ação é apenas demonstrativa nesta versão.</p></div></div>
-<div class="toast" id="toast"></div>
-<script>
-let produtos=[
-{id:1,nome:'Shampoo Hidratante',preco:45,estoque:12,emoji:'🧴'},
-{id:2,nome:'Máscara Capilar',preco:62.90,estoque:3,emoji:'🫙'},
-{id:3,nome:'Óleo Finalizador',preco:39.90,estoque:8,emoji:'✨'},
-{id:4,nome:'Leave-in Protetor',preco:54,estoque:0,emoji:'🌿'}
-];let proximoId=5, editando=null;
-const dinheiro=v=>Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-function status(p){if(p.estoque===0)return ['Sem estoque','pill-red'];if(p.estoque<=3)return ['Estoque baixo','pill-yellow'];return ['Em estoque','pill-green'];}
-function renderizar(){const q=document.getElementById('busca').value.toLowerCase();const f=document.getElementById('filtro').value;const lista=produtos.filter(p=>p.nome.toLowerCase().includes(q)&&(f==='todos'||(f==='normal'&&p.estoque>3)||(f==='baixo'&&p.estoque>0&&p.estoque<=3)||(f==='zero'&&p.estoque===0)));document.getElementById('tabela').innerHTML=lista.length?lista.map(p=>{const s=status(p);return `<tr><td><div class="product-cell"><div class="product-thumb">${p.emoji||'🧴'}</div><div><div class="product-name">${escapar(p.nome)}</div><div class="product-code">Código #${String(p.id).padStart(3,'0')}</div></div></div></td><td class="price">${dinheiro(p.preco)}</td><td>${p.estoque} un.</td><td><span class="pill ${s[1]}">${s[0]}</span></td><td><div class="actions"><button class="icon-btn" title="Editar" onclick="editar(${p.id})">✎</button><button class="icon-btn" title="Excluir" onclick="excluir(${p.id})">⌫</button></div></td></tr>`}).join(''):'<tr><td colspan="5" class="empty">Nenhum produto encontrado.</td></tr>';document.getElementById('statProdutos').textContent=produtos.length;document.getElementById('statUnidades').textContent=produtos.reduce((s,p)=>s+p.estoque,0);document.getElementById('statBaixo').textContent=produtos.filter(p=>p.estoque<=3).length;}
-function escapar(t){return String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function abrirModal(p=null){editando=p?p.id:null;document.getElementById('tituloModal').textContent=p?'Editar produto':'Novo produto';document.getElementById('descricao').value=p?p.nome:'';document.getElementById('preco').value=p?p.preco:'';document.getElementById('estoque').value=p?p.estoque:'';document.getElementById('modal').classList.add('open');}
-function fecharModal(){document.getElementById('modal').classList.remove('open');}
-function editar(id){const p=produtos.find(x=>x.id===id);if(p)abrirModal(p);}
-function excluir(id){const p=produtos.find(x=>x.id===id);if(p&&confirm(`Excluir “${p.nome}” desta demonstração?`)){produtos=produtos.filter(x=>x.id!==id);renderizar();aviso('Produto removido apenas desta demonstração.');}}
-document.getElementById('formProduto').addEventListener('submit',e=>{e.preventDefault();const nome=document.getElementById('descricao').value.trim(),preco=Number(document.getElementById('preco').value),estoque=Number(document.getElementById('estoque').value);if(!nome||preco<=0||estoque<0)return; if(editando!==null){const p=produtos.find(x=>x.id===editando);if(p)Object.assign(p,{nome,preco,estoque});}else produtos.push({id:proximoId++,nome,preco,estoque,emoji:'🧴'});fecharModal();renderizar();aviso('Alteração feita somente nesta demonstração.');});
-function aviso(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2800)}
-document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')fecharModal()});renderizar();
-</script></body></html>
+
+<?php
+
+header('Content-Type: application/json; charset=utf-8');
+
+require_once __DIR__ . '/../../procedimentos_service.php';
+
+function responder(array $dados, int $status = 200): void
+{
+    http_response_code($status);
+    echo json_encode($dados, JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+function requisicaoJson(): array
+{
+    $conteudo = file_get_contents('php://input');
+
+    if (!$conteudo) {
+        return [];
+    }
+
+    $dados = json_decode($conteudo, true);
+
+    if (!is_array($dados)) {
+        responder(['erro' => 'JSON inválido.'], 400);
+    }
+
+    return $dados;
+}
+
+function listarProdutos(): array
+{
+    $sheets = servicoPlanilha();
+
+    $resposta = $sheets->spreadsheets_values->get(
+        PLANILHA_PROCEDIMENTOS_ID,
+        'Produtos!A2:D'
+    );
+
+    $linhas = $resposta->getValues() ?? [];
+    $produtos = [];
+
+    foreach ($linhas as $linha) {
+        $id = trim((string)($linha[0] ?? ''));
+
+        if ($id === '') {
+            continue;
+        }
+
+        $produtos[] = [
+            'id' => $id,
+            'produto' => (string)($linha[1] ?? ''),
+            'estoque' => (int)($linha[2] ?? 0),
+            'preco' => (float)str_replace(
+                ',',
+                '.',
+                (string)($linha[3] ?? '0')
+            )
+        ];
+    }
+
+    return $produtos;
+}
+
+function localizarLinhaProduto(string $id): ?int
+{
+    $sheets = servicoPlanilha();
+
+    $resposta = $sheets->spreadsheets_values->get(
+        PLANILHA_PROCEDIMENTOS_ID,
+        'Produtos!A2:A'
+    );
+
+    $ids = $resposta->getValues() ?? [];
+
+    foreach ($ids as $indice => $linha) {
+        if (trim((string)($linha[0] ?? '')) === $id) {
+            return $indice + 2;
+        }
+    }
+
+    return null;
+}
+
+function validarProduto(array $dados): array
+{
+    $produto = trim((string)($dados['produto'] ?? ''));
+
+    if ($produto === '') {
+        responder(['erro' => 'Informe o nome do produto.'], 400);
+    }
+
+    if (
+        !isset($dados['estoque']) ||
+        filter_var($dados['estoque'], FILTER_VALIDATE_INT) === false ||
+        (int)$dados['estoque'] < 0
+    ) {
+        responder(['erro' => 'O estoque deve ser um inteiro igual ou maior que zero.'], 400);
+    }
+
+    if (!isset($dados['preco']) || !is_numeric($dados['preco']) || (float)$dados['preco'] < 0) {
+        responder(['erro' => 'Informe um preço válido.'], 400);
+    }
+
+    return [
+        'produto' => $produto,
+        'estoque' => (int)$dados['estoque'],
+        'preco' => (float)$dados['preco']
+    ];
+}
+
+try {
+    $metodo = $_SERVER['REQUEST_METHOD'];
+    $sheets = servicoPlanilha();
+
+    if ($metodo === 'GET') {
+        responder([
+            'sucesso' => true,
+            'produtos' => listarProdutos()
+        ]);
+    }
+
+    $dados = requisicaoJson();
+
+    if ($metodo === 'POST') {
+        $produto = validarProduto($dados);
+        $id = trim((string)($dados['id'] ?? ''));
+
+        if ($id === '') {
+            $id = 'P' . bin2hex(random_bytes(6));
+        }
+
+        if (localizarLinhaProduto($id) !== null) {
+            responder(['erro' => 'Já existe um produto com esse ID.'], 409);
+        }
+
+        $valores = new Google_Service_Sheets_ValueRange([
+            'values' => [[
+                $id,
+                $produto['produto'],
+                $produto['estoque'],
+                $produto['preco']
+            ]]
+        ]);
+
+        $sheets->spreadsheets_values->append(
+            PLANILHA_PROCEDIMENTOS_ID,
+            'Produtos!A:D',
+            $valores,
+            ['valueInputOption' => 'USER_ENTERED', 'insertDataOption' => 'INSERT_ROWS']
+        );
+
+        responder([
+            'sucesso' => true,
+            'mensagem' => 'Produto cadastrado.',
+            'produto' => array_merge(['id' => $id], $produto)
+        ], 201);
+    }
+
+    if ($metodo === 'PUT') {
+        $id = trim((string)($dados['id'] ?? ''));
+
+        if ($id === '') {
+            responder(['erro' => 'Informe o ID do produto.'], 400);
+        }
+
+        $linha = localizarLinhaProduto($id);
+
+        if ($linha === null) {
+            responder(['erro' => 'Produto não encontrado.'], 404);
+        }
+
+        $produto = validarProduto($dados);
+
+        $valores = new Google_Service_Sheets_ValueRange([
+            'values' => [[
+                $id,
+                $produto['produto'],
+                $produto['estoque'],
+                $produto['preco']
+            ]]
+        ]);
+
+        $sheets->spreadsheets_values->update(
+            PLANILHA_PROCEDIMENTOS_ID,
+            "Produtos!A{$linha}:D{$linha}",
+            $valores,
+            ['valueInputOption' => 'USER_ENTERED']
+        );
+
+        responder([
+            'sucesso' => true,
+            'mensagem' => 'Produto atualizado.',
+            'produto' => array_merge(['id' => $id], $produto)
+        ]);
+    }
+
+    if ($metodo === 'DELETE') {
+        $id = trim((string)($dados['id'] ?? ''));
+
+        if ($id === '') {
+            responder(['erro' => 'Informe o ID do produto.'], 400);
+        }
+
+        $linha = localizarLinhaProduto($id);
+
+        if ($linha === null) {
+            responder(['erro' => 'Produto não encontrado.'], 404);
+        }
+
+        $sheets->spreadsheets_values->clear(
+            PLANILHA_PROCEDIMENTOS_ID,
+            "Produtos!A{$linha}:D{$linha}",
+            new Google_Service_Sheets_ClearValuesRequest()
+        );
+
+        responder([
+            'sucesso' => true,
+            'mensagem' => 'Produto removido.'
+        ]);
+    }
+
+    header('Allow: GET, POST, PUT, DELETE');
+    responder(['erro' => 'Método não permitido.'], 405);
+
+} catch (Throwable $e) {
+    error_log('Erro na API de produtos: ' . $e->getMessage());
+
+    responder([
+        'erro' => 'Não foi possível processar os produtos. Verifique os registros do servidor.'
+    ], 500);
+}
